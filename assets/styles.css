@@ -1,219 +1,168 @@
-/* =========================================================
-   STREAMLIT PREMIUM SIDEBAR — FINAL STABLE FILE
-   ========================================================= */
+/* ========== STREAMLIT DASHBOARD — FINAL STABLE VERSION (SAFE) ========== */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
-
-/* ========== HARD RESET: REMOVE STREAMLIT TOP UI ========== */
-header,
-[data-testid="stHeader"],
-[data-testid="stToolbar"],
-[data-testid="stStatusWidget"],
-[data-testid="stDecoration"],
-.st-emotion-cache-z5fcl4,
-.st-emotion-cache-1dp5vir {
-    display: none !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+:root {
+    --sidebar-bg: linear-gradient(180deg, #0b0b18 0%, #14142a 60%, #111827 100%);
+    --accent: #22d3ee;
+    --text: #e5e7eb;
+    --glass: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.14);
 }
 
-/* ========== GLOBAL RESET ========== */
-html, body, .stApp {
-    margin: 0 !important;
-    padding: 0 !important;
-    font-family: 'Inter', system-ui, sans-serif !important;
-    background: #f5f6fa !important;
+/* ========== GLOBAL RESET + FONT ========== */
+* {
+    box-sizing: border-box;
 }
 
-/* ========== APP SHELL ========== */
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #f8fafc;
+    font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 🔥 FORCE FONT EVERYWHERE (Streamlit override) */
+html body,
+html body * {
+    font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
 .stApp {
-    padding: 2.4rem !important;
+    background-image: url("https://raw.githubusercontent.com/Arpit2806/Cluster_Analysis/main/assets/bg4.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
-/* ========== MAIN CONTAINER ========== */
-[data-testid="stAppViewContainer"] {
-    background: #e9eaf2;
-    border-radius: 22px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
-    overflow: hidden;
+/* ========== MAIN CONTENT SPACING ========== */
+.block-container {
+    padding: 2.2rem 3rem 5rem 3rem !important;
 }
 
-/* ========== SIDEBAR (FIXED & SOLID) ========== */
+/* ========== SIDEBAR ROOT ========== */
 [data-testid="stSidebar"] {
-    background: #5b5fe8 !important;
-    width: 260px !important;
-    min-width: 260px !important;
-    padding-top: 12px !important;
-}
-
-/* Kill ALL sidebar padding offsets */
-[data-testid="stSidebar"] > div,
-[data-testid="stSidebar"] section,
-[data-testid="stSidebar"] .st-emotion-cache {
-    margin: 0 !important;
+    background: var(--sidebar-bg);
+    width: 280px !important;
+    min-width: 280px !important;
     padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* Sidebar text */
+/* 🔥 REMOVE DEAD SPACE ABOVE IMAGE */
+[data-testid="stSidebar"] > div {
+    margin-top: -48px !important;
+    padding-top: 0 !important;
+}
+
+/* Sidebar text color */
 [data-testid="stSidebar"] * {
-    color: #ffffff !important;
-    opacity: 1 !important;
-    font-family: 'Inter', sans-serif !important;
-}
-
-/* ========== LOGO ========== */
-[data-testid="stSidebar"] img {
-    display: block;
-    margin: 8px auto 6px auto !important;
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.18);
-    padding: 8px;
+    color: var(--text);
 }
 
 /* ========== SIDEBAR TITLE ========== */
 [data-testid="stSidebar"] h1 {
-    margin: 0 auto 18px auto !important;
-    max-width: 220px;
-
+    font-size: 1.25rem;
+    font-weight: 700;
     text-align: center;
-    font-size: 1.6rem;
-    font-weight: 900;
-    line-height: 1.25;
-    letter-spacing: 0.8px;
-
-    background: linear-gradient(180deg, #ffffff, #e6e6ff);
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+    margin: 0.25rem 0 0.4rem 0 !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #38bdf8, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Remove Streamlit section headers */
+/* ❌ REMOVE NAVIGATION HEADING */
 [data-testid="stSidebar"] h3 {
     display: none !important;
 }
 
-/* =========================================================
-   SIDEBAR BUTTONS — ZERO GAP, LEFT ALIGNED, BOLD
-   ========================================================= */
-
+/* ========== SIDEBAR BUTTON STACK (SAFE + LEFT ALIGNED) ========== */
 [data-testid="stSidebar"] .stButton {
-    margin: 0 !important;
+    margin: -4px 0 !important;
     padding: 0 !important;
 }
 
-[data-testid="stSidebar"] .stButton > div {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Button base */
 [data-testid="stSidebar"] .stButton > button {
-    width: 94%;
-    height: 44px;
+    width: 100%;
+    height: 36px;
+    margin: 2px 0 !important;
+    padding: 0 14px;
 
-    margin: 0 auto !important;
-    padding: 0 20px !important;
+    background: var(--glass);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
 
-    background: transparent;
-    border: none;
-    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
 
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: #ffffff !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 10px !important;
+    /* ✅ GUARANTEED LEFT ALIGN */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    transition: background 0.12s ease;
-}
-
-/* Kill internal centering */
-[data-testid="stSidebar"] .stButton > button > div,
-[data-testid="stSidebar"] .stButton > button > span {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    width: 100% !important;
-    text-align: left !important;
+    transition: all 0.15s ease;
 }
 
 /* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.12);
+    border-color: var(--accent);
 }
 
 /* Active */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
-    background: #ffffff;
-    color: #5b5fe8 !important;
-    font-weight: 900;
-}
-
-/* =========================================================
-   MAIN CONTENT CARD
-   ========================================================= */
-
-.block-container {
-    background: #ffffff;
-    margin: 1.6rem;
-    border-radius: 22px;
-    padding: 2.6rem 3.2rem 4.5rem 3.2rem !important;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-}
-
-/* Headings */
-h1 {
-    font-size: 1.9rem;
-    font-weight: 800;
-    color: #111827;
-}
-
-h2 {
-    font-size: 1.3rem;
+    background: linear-gradient(135deg, #22d3ee, #818cf8);
+    color: #ffffff;
     font-weight: 700;
-    color: #111827;
+    border-color: #22d3ee;
 }
 
-p, label {
-    color: #4b5563;
-}
-
-/* =========================================================
-   HIDE FULLSCREEN ICON — EVERYWHERE
-   ========================================================= */
-
+/* ========== HIDE FULLSCREEN ICON (SAFE) ========== */
 button[aria-label="View fullscreen"],
 button[aria-label="Fullscreen"],
-div[role="button"][aria-label="View fullscreen"],
-div[role="button"][aria-label="Fullscreen"],
 [data-testid="fullscreenButton"],
-[data-testid="stImageFullscreen"],
 [data-testid="stImage"] button,
 [data-testid="stImage"] div[role="button"] {
     display: none !important;
-    visibility: hidden !important;
 }
 
-/* =========================================================
-   FOOTER
-   ========================================================= */
+/* ========== FIX TOP WHITE STREAMLIT HEADER (NON-DESTRUCTIVE) ========== */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
+header[data-testid="stHeader"]::after {
+    display: none !important;
+}
+
+/* ========== PAGE-ONLY FIXED FOOTER ========== */
 .app-footer {
     position: fixed;
-    bottom: 1rem;
-    left: calc(260px + 1.6rem);
-    right: 1.6rem;
+    bottom: 0;
+    left: 280px;
+    right: 0;
 
+    background: #0b0b18;
+    color: #ffffff;
+    font-weight: 600;
     text-align: center;
-    font-size: 0.85rem;
-    color: #6b7280;
+
+    padding: 0.9rem;
+    z-index: 1000;
+}
+
+/* Prevent overlap with footer */
+.block-container {
+    padding-bottom: 5rem !important;
 }
