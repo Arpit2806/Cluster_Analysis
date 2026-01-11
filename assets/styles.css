@@ -211,3 +211,43 @@ header[data-testid="stHeader"]::after {
 .block-container {
     padding-bottom: 5rem !important;
 }
+
+
+
+/* =========================================================
+   SIDEBAR SPACING & SCROLL FIXES (FINAL POLISH)
+   ========================================================= */
+
+/* ---------- 1. TITLE ↔ FIRST BUTTON GAP REDUCE ---------- */
+[data-testid="stSidebar"] h1 {
+    margin-bottom: 0.6rem !important; /* pehle zyada tha */
+}
+
+/* ---------- 2. BUTTON STACK — MORE COMPACT ---------- */
+[data-testid="stSidebar"] .stButton {
+    margin: -6px 0 !important; /* tighter stack */
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    height: 36px;                 /* pehle 40px */
+    font-size: 0.78rem;           /* thoda chhota */
+    padding: 0 16px;              /* tighter padding */
+}
+
+/* ---------- 3. SIDEBAR FOOTER REMOVE ---------- */
+[data-testid="stSidebar"] .app-footer,
+[data-testid="stSidebar"] footer,
+[data-testid="stSidebar"] [class*="footer"] {
+    display: none !important;
+}
+
+/* ---------- 4. NO HORIZONTAL SCROLL (STRICT) ---------- */
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] * {
+    overflow-x: hidden !important;
+}
+
+/* Optional: cleaner vertical scroll */
+[data-testid="stSidebar"] {
+    overflow-y: auto;
+}
