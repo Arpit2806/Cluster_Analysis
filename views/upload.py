@@ -2,8 +2,47 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# =========================================================
+# Inject CSS for compact purple-white tables
+# =========================================================
+def inject_table_css():
+    st.markdown("""
+    <style>
+        table.custom-table {
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: Inter, system-ui, sans-serif;
+            white-space: nowrap;
+            margin: 16px;
+        }
+        table.custom-table th {
+            background-color: #5b5fe8;
+            color: white !important;
+            font-weight: 700;
+            padding: 8px 16px;
+            text-align: center;
+        }
+        table.custom-table td {
+            padding: 8px 16px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+# =========================================================
+# Render compact table (NO stretch, NO index)
+# =========================================================
+def render_compact_table(df):
+    df = df.reset_index(drop=True)
+    html = df.to_html(index=False, classes="custom-table", border=0)
+    st.markdown(html, unsafe_allow_html=True)
+
+# =========================================================
+# Upload Page
+# =========================================================
 def upload_page():
-    inject_table_css()
+    inject_table_css()   # ✅ now defined before use
 
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
@@ -17,22 +56,18 @@ def upload_page():
         st.success("✅ Dataset uploaded successfully!")
 
         # ===============================
-        # PREVIEW (Styled like others)
+        # Preview of Data (styled)
         # ===============================
         st.subheader("🔍 Preview of Data")
 
-        preview_df = df.head()
-        st.markdown(
-            "<div style='display:flex; justify-content:center;'>",
-            unsafe_allow_html=True
-        )
-        render_compact_table(preview_df)
+        st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
+        render_compact_table(df.head())
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.divider()
 
         # ===============================
-        # DATASET OVERVIEW
+        # Dataset Overview
         # ===============================
         st.subheader("📊 Dataset Overview")
 
@@ -58,7 +93,7 @@ def upload_page():
         st.divider()
 
         # ===============================
-        # COLUMN DETAILS
+        # Column Details
         # ===============================
         st.subheader("📋 Column Details")
 
@@ -77,32 +112,22 @@ def upload_page():
             if st.button("Display Categorical Columns"):
                 st.session_state.show_cat = not st.session_state.show_cat
 
-        # ===============================
-        # NUMERICAL → LEFT ALIGNED
-        # ===============================
+        # Numerical → LEFT
         if st.session_state.show_num:
             num_df = pd.DataFrame({
                 "Numerical Columns": df.select_dtypes(include=np.number).columns
             })
 
-            st.markdown(
-                "<div style='display:flex; justify-content:flex-start;'>",
-                unsafe_allow_html=True
-            )
+            st.markdown("<div style='display:flex; justify-content:flex-start;'>", unsafe_allow_html=True)
             render_compact_table(num_df)
             st.markdown("</div>", unsafe_allow_html=True)
 
-        # ===============================
-        # CATEGORICAL → RIGHT ALIGNED
-        # ===============================
+        # Categorical → RIGHT
         if st.session_state.show_cat:
             cat_df = pd.DataFrame({
                 "Categorical Columns": df.select_dtypes(exclude=np.number).columns
             })
 
-            st.markdown(
-                "<div style='display:flex; justify-content:flex-end;'>",
-                unsafe_allow_html=True
-            )
+            st.markdown("<div style='display:flex; justify-content:flex-end;'>", unsafe_allow_html=True)
             render_compact_table(cat_df)
             st.markdown("</div>", unsafe_allow_html=True)
