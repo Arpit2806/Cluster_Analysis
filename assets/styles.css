@@ -1,20 +1,29 @@
 /* =========================================================
-   ENTERPRISE-GRADE STREAMLIT DASHBOARD (PREMIUM EDITION)
-   Inspired by Stripe / Linear / Vercel / Snowflake
+   PREMIUM SAAS DASHBOARD — MARKET STANDARD
+   Inspired by Stripe, Notion, Linear, Retool
    ========================================================= */
 
+/* ---------- FONT ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* ---------- DESIGN TOKENS ---------- */
 :root {
-    --sidebar-bg: #0b0d10;
-    --sidebar-border: #151922;
-    --accent-red: #e11d48;
-    --text-primary: #e6e8eb;
-    --text-muted: #9aa4b2;
-    --page-bg: #f8fafc;
+    --bg-page: #f6f7fb;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+
+    --accent: #6366f1;           /* Indigo (modern SaaS standard) */
+    --accent-soft: rgba(99,102,241,0.12);
+
+    --border-soft: #e5e7eb;
+    --shadow-soft: 0 8px 24px rgba(15,23,42,0.06);
 }
 
-/* ========== GLOBAL RESET ========== */
+/* ---------- GLOBAL RESET ---------- */
 * {
     box-sizing: border-box;
 }
@@ -22,38 +31,39 @@
 html, body {
     margin: 0;
     padding: 0;
-    background: var(--page-bg);
+    background: var(--bg-page);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
 }
 
-/* Force font everywhere */
+/* Force font everywhere (Streamlit override) */
 html body,
 html body * {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* ========== REMOVE BACKGROUND IMAGE COMPLETELY ========== */
+/* ---------- APP BACKGROUND ---------- */
 .stApp {
-    background: var(--page-bg) !important;
+    background: var(--bg-page) !important;
 }
 
-/* ========== MAIN CONTENT ========== */
+/* ---------- MAIN CONTENT ---------- */
 .block-container {
-    padding: 2.5rem 3.5rem 5rem 3.5rem !important;
+    padding: 2.8rem 3.5rem 5rem 3.5rem !important;
 }
 
-/* ========== SIDEBAR CONTAINER ========== */
+/* ---------- SIDEBAR ---------- */
 [data-testid="stSidebar"] {
-    background: var(--sidebar-bg);
+    background: var(--bg-sidebar);
     width: 280px !important;
     min-width: 280px !important;
-    border-right: 1px solid var(--sidebar-border);
+    border-right: 1px solid var(--border-soft);
 }
 
-/* Remove Streamlit padding gap */
+/* Remove default Streamlit spacing */
 [data-testid="stSidebar"] > div {
+    margin-top: -24px !important;
     padding-top: 0 !important;
-    margin-top: -32px !important;
 }
 
 /* Sidebar text */
@@ -61,93 +71,113 @@ html body * {
     color: var(--text-primary);
 }
 
-/* ========== LOGO — BRAND MARK ========== */
+/* ---------- LOGO ---------- */
 [data-testid="stSidebar"] img {
     display: block;
-    margin: 1.2rem auto 0.8rem auto;
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    border: 2px solid var(--accent-red);
-    padding: 6px;
-    background: #000000;
+    margin: 1.6rem auto 0.8rem auto;
+    width: 78px;
+    height: 78px;
+    border-radius: 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-soft);
+    padding: 10px;
 }
 
-/* ========== TITLE — HERO (MAX 2 LINES) ========== */
+/* ---------- SIDEBAR TITLE ---------- */
 [data-testid="stSidebar"] h1 {
     max-width: 220px;
-    margin: 0 auto 1.2rem auto !important;
+    margin: 0 auto 1.8rem auto !important;
     text-align: center;
 
     font-size: 1.05rem;
-    line-height: 1.35;
-    font-weight: 800;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.2px;
 
-    color: var(--accent-red);
+    color: var(--text-primary);
 }
 
-/* Remove Streamlit nav label */
+/* Remove Streamlit section label */
 [data-testid="stSidebar"] h3 {
     display: none !important;
 }
 
-/* ========== NAV BUTTONS — ENTERPRISE STYLE ========== */
+/* ---------- NAVIGATION BUTTONS ---------- */
 [data-testid="stSidebar"] .stButton {
-    margin: -8px 0 !important; /* tight spacing */
+    margin: -6px 0 !important;
 }
 
-/* Base button */
+/* Button base */
 [data-testid="stSidebar"] .stButton > button {
     width: 100%;
-    height: 38px;
+    height: 40px;
     padding: 0 18px;
     margin: -2px 0 !important;
 
     background: transparent;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
 
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 600;
     text-align: left;
 
-    color: var(--text-primary);
+    color: var(--text-secondary);
 
     transition: background 0.15s ease, color 0.15s ease;
 }
 
-/* Subtle differentiation (premium feel) */
-[data-testid="stSidebar"] .stButton > button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
-    pointer-events: none;
-}
-
-/* Hover — red signal */
+/* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(225,29,72,0.08);
-    color: #ffffff;
+    background: var(--accent-soft);
+    color: var(--accent);
 }
 
 /* Active */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
-    background: rgba(225,29,72,0.14);
-    color: #ffffff;
+    background: var(--accent-soft);
+    color: var(--accent);
     font-weight: 700;
 }
 
-/* ========== REMOVE IMAGE FULLSCREEN ICON ========== */
+/* ---------- PAGE HEADERS ---------- */
+h1, h2 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+h3, h4 {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+/* ---------- CARDS (UPLOAD, EDA, OUTPUT SECTIONS) ---------- */
+[data-testid="stFileUploader"],
+[data-testid="stDataFrame"],
+[data-testid="stMetric"],
+[data-testid="stForm"] {
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    padding: 1.6rem !important;
+    border: 1px solid var(--border-soft);
+}
+
+/* ---------- FILE UPLOADER ---------- */
+[data-testid="stFileUploader"] section {
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed var(--border-soft);
+}
+
+/* ---------- REMOVE IMAGE FULLSCREEN ICON ---------- */
 [data-testid="stImage"] button,
 [data-testid="stImage"] div[role="button"] {
     display: none !important;
 }
 
-/* ========== REMOVE STREAMLIT HEADER ========== */
+/* ---------- REMOVE STREAMLIT TOP BAR ---------- */
 header[data-testid="stHeader"] {
     background: transparent !important;
     box-shadow: none !important;
@@ -157,15 +187,15 @@ header[data-testid="stHeader"]::after {
     display: none !important;
 }
 
-/* ========== FOOTER — QUIET & PREMIUM ========== */
+/* ---------- FOOTER ---------- */
 .app-footer {
     position: fixed;
     bottom: 0;
     left: 280px;
     right: 0;
 
-    background: #0b0d10;
-    border-top: 1px solid var(--sidebar-border);
+    background: var(--bg-sidebar);
+    border-top: 1px solid var(--border-soft);
 
     color: var(--text-muted);
     font-size: 0.8rem;
