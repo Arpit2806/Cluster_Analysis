@@ -1,257 +1,150 @@
-/* ========== PREMIUM THEME - CENTERED PAGES + TAB HIGHLIGHT ========== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* ========== PREMIUM ADMIN DASHBOARD THEME (BUTTON BASED) ========== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    --sidebar-gradient: linear-gradient(180deg, #0c0c1a 0%, #1a1a2e 70%, #16213e 100%);
-    --card-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --neon-blue: #00d4ff;
-    --neon-purple: #bc13fe;
-    --neon-pink: #ff0080;
-    --shadow-neon: 0 0 30px rgba(0, 212, 255, 0.5);
-    --shadow-glow: 0 25px 50px rgba(0,0,0,0.25);
-    --radio-height: 48px;
-    --radio-border-radius: 14px;
+    --sidebar-bg: linear-gradient(180deg, #0c0c1a 0%, #1a1a2e 70%, #16213e 100%);
+    --primary-accent: #00d4ff;
+    --secondary-accent: #bc13fe;
+    --text-light: #e0e6ed;
+    --glass-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --shadow-soft: 0 8px 25px rgba(0,0,0,0.35);
 }
 
-* { box-sizing: border-box; }
+/* ========== GLOBAL ========== */
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     font-family: 'Inter', sans-serif;
-    background: var(--primary-gradient);
-    background-attachment: fixed;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     margin: 0;
     padding: 0;
     overflow-x: hidden;
 }
 
+/* Main content spacing */
 .block-container {
-    padding: 3rem 4rem 8rem 0;
+    padding: 2.5rem 3.5rem 6rem 0;
 }
 
-/* ========== SIDEBAR - CENTERED PAGES TITLE ========== */
+/* ========== SIDEBAR ========== */
 [data-testid="stSidebar"] {
-    background: var(--sidebar-gradient);
+    background: var(--sidebar-bg);
     width: 280px !important;
     min-width: 280px !important;
-    padding: 1rem 0 1rem 0 !important;
-    margin: 0;
-    box-shadow: var(--shadow-glow), inset 0 0 50px rgba(0,0,0,0.5);
+    padding-top: 6px !important;   /* 🔽 reduced top space */
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.6);
 }
 
+/* Remove default top spacing */
 [data-testid="stSidebar"] > div:first-child {
-    padding: 0 1.2rem !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
+/* Sidebar text color */
 [data-testid="stSidebar"] * {
-    color: #e0e6ed;
+    color: var(--text-light);
 }
 
-/* CENTER "PAGES" HEADLINE */
+/* Sidebar title */
 [data-testid="stSidebar"] h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+    text-align: center;
+    margin: 0.6rem 0 1.2rem 0;
+    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0 0 1.5rem 0 !important;
-    text-align: center !important;
-    padding: 0 0.5rem;
+}
+
+/* ========== SIDEBAR NAV BUTTONS ========== */
+
+/* Button wrapper spacing */
+[data-testid="stSidebar"] .stButton {
+    margin-bottom: 6px;
+}
+
+/* Sidebar navigation buttons */
+[data-testid="stSidebar"] .stButton > button {
     width: 100%;
-}
-
-/* HIDE RADIO CIRCLES - TAB HIGHLIGHT ONLY */
-div[role="radiogroup"] input[type="radio"] {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    visibility: hidden !important;
-}
-
-/* TAB HIGHLIGHT STYLE - NO CIRCLES */
-div[role="radiogroup"] > label {
-    margin: 0 0 6px 0 !important;
-    padding: 0 16px !important;
-    height: var(--radio-height) !important;
-    line-height: var(--radio-height) !important;
-    border-radius: var(--radio-border-radius) !important;
-    background: rgba(255,255,255,0.03);
-    border: 2px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(15px);
-    transition: all 0.3s ease;
+    height: 40px;                 /* compact height */
+    background: var(--glass-bg);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 12px;
+    font-size: 0.82rem;           /* 🔽 smaller font */
     font-weight: 500;
-    font-size: 0.9rem;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: calc(100% - 4px) !important;
-    cursor: pointer;
+    text-align: left;
+    padding: 0 14px;
+    backdrop-filter: blur(16px);
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-soft);
 }
 
-/* ACTIVE TAB - FULL HIGHLIGHT */
-div[role="radiogroup"] input:checked + div + label,
-div[role="radiogroup"] input:checked + label {
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
-    border-color: var(--neon-blue) !important;
-    border-width: 2px !important;
-    color: white !important;
+/* Hover effect */
+[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: var(--primary-accent);
+    box-shadow: 0 10px 28px rgba(0,212,255,0.35);
+    transform: translateY(-1px);
+}
+
+/* Active button (optional – requires data-active attr) */
+[data-testid="stSidebar"] .stButton > button[data-active="true"] {
+    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+    color: #ffffff;
     font-weight: 700;
-    box-shadow: 0 10px 25px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    border-color: var(--primary-accent);
+    box-shadow: 0 12px 30px rgba(0,212,255,0.45);
 }
 
-/* HOVER EFFECT */
-div[role="radiogroup"] > label:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--neon-blue);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3), var(--shadow-neon);
-}
-
-/* REMOVE CHECKMARK FOR CLEAN TAB LOOK */
-div[role="radiogroup"] input:checked + div + label::after,
-div[role="radiogroup"] input:checked + label::after {
-    display: none !important;
-}
-
-/* Section headers */
-.sidebar-section, [data-testid="stSidebar"] h3 {
+/* ========== MAIN CONTENT ========== */
+h1, h2, h3 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin: 1.5rem 0 0.5rem 0 !important;
-    padding: 0.5rem 1rem 0.25rem 1rem;
-    position: relative;
+    font-weight: 700;
+    color: #ffffff;
 }
 
-.sidebar-section::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 1rem;
-    width: 30px;
-    height: 2px;
-    background: var(--neon-blue);
-    box-shadow: 0 0 8px var(--neon-blue);
+/* Cards / containers */
+.admin-card, .stExpander {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(22px);
+    border-radius: 22px;
+    border: 1px solid var(--glass-border);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-soft);
 }
 
-/* ========== MAIN CONTENT - UNCHANGED ========== */
-h1, h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff, #f0f4ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-h1 { font-size: 3rem; letter-spacing: -1px; }
-
-[data-testid="stStatusWidget"] {
-    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2));
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(16,185,129,0.4);
-    border-radius: 24px;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 20px 60px rgba(16,185,129,0.2);
-}
-
+/* File uploader */
 .stFileUploader {
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border-radius: 24px;
-    border: 2px dashed rgba(255,255,255,0.3);
-    padding: 3rem 2rem;
-    text-align: center;
-    transition: all 0.4s ease;
-    margin: 2rem 0;
+    border-radius: 22px;
+    border: 2px dashed rgba(255,255,255,0.35);
+    padding: 2.5rem 2rem;
 }
 
-.stFileUploader:hover {
-    border-color: var(--neon-blue);
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0,212,255,0.3);
-}
-
-.admin-card, .stExpander {
-    background: var(--card-bg);
-    backdrop-filter: blur(30px);
-    border-radius: 28px;
-    border: 1px solid var(--glass-border);
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    box-shadow: var(--shadow-glow);
-    transition: all 0.4s ease;
-}
-
-.admin-card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(188,19,254,0.4);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.4), var(--shadow-neon);
-}
-
-.stButton > button {
-    background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-    backdrop-filter: blur(25px);
-    color: white;
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 16px 32px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    box-shadow: 10px 10px 20px rgba(0,0,0,0.2), -10px -10px 20px rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
-}
-
-.stButton > button:hover {
-    transform: translateY(-3px);
-    border-color: var(--neon-blue);
-    box-shadow: 0 20px 50px rgba(0,212,255,0.4);
-}
-
-[data-testid="stProgress"] > div > div > div {
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-    border-radius: 12px;
-    box-shadow: var(--shadow-neon);
-}
-
+/* DataFrame */
 .stDataFrame {
-    background: rgba(255,255,255,0.15) !important;
-    backdrop-filter: blur(20px);
-    border-radius: 24px;
+    background: rgba(255,255,255,0.12) !important;
+    border-radius: 18px;
     border: 1px solid var(--glass-border);
     overflow: hidden;
-    box-shadow: var(--shadow-glow);
 }
 
-@keyframes neonSweep {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-}
-
-@keyframes pulse {
-    0%, 100% { box-shadow: 0 0 10px var(--neon-blue); }
-    50% { box-shadow: 0 0 30px var(--neon-blue); }
-}
-
+/* ========== FOOTER ========== */
 .app-footer {
     background: rgba(12,12,26,0.95);
     backdrop-filter: blur(30px);
     border-top: 1px solid var(--glass-border);
-    padding: 1.5rem 3rem;
+    padding: 1.2rem;
     text-align: center;
     color: #a0aec0;
-}
-
-@media (max-width: 1024px) {
-    [data-testid="stSidebar"] { width: 100% !important; min-width: 100% !important; }
-    .block-container { padding: 2rem 1rem 6rem 1rem; }
+    font-weight: 600;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
