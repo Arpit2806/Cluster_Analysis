@@ -123,15 +123,15 @@ html, body {
     background-size: cover;
 }
 /* Overlay for better readability */
-[data-testid="stAppViewContainer"] {
-    background: rgba(255, 255, 255, 0.85);
-} 
-
 /* [data-testid="stAppViewContainer"] {
+    background: rgba(255, 255, 255, 0.85);
+}  */
+
+[data-testid="stAppViewContainer"] {
     background: rgba(0, 0, 0, 0.6);
 }
 
-[data-testid="stAppViewContainer"] {
+/* [data-testid="stAppViewContainer"] {
     backdrop-filter: blur(10px);
     background: rgba(255,255,255,0.6);
 } */
