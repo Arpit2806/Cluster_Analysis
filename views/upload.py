@@ -14,17 +14,17 @@ def upload_page():
 
         st.success("✅ Dataset uploaded successfully!")
 
-        # ==================================================
-        # 1. PREVIEW OF DATA
-        # ==================================================
+        # ===============================
+        # PREVIEW
+        # ===============================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
 
         st.divider()
 
-        # ==================================================
-        # 2. DATASET OVERVIEW (CLEAN TABLE)
-        # ==================================================
+        # ===============================
+        # DATASET OVERVIEW
+        # ===============================
         st.subheader("📊 Dataset Overview")
 
         overview_df = pd.DataFrame({
@@ -42,65 +42,99 @@ def upload_page():
             ]
         })
 
-        # Remove index & display compact centered table
-        st.markdown(
-            """
-            <div style="display:flex; justify-content:center;">
-            """,
-            unsafe_allow_html=True
+        styled_overview = (
+            overview_df.style
+            .set_properties(**{
+                "text-align": "center"
+            })
+            .set_table_styles([
+                {
+                    "selector": "th",
+                    "props": [
+                        ("background-color", "#5b5fe8"),
+                        ("color", "white"),
+                        ("text-align", "center"),
+                        ("font-weight", "600")
+                    ]
+                }
+            ])
         )
 
-        st.dataframe(
-            overview_df,
-            hide_index=True,
-            use_container_width=False
-        )
-
+        st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
+        st.dataframe(styled_overview, hide_index=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.divider()
 
-        # ==================================================
-        # 3. DISPLAY COLUMN TYPES
-        # ==================================================
+        # ===============================
+        # COLUMN DETAILS (BUTTON LOGIC)
+        # ===============================
         st.subheader("📋 Column Details")
+
+        # Initialize session flags
+        if "show_num" not in st.session_state:
+            st.session_state.show_num = False
+        if "show_cat" not in st.session_state:
+            st.session_state.show_cat = False
 
         col1, col2 = st.columns(2)
 
-        # ---- Numerical Columns ----
         with col1:
             if st.button("Display Numerical Columns"):
-                num_cols = df.select_dtypes(include=np.number).columns.tolist()
-                num_df = pd.DataFrame({"Numerical Columns": num_cols})
+                st.session_state.show_num = True
 
-                st.markdown(
-                    "<div style='display:flex; justify-content:center;'>",
-                    unsafe_allow_html=True
-                )
-
-                st.dataframe(
-                    num_df,
-                    hide_index=True,
-                    use_container_width=False
-                )
-
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        # ---- Categorical Columns ----
         with col2:
             if st.button("Display Categorical Columns"):
-                cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
-                cat_df = pd.DataFrame({"Categorical Columns": cat_cols})
+                st.session_state.show_cat = True
 
-                st.markdown(
-                    "<div style='display:flex; justify-content:center;'>",
-                    unsafe_allow_html=True
-                )
+        # ---- Numerical Columns Table ----
+        if st.session_state.show_num:
+            num_df = pd.DataFrame({
+                "Numerical Columns": df.select_dtypes(include=np.number).columns
+            })
 
-                st.dataframe(
-                    cat_df,
-                    hide_index=True,
-                    use_container_width=False
-                )
+            styled_num = (
+                num_df.style
+                .set_properties(**{"text-align": "center"})
+                .set_table_styles([
+                    {
+                        "selector": "th",
+                        "props": [
+                            ("background-color", "#5b5fe8"),
+                            ("color", "white"),
+                            ("text-align", "center"),
+                            ("font-weight", "600")
+                        ]
+                    }
+                ])
+            )
 
-                st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
+            st.dataframe(styled_num, hide_index=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # ---- Categorical Columns Table ----
+        if st.session_state.show_cat:
+            cat_df = pd.DataFrame({
+                "Categorical Columns": df.select_dtypes(exclude=np.number).columns
+            })
+
+            styled_cat = (
+                cat_df.style
+                .set_properties(**{"text-align": "center"})
+                .set_table_styles([
+                    {
+                        "selector": "th",
+                        "props": [
+                            ("background-color", "#5b5fe8"),
+                            ("color", "white"),
+                            ("text-align", "center"),
+                            ("font-weight", "600")
+                        ]
+                    }
+                ])
+            )
+
+            st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
+            st.dataframe(styled_cat, hide_index=True)
+            st.markdown("</div>", unsafe_allow_html=True)
