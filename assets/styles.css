@@ -1,12 +1,11 @@
-/* ========== STREAMLIT DASHBOARD — FINAL STABLE VERSION ========== */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap');
+/* ========== STREAMLIT DASHBOARD — PREMIUM BLACK EDITION ========== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --sidebar-bg: linear-gradient(180deg, #1a1a1a 0%, #2b2b2b 60%, #1f1f1f 100%);
-    --accent: #ec4899; /* reddish pink */
+    --sidebar-bg: #000000;               /* pure black */
+    --accent: #ec4899;                   /* reddish pink */
     --text: #e5e7eb;
-    --glass: rgba(255,255,255,0.06);
-    --border: rgba(236,72,153,0.45);
+    --button-bg: rgba(255,255,255,0.06);
 }
 
 /* ========== GLOBAL RESET + FONT ========== */
@@ -17,23 +16,20 @@
 html, body {
     margin: 0;
     padding: 0;
-    background: #f8fafc;
-    font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f9fafb;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* 🔥 FORCE FONT EVERYWHERE (Streamlit override) */
 html body,
 html body * {
-    font-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 500;
 }
 
-/* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
+/* ========== REMOVE PAGE BACKGROUND IMAGE COMPLETELY ========== */
 .stApp {
-    background-image: url("https://raw.githubusercontent.com/Arpit2806/Cluster_Analysis/main/assets/bg4.jpg");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-attachment: fixed;
-    background-size: cover;
+    background: #f9fafb !important;
 }
 
 /* ========== MAIN CONTENT SPACING ========== */
@@ -61,21 +57,18 @@ html body * {
     color: var(--text);
 }
 
-/* ========== SIDEBAR IMAGE BORDER ========== */
+/* ========== SIDEBAR IMAGE — CLEAN, NO BORDER ========== */
 [data-testid="stSidebar"] img {
-    border: 2px solid #ec4899;
     border-radius: 14px;
 }
 
 /* ========== SIDEBAR TITLE ========== */
 [data-testid="stSidebar"] h1 {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
     text-align: center;
-    letter-spacing: 0.3px;
-    line-height: 1.3;
-    margin: 0.25rem 0 0.4rem 0 !important;
-    padding: 0 !important;
+    letter-spacing: 0.2px;
+    margin: 0.4rem 0 0.6rem 0 !important;
     background: linear-gradient(135deg, #ec4899, #f472b6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -86,37 +79,36 @@ html body * {
     display: none !important;
 }
 
-/* ========== SIDEBAR BUTTON STACK ========== */
+/* ========== SIDEBAR BUTTON STACK — PREMIUM FLAT STYLE ========== */
 [data-testid="stSidebar"] .stButton {
-    margin: -4px 0 !important;
+    margin: -2px 0 !important;
     padding: 0 !important;
 }
 
 [data-testid="stSidebar"] .stButton > button {
     width: 100%;
-    height: 36px;
-    margin: 2px 0 !important;
-    padding: 0 14px;
+    height: 38px;
+    margin: 4px 0 !important;
+    padding: 0 16px;
 
-    background: var(--glass);
-    border: 1.5px solid var(--border);
+    background: var(--button-bg);
+    border: none;                        /* ❌ NO BORDER */
     border-radius: 14px;
 
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.78rem;
+    font-weight: 600;
     text-align: left;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    transition: all 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-/* 🔥 Reddish-pink hover */
+/* 🔥 Premium hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(236,72,153,0.15);
-    border-color: #ec4899;
+    background: rgba(236,72,153,0.18);
     color: #ffffff;
 }
 
@@ -125,7 +117,6 @@ html body * {
     background: linear-gradient(135deg, #ec4899, #f472b6);
     color: #ffffff;
     font-weight: 700;
-    border-color: #ec4899;
 }
 
 /* ========== REMOVE IMAGE FULLSCREEN ICON ========== */
@@ -144,14 +135,14 @@ header[data-testid="stHeader"]::after {
     display: none !important;
 }
 
-/* ========== PAGE-ONLY FIXED FOOTER ========== */
+/* ========== FOOTER — SAME AS SIDEBAR ========== */
 .app-footer {
     position: fixed;
     bottom: 0;
     left: 280px;
     right: 0;
 
-    background: var(--sidebar-bg);
+    background: #000000;
     color: #ffffff;
     font-weight: 600;
     text-align: center;
