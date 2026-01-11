@@ -12,23 +12,23 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------- SIDEBAR ----------
+# ---------------- SIDEBAR ----------------
 st.sidebar.title("📊 Customer_Profiling_Dashboard")
 st.sidebar.info("🔷 Logo will be added here")
 
 page = st.sidebar.selectbox(
     "Pages",
-    (
+    [
         "📂 Upload Dataset",
         "🛠️ Preprocessing Stage",
         "📊 EDA",
         "⚙️ Feature Engineering",
         "🤖 Model Building",
         "📈 Prediction & Insights"
-    )
+    ]
 )
 
-# ---------- ROUTING ----------
+# ---------------- ROUTING ----------------
 if page == "📂 Upload Dataset":
     upload_page()
 
