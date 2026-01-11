@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
@@ -37,7 +37,7 @@ if "active_page" not in st.session_state:
 
 # ================= SIDEBAR =================
 
-# ---- LOGO (ABOVE TITLE) ----
+# ---- CIRCULAR PROFILE-STYLE LOGO (ABOVE TITLE) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -45,8 +45,22 @@ logo_path = os.path.join(
 )
 
 if os.path.exists(logo_path):
-    logo = Image.open(logo_path)
-    st.sidebar.image(logo, width=160)
+    img = Image.open(logo_path).convert("RGBA")
+
+    # Resize logo (profile size)
+    size = (90, 90)   # 👈 adjust if needed
+    img = img.resize(size)
+
+    # Create circular mask
+    mask = Image.new("L", size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, size[0], size[1]), fill=255)
+
+    # Apply mask
+    img.putalpha(mask)
+
+    # Display logo
+    st.sidebar.image(img)
 else:
     st.sidebar.warning("Logo not found")
 
@@ -54,7 +68,7 @@ else:
 st.sidebar.title("Customer Profiling Dashboard")
 
 
-# ---- NAVIGATION (BUTTON-BASED / VERTICAL TABS) ----
+# ---- NAVIGATION (VERTICAL BUTTONS / ADMIN STYLE) ----
 st.sidebar.markdown("### Navigation")
 
 if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
