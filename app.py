@@ -30,4 +30,41 @@ if os.path.exists(logo_path):
     logo = Image.open(logo_path)
     st.sidebar.image(logo, width=160)   # 👈 adjust size here
 else:
-    st.side
+    st.sidebar.warning("Logo not found")
+
+# ---- TITLE ----
+st.sidebar.title("📊 Customer Profiling Dashboard")
+
+
+# ---- NAVIGATION ----
+page = st.sidebar.radio(
+    "Pages",
+    [
+        "📂 Upload Dataset",
+        "🛠️ Preprocessing Stage",
+        "📊 EDA",
+        "⚙️ Feature Engineering",
+        "🤖 Model Building",
+        "📈 Prediction & Insights"
+    ]
+)
+
+
+# ---------------- ROUTING ----------------
+if page == "📂 Upload Dataset":
+    upload_page()
+
+elif page == "🛠️ Preprocessing Stage":
+    preprocessing_page()
+
+elif page == "📊 EDA":
+    eda_page()
+
+elif page == "⚙️ Feature Engineering":
+    feature_engineering_page()
+
+elif page == "🤖 Model Building":
+    model_page()
+
+elif page == "📈 Prediction & Insights":
+    prediction_page()
