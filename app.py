@@ -11,8 +11,8 @@ st.sidebar.info("🔷 Logo will be added here")
 
 st.sidebar.markdown("### Pages")
 
-st.sidebar.page_link("pages/upload.py", label="📂 Upload Dataset")
-st.sidebar.page_link("pages/preprocessing.py", label="🛠️ Preprocessing Stage")
+st.sidebar.page_link("views/upload.py", label="📂 Upload Dataset")
+st.sidebar.page_link("views/preprocessing.py", label="🛠️ Preprocessing Stage")
 # st.sidebar.page_link("pages/eda.py", label="📊 EDA")
 # st.sidebar.page_link("pages/feature_engineering.py", label="⚙️ Feature Engineering")
 # st.sidebar.page_link("pages/model.py", label="🤖 Model Building")
