@@ -8,16 +8,16 @@ from views.model import model_page
 from views.prediction import prediction_page
 
 import os
-from PIL import Image
+# from PIL import Image
 
-logo_path = os.path.join(
-    os.path.dirname(__file__),
-    "assets",
-    "logo1.png"
-)
+# logo_path = os.path.join(
+#     os.path.dirname(__file__),
+#     "assets",
+#     "logo1.png"
+# )
 
-logo = Image.open(logo_path)
-st.sidebar.image(logo, use_container_width=True)
+# logo = Image.open(logo_path)
+# st.sidebar.image(logo, use_container_width=True)
 
 
 
