@@ -7,11 +7,18 @@ from views.feature_engineering import feature_engineering_page
 from views.model import model_page
 from views.prediction import prediction_page
 
-def load_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+import os
+from PIL import Image
 
-load_css("assets/styles.css")
+logo_path = os.path.join(
+    os.path.dirname(__file__),
+    "assets",
+    "logo1.png"
+)
+
+logo = Image.open(logo_path)
+st.sidebar.image(logo, use_container_width=True)
+
 
 
 st.set_page_config(
