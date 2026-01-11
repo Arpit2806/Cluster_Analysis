@@ -1,4 +1,4 @@
-/* ========== PREMIUM NEOMORPHISM + NEON THEME ========== */
+/* ========== PREMIUM NEOMORPHISM + NEON THEME - REFINED ========== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
@@ -12,6 +12,7 @@
     --neon-pink: #ff0080;
     --shadow-neon: 0 0 30px rgba(0, 212, 255, 0.5);
     --shadow-glow: 0 25px 50px rgba(0,0,0,0.25);
+    --radio-height: 52px; /* Fixed height for uniform size */
 }
 
 * {
@@ -32,15 +33,20 @@ html, body {
     backdrop-filter: blur(10px);
 }
 
-/* ========== ENHANCED SIDEBAR ========== */
+/* ========== REFINED SIDEBAR - NO WASTED SPACE ========== */
 [data-testid="stSidebar"] {
     background: var(--sidebar-gradient);
     position: relative;
     width: 340px !important;
     min-width: 340px !important;
-    padding: 3rem 2rem 2rem;
+    padding: 1.5rem 0 1.5rem 0 !important; /* Zero side padding */
+    margin: 0;
     overflow: visible;
     box-shadow: var(--shadow-glow), inset 0 0 50px rgba(0,0,0,0.5);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding: 0 1.5rem !important; /* Content padding only */
 }
 
 [data-testid="stSidebar"]::before {
@@ -70,6 +76,7 @@ html, body {
     margin: 0 0 2rem 0;
     text-align: center;
     letter-spacing: -0.5px;
+    padding: 0 1rem; /* Prevent overflow */
 }
 
 /* Active page indicator */
@@ -80,7 +87,7 @@ html, body {
 [data-testid="stSidebar"] [aria-selected="true"]::after {
     content: '';
     position: absolute;
-    left: -12px;
+    left: 12px; /* Adjusted for content padding */
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
@@ -91,58 +98,49 @@ html, body {
     animation: pulse 2s infinite;
 }
 
-/* Radio buttons - Premium styling */
+/* REFINED RADIO BUTTONS - UNIFORM SIZE, TIGHT SPACING */
+div[role="radiogroup"] {
+    margin-bottom: 0.5rem; /* Tight group spacing */
+}
+
 div[role="radiogroup"] > label {
-    margin: 0 0 12px 0;
-    padding: 16px 20px;
-    border-radius: 20px;
+    margin: 0 0 8px 0 !important; /* Reduced spacing between buttons */
+    padding: 0 20px !important; /* Consistent horizontal padding */
+    height: var(--radio-height) !important; /* Fixed uniform height */
+    line-height: var(--radio-height) !important; /* Perfect vertical centering */
+    border-radius: 16px !important; /* Consistent radius */
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
     backdrop-filter: blur(15px);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
     font-weight: 500;
     position: relative;
     overflow: hidden;
-}
-
-div[role="radiogroup"] > label::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-div[role="radiogroup"] > label:hover::before {
-    left: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    /* NO translateX or scale to prevent text movement */
 }
 
 div[role="radiogroup"] > label:hover {
-    transform: translateX(8px) scale(1.02);
     background: rgba(255,255,255,0.08);
     border-color: rgba(0,212,255,0.3);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3), var(--shadow-neon);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3), var(--shadow-neon);
 }
 
 div[role="radiogroup"] input:checked + div + label {
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
-    border-color: var(--neon-blue);
+    border-color: var(--neon-blue) !important;
     color: white !important;
     font-weight: 700;
-    box-shadow: 0 20px 50px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
-    transform: scale(1.03);
+    box-shadow: 0 12px 30px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
 }
 
 div[role="radiogroup"] input:checked + div + label::after {
     content: '✓';
     position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
+    right: 20px;
+    font-size: 1.1rem;
     font-weight: bold;
 }
 
@@ -156,8 +154,8 @@ div[role="radiogroup"] input:checked + div + label::after {
     -webkit-text-fill-color: transparent;
     letter-spacing: 1.2px;
     text-transform: uppercase;
-    margin: 2.5rem 0 1rem 0;
-    padding: 0.5rem 0;
+    margin: 2rem 0 0.75rem 0 !important;
+    padding: 0.75rem 1.5rem 0.5rem 1.5rem;
     position: relative;
 }
 
@@ -165,14 +163,14 @@ div[role="radiogroup"] input:checked + div + label::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 1.5rem;
     width: 40px;
     height: 2px;
     background: var(--neon-blue);
     box-shadow: 0 0 10px var(--neon-blue);
 }
 
-/* ========== MAIN CONTENT - LUXURY CARDS ========== */
+/* ========== MAIN CONTENT ========== */
 h1, h2 {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 800;
@@ -209,11 +207,11 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
 .stFileUploader:hover {
     border-color: var(--neon-blue);
     background: rgba(255,255,255,0.1);
-    transform: translateY(-8px);
-    box-shadow: 0 30px 80px rgba(0,212,255,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,212,255,0.3);
 }
 
-/* Cards & Containers */
+/* Cards */
 .admin-card, .stExpander, [data-testid="column"] > div > div {
     background: var(--card-bg);
     backdrop-filter: blur(30px);
@@ -224,26 +222,16 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-glow);
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.admin-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .admin-card:hover {
-    transform: translateY(-12px) scale(1.02);
+    transform: translateY(-8px);
     border-color: rgba(188,19,254,0.4);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.4), var(--shadow-neon);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), var(--shadow-neon);
 }
 
-/* Buttons - Premium glassmorphism */
+/* Buttons */
 .stButton > button {
     background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
     backdrop-filter: blur(25px);
@@ -257,28 +245,13 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     position: relative;
     overflow: hidden;
     box-shadow: 10px 10px 20px rgba(0,0,0,0.2), -10px -10px 20px rgba(255,255,255,0.1);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.stButton > button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.6s;
-}
-
-.stButton > button:hover::before {
-    left: 100%;
+    transition: all 0.3s ease;
 }
 
 .stButton > button:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: var(--neon-blue);
-    box-shadow: 0 25px 60px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow: 0 20px 50px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 /* Progress */
@@ -304,7 +277,7 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     font-weight: 600;
 }
 
-/* ========== ANIMATIONS ========== */
+/* ========== ANIMATIONS - NO TEXT MOVEMENT ========== */
 @keyframes neonSweep {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
@@ -313,15 +286,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
 @keyframes pulse {
     0%, 100% { box-shadow: 0 0 10px var(--neon-blue); }
     50% { box-shadow: 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue); }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-.block-container > div {
-    animation: float 6s ease-in-out infinite;
 }
 
 /* Footer */
