@@ -37,7 +37,6 @@ def preprocessing_page():
             "Column Name": col,
             "Data Type": col_data.dtype,
             "Missing Values": missing_count,
-            "Missing %": round(missing_pct, 2),
             "Outliers (IQR)": outliers,
             "Unique Values": col_data.nunique()
         })
@@ -58,12 +57,6 @@ def preprocessing_page():
     else:
         st.success("✅ No duplicate rows found")
 
-    # =========================
-    # Missing Value Details
-    # =========================
-    st.subheader("❓ Missing Values per Column")
-    st.dataframe(df.isnull().sum().reset_index().rename(
-        columns={"index": "Column", 0: "Missing Count"}
-    ), use_container_width=True)
+   
 
    
