@@ -13,10 +13,10 @@ st.sidebar.markdown("### Pages")
 
 st.sidebar.page_link("pages/upload.py", label="📂 Upload Dataset")
 st.sidebar.page_link("pages/preprocessing.py", label="🛠️ Preprocessing Stage")
-st.sidebar.page_link("pages/eda.py", label="📊 EDA")
-st.sidebar.page_link("pages/feature_engineering.py", label="⚙️ Feature Engineering")
-st.sidebar.page_link("pages/model.py", label="🤖 Model Building")
-st.sidebar.page_link("pages/prediction.py", label="📈 Prediction & Insights")
+# st.sidebar.page_link("pages/eda.py", label="📊 EDA")
+# st.sidebar.page_link("pages/feature_engineering.py", label="⚙️ Feature Engineering")
+# st.sidebar.page_link("pages/model.py", label="🤖 Model Building")
+# st.sidebar.page_link("pages/prediction.py", label="📈 Prediction & Insights")
 
 # ---------------- MAIN ----------------
 st.title("Customer Profiling Dashboard")
