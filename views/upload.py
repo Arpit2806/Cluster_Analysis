@@ -4,135 +4,127 @@ import numpy as np
 
 
 # ===============================
-# Inject CSS (SAFE VERSION)
+# CSS (TABLE + BUTTON STYLING)
 # ===============================
-def inject_table_css():
+def inject_css():
     st.markdown("""
     <style>
-    /* ===============================
-       TABLE STYLING (HTML TABLES)
-       =============================== */
-    .table-wrapper {
-        max-width: 100%;
-        overflow-x: auto;
-        margin: 16px auto;
-    }
+        /* ---------- TABLE ---------- */
+        .table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 16px auto;
+        }
 
-    table.custom-table {
-        border-collapse: collapse;
-        font-size: 14px;
-        font-family: Inter, system-ui, sans-serif;
-        white-space: nowrap;
-        margin: 0 auto;
-    }
+        table.custom-table {
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: Inter, system-ui, sans-serif;
+            white-space: nowrap;
+            margin: 0 auto;
+        }
 
-    table.custom-table th {
-        background-color: #5b5fe8;
-        color: white;
-        font-weight: 700;
-        padding: 10px 18px;
-        text-align: center;
-    }
+        table.custom-table th {
+            background: linear-gradient(135deg, #5b5fe8, #6d71ff);
+            color: white !important;
+            font-weight: 700;
+            padding: 8px 16px;
+            text-align: center;
+        }
 
-    table.custom-table td {
-        background-color: #f5f6fa;
-        color: #1f2937;
-        padding: 10px 18px;
-        text-align: center;
-        border-top: 1px solid #e5e7eb;
-    }
+        table.custom-table td {
+            padding: 8px 16px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
 
-    table.custom-table tbody tr:nth-child(even) td {
-        background-color: #eef0f7;
-    }
+        /* ---------- BUTTONS ---------- */
+        div.stButton > button {
+            width: 100%;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            background: linear-gradient(135deg, #5b5fe8, #6d71ff);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
 
-    /* ===============================
-       BUTTON STYLING (SAFE)
-       =============================== */
-    div.stButton > button {
-        background-color: #5b5fe8;
-        color: white;
-        font-weight: 600;
-        border-radius: 10px;
-        padding: 0.6rem 1.4rem;
-        border: none;
-    }
-
-    div.stButton > button:hover {
-        background-color: #4a4fd8;
-        color: white;
-    }
-
-    /* File uploader button */
-    div[data-testid="stFileUploader"] button {
-        background-color: #5b5fe8;
-        color: white;
-        font-weight: 600;
-        border-radius: 10px;
-        border: none;
-    }
-
-    div[data-testid="stFileUploader"] button:hover {
-        background-color: #4a4fd8;
-        color: white;
-    }
+        div.stButton > button:hover {
+            background: linear-gradient(135deg, #4a4fd8, #5b60ff);
+            transform: translateY(-1px);
+        }
     </style>
     """, unsafe_allow_html=True)
 
 
-# ===============================
-# Render HTML Table
-# ===============================
 def render_compact_table(df):
     html = df.to_html(index=False, classes="custom-table", border=0)
     st.markdown(f"<div class='table-wrapper'>{html}</div>", unsafe_allow_html=True)
 
 
 # ===============================
-# Upload Page
+# UPLOAD PAGE
 # ===============================
 def upload_page():
-    inject_table_css()
+    inject_css()
 
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
 
-    # Reset
+    # ---------- RESET BUTTON ----------
     if "data" in st.session_state:
-        if st.button("🔄 Reset Dataset"):
+        if st.button("🔁 Reset Dataset"):
             st.session_state.clear()
             st.experimental_rerun()
 
-    # Upload / reuse
-    if "data" in st.session_state:
-        df = st.session_state["data"]
-        st.success("✅ Dataset already loaded")
-    else:
-        uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
-        if uploaded_file is None:
-            st.info("📌 Please upload a CSV file")
-            return
-        df = pd.read_csv(uploaded_file)
-        st.session_state["data"] = df
-        st.success("✅ Dataset uploaded successfully!")
+    uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
 
+    if not uploaded_file:
+        return
+
+    df = pd.read_csv(uploaded_file)
+    st.session_state["data"] = df
+    st.success("✅ Dataset uploaded successfully!")
+
+    # ===============================
     # Preview
+    # ===============================
     st.subheader("🔍 Preview of Data")
     render_compact_table(df.head())
 
     st.divider()
 
-    # Overview
+    # ===============================
+    # Dataset Overview
+    # ===============================
     st.subheader("📊 Dataset Overview")
+
     overview_df = pd.DataFrame({
-        "Metric": ["Total Rows", "Total Columns"],
-        "Value": [df.shape[0], df.shape[1]]
+        "Metric": [
+            "Total Rows",
+            "Total Columns",
+            "Numerical Columns",
+            "Categorical Columns"
+        ],
+        "Value": [
+            df.shape[0],
+            df.shape[1],
+            df.select_dtypes(include=np.number).shape[1],
+            df.select_dtypes(exclude=np.number).shape[1]
+        ]
     })
+
     render_compact_table(overview_df)
 
     st.divider()
 
+    # ===============================
     # Column Details
+    # ===============================
     st.subheader("📋 Column Details")
 
     if "show_num" not in st.session_state:
@@ -140,18 +132,26 @@ def upload_page():
     if "show_cat" not in st.session_state:
         st.session_state.show_cat = False
 
-    if st.button("Display Numerical Columns"):
+    # ---------- Numerical ----------
+    if st.button("📈 Display Numerical Columns"):
         st.session_state.show_num = not st.session_state.show_num
 
     if st.session_state.show_num:
-        render_compact_table(
-            pd.DataFrame({"Numerical Columns": df.select_dtypes(include=np.number).columns})
-        )
+        num_cols = df.select_dtypes(include=np.number).columns.tolist()
+        num_df = pd.DataFrame({
+            "Index": range(1, len(num_cols) + 1),
+            "Numerical Columns": num_cols
+        })
+        render_compact_table(num_df)
 
-    if st.button("Display Categorical Columns"):
+    # ---------- Categorical ----------
+    if st.button("🏷 Display Categorical Columns"):
         st.session_state.show_cat = not st.session_state.show_cat
 
     if st.session_state.show_cat:
-        render_compact_table(
-            pd.DataFrame({"Categorical Columns": df.select_dtypes(exclude=np.number).columns})
-        )
+        cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
+        cat_df = pd.DataFrame({
+            "Index": range(1, len(cat_cols) + 1),
+            "Categorical Columns": cat_cols
+        })
+        render_compact_table(cat_df)
