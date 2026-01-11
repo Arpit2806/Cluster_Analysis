@@ -31,10 +31,9 @@ def inject_table_css():
     """, unsafe_allow_html=True)
 
 # =========================================================
-# Render compact table (NO stretch, NO index)
+# Render compact table (NO pandas index)
 # =========================================================
 def render_compact_table(df):
-    df = df.reset_index(drop=True)
     html = df.to_html(index=False, classes="custom-table", border=0)
     st.markdown(html, unsafe_allow_html=True)
 
@@ -56,7 +55,7 @@ def upload_page():
         st.success("✅ Dataset uploaded successfully!")
 
         # ===============================
-        # Preview
+        # Preview of Data
         # ===============================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
@@ -88,7 +87,7 @@ def upload_page():
         st.divider()
 
         # ===============================
-        # Column Details (VERTICAL FLOW)
+        # Column Details (Vertical Flow)
         # ===============================
         st.subheader("📋 Column Details")
 
@@ -97,24 +96,32 @@ def upload_page():
         if "show_cat" not in st.session_state:
             st.session_state.show_cat = False
 
-        # -------- Button 1 --------
+        # -------- Button 1: Numerical Columns --------
         if st.button("Display Numerical Columns"):
             st.session_state.show_num = not st.session_state.show_num
 
         if st.session_state.show_num:
+            num_cols = df.select_dtypes(include=np.number).columns.tolist()
+
             num_df = pd.DataFrame({
-                "Numerical Columns": df.select_dtypes(include=np.number).columns
+                "Index": range(1, len(num_cols) + 1),
+                "Numerical Columns": num_cols
             })
+
             render_compact_table(num_df)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # -------- Button 2 --------
+        # -------- Button 2: Categorical Columns --------
         if st.button("Display Categorical Columns"):
             st.session_state.show_cat = not st.session_state.show_cat
 
         if st.session_state.show_cat:
+            cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
+
             cat_df = pd.DataFrame({
-                "Categorical Columns": df.select_dtypes(exclude=np.number).columns
+                "Index": range(1, len(cat_cols) + 1),
+                "Categorical Columns": cat_cols
             })
+
             render_compact_table(cat_df)
