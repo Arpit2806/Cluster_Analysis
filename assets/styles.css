@@ -156,3 +156,25 @@ html, body {
 .block-container {
     padding-bottom: 5rem !important;
 }
+
+
+/* ========== FIX TOP WHITE HEADER BAR ========== */
+
+/* Main Streamlit header */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+/* Remove header shadow/border */
+header[data-testid="stHeader"]::after {
+    display: none !important;
+}
+
+/* Ensure header floats above background cleanly */
+header[data-testid="stHeader"] {
+    box-shadow: none !important;
+}
+header[data-testid="stHeader"] {
+    background: rgba(11, 11, 24, 0.6) !important;
+    backdrop-filter: blur(8px);
+}
