@@ -2,6 +2,38 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+PURPLE = "#5b5fe8"
+
+def styled_table(df):
+    return (
+        df.style
+        .set_properties(**{
+            "text-align": "center",
+            "white-space": "nowrap"
+        })
+        .set_table_styles([
+            {
+                # 🔥 ONLY COLUMN HEADERS
+                "selector": "th.col_heading",
+                "props": [
+                    ("background-color", PURPLE),
+                    ("color", "white"),              # ✅ WHITE TEXT
+                    ("font-weight", "700"),
+                    ("text-align", "center"),
+                    ("border", "1px solid #ffffff20")
+                ]
+            },
+            {
+                # Optional: body cell borders
+                "selector": "td",
+                "props": [
+                    ("border", "1px solid #e5e7eb")
+                ]
+            }
+        ])
+        .hide(axis="index")   # ❌ removes 0,1,2,3
+    )
+
 def upload_page():
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
@@ -15,7 +47,7 @@ def upload_page():
         st.success("✅ Dataset uploaded successfully!")
 
         # ==================================================
-        # 1. PREVIEW OF DATA
+        # PREVIEW
         # ==================================================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
@@ -23,7 +55,7 @@ def upload_page():
         st.divider()
 
         # ==================================================
-        # 2. DATASET OVERVIEW (COMPACT + CENTERED)
+        # DATASET OVERVIEW
         # ==================================================
         st.subheader("📊 Dataset Overview")
 
@@ -42,37 +74,17 @@ def upload_page():
             ]
         })
 
-        styled_overview = (
-            overview_df.style
-            .set_properties(**{
-                "text-align": "center",
-                "white-space": "nowrap"
-            })
-            .set_table_styles([
-                {
-                    "selector": "th",
-                    "props": [
-                        ("background-color", "#5b5fe8"),
-                        ("color", "white"),
-                        ("text-align", "center"),
-                        ("font-weight", "600")
-                    ]
-                }
-            ])
-        )
-
         st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
-        st.table(styled_overview)
+        st.table(styled_table(overview_df))
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.divider()
 
         # ==================================================
-        # 3. COLUMN DETAILS (BUTTON-BASED, PERSISTENT OUTPUT)
+        # COLUMN DETAILS (TOGGLE BUTTONS)
         # ==================================================
         st.subheader("📋 Column Details")
 
-        # Session state flags
         if "show_num" not in st.session_state:
             st.session_state.show_num = False
         if "show_cat" not in st.session_state:
@@ -82,11 +94,11 @@ def upload_page():
 
         with col1:
             if st.button("Display Numerical Columns"):
-                st.session_state.show_num = True
+                st.session_state.show_num = not st.session_state.show_num
 
         with col2:
             if st.button("Display Categorical Columns"):
-                st.session_state.show_cat = True
+                st.session_state.show_cat = not st.session_state.show_cat
 
         # ==================================================
         # NUMERICAL COLUMNS TABLE
@@ -96,27 +108,8 @@ def upload_page():
                 "Numerical Columns": df.select_dtypes(include=np.number).columns
             })
 
-            styled_num = (
-                num_df.style
-                .set_properties(**{
-                    "text-align": "center",
-                    "white-space": "nowrap"
-                })
-                .set_table_styles([
-                    {
-                        "selector": "th",
-                        "props": [
-                            ("background-color", "#5b5fe8"),
-                            ("color", "white"),
-                            ("text-align", "center"),
-                            ("font-weight", "600")
-                        ]
-                    }
-                ])
-            )
-
             st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
-            st.table(styled_num)
+            st.table(styled_table(num_df))
             st.markdown("</div>", unsafe_allow_html=True)
 
         # ==================================================
@@ -127,25 +120,6 @@ def upload_page():
                 "Categorical Columns": df.select_dtypes(exclude=np.number).columns
             })
 
-            styled_cat = (
-                cat_df.style
-                .set_properties(**{
-                    "text-align": "center",
-                    "white-space": "nowrap"
-                })
-                .set_table_styles([
-                    {
-                        "selector": "th",
-                        "props": [
-                            ("background-color", "#5b5fe8"),
-                            ("color", "white"),
-                            ("text-align", "center"),
-                            ("font-weight", "600")
-                        ]
-                    }
-                ])
-            )
-
             st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
-            st.table(styled_cat)
+            st.table(styled_table(cat_df))
             st.markdown("</div>", unsafe_allow_html=True)
