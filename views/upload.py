@@ -2,6 +2,48 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# =========================================================
+# Helper: Compact, Centered, Styled Table (NO STRETCH)
+# =========================================================
+def render_compact_table(df):
+    df = df.reset_index(drop=True)
+
+    html = df.to_html(
+        index=False,
+        escape=False,
+        border=0
+    )
+
+    styled_html = f"""
+    <style>
+        .custom-table {{
+            margin: 16px auto;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: Inter, system-ui, sans-serif;
+            white-space: nowrap;
+        }}
+        .custom-table th {{
+            background-color: #5b5fe8;
+            color: white;
+            font-weight: 600;
+            padding: 8px 16px;
+            text-align: center;
+        }}
+        .custom-table td {{
+            padding: 8px 16px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }}
+    </style>
+    {html.replace('<table', '<table class="custom-table"')}
+    """
+
+    st.markdown(styled_html, unsafe_allow_html=True)
+
+# =========================================================
+# Upload Page
+# =========================================================
 def upload_page():
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
@@ -14,13 +56,17 @@ def upload_page():
 
         st.success("✅ Dataset uploaded successfully!")
 
-        # ================= PREVIEW =================
+        # ===============================
+        # Preview
+        # ===============================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
 
         st.divider()
 
-        # ================= OVERVIEW =================
+        # ===============================
+        # Dataset Overview
+        # ===============================
         st.subheader("📊 Dataset Overview")
 
         overview_df = pd.DataFrame({
@@ -42,7 +88,9 @@ def upload_page():
 
         st.divider()
 
-        # ================= COLUMN DETAILS =================
+        # ===============================
+        # Column Details (Toggle Buttons)
+        # ===============================
         st.subheader("📋 Column Details")
 
         if "show_num" not in st.session_state:
