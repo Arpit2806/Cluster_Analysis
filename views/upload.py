@@ -4,11 +4,14 @@ import numpy as np
 
 
 # ===============================
-# Inject CSS for Styled Tables
+# Inject CSS (Tables + Buttons)
 # ===============================
 def inject_table_css():
     st.markdown("""
     <style>
+        /* ===============================
+           TABLE STYLING
+           =============================== */
         .table-wrapper {
             max-width: 100%;
             overflow-x: auto;
@@ -23,7 +26,6 @@ def inject_table_css():
             margin: 0 auto;
         }
 
-        /* Column headers */
         table.custom-table th {
             background-color: #5b5fe8;
             color: white !important;
@@ -33,7 +35,6 @@ def inject_table_css():
             border-right: 1px solid #4f52d9;
         }
 
-        /* Table body cells (soft grey) */
         table.custom-table td {
             background-color: #f5f6fa;
             color: #1f2937;
@@ -43,23 +44,39 @@ def inject_table_css():
             border-right: 1px solid #e5e7eb;
         }
 
-        /* Zebra rows */
         table.custom-table tbody tr:nth-child(even) td {
             background-color: #eef0f7;
         }
 
-        /* Buttons */
+        /* ===============================
+           BUTTON STYLING (GLOBAL)
+           =============================== */
         div.stButton > button {
-            background-color: #5b5fe8;
-            color: white;
+            background-color: #5b5fe8 !important;
+            color: white !important;
             font-weight: 600;
-            border-radius: 8px;
-            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            padding: 0.6rem 1.4rem;
+            border: none;
         }
 
         div.stButton > button:hover {
-            background-color: #4a4fd8;
-            color: white;
+            background-color: #4a4fd8 !important;
+            color: white !important;
+        }
+
+        /* File uploader button */
+        div[data-testid="stFileUploader"] button {
+            background-color: #5b5fe8 !important;
+            color: white !important;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+        }
+
+        div[data-testid="stFileUploader"] button:hover {
+            background-color: #4a4fd8 !important;
+            color: white !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -96,7 +113,6 @@ def upload_page():
     if "data" in st.session_state:
         df = st.session_state["data"]
         st.success("✅ Dataset already loaded")
-
     else:
         uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
 
