@@ -20,8 +20,12 @@ st.set_page_config(
 )
 
 # ---------------- SIDEBAR ----------------
-st.sidebar.title("📊 Customer_Profiling_Dashboard")
-st.sidebar.info("🔷 Logo will be added here")
+import os
+
+logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo1.png")
+st.sidebar.image(logo_path, use_container_width=True)
+st.sidebar.title("📊 Customer Profiling Dashboard")
+# st.sidebar.info("🔷 Logo will be added here")
 
 page = st.sidebar.radio(
     "Pages",
