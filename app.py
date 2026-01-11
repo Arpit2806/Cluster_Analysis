@@ -28,11 +28,6 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-
-
-# ---------------- SIDEBAR ----------------
-st.sidebar.title("📊 Customer Profiling Dashboard")
-
 # ---- LOGO (SAFE + RESIZED) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
@@ -40,11 +35,12 @@ logo_path = os.path.join(
     "logo1.png"
 )
 
-if os.path.exists(logo_path):
-    logo = Image.open(logo_path)
-    st.sidebar.image(logo, width=180)   # 👈 adjust size here
-else:
-    st.sidebar.warning("Logo not found")
+
+# ---------------- SIDEBAR ----------------
+st.sidebar.title("Customer Profiling Dashboard")
+
+
+
 
 
 # ---- NAVIGATION ----
