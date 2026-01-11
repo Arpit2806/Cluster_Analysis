@@ -29,7 +29,7 @@ html body * {
 
 /* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
 .stApp {
-    background-image: url("https://raw.githubusercontent.com/Arpit2806/Cluster_Analysis/main/assets/bg3.jpg");
+    background-image: url("https://raw.githubusercontent.com/Arpit2806/Cluster_Analysis/main/assets/bg4.jpg");
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
@@ -37,10 +37,10 @@ html body * {
 }
 
 /* Glass overlay for readability */
-[data-testid="stAppViewContainer"] {
+/* [data-testid="stAppViewContainer"] {
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.6);
-}
+} */
 
 /* ========== MAIN CONTENT SPACING ========== */
 .block-container {
