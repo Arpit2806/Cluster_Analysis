@@ -116,7 +116,10 @@ html, body {
 
 /* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
 .stApp {
-    background: url("assets/bg3.jpg") no-repeat center center fixed;
+    background-image: url("https://raw.githubusercontent.com/Arpit2806/Cluster_Analysis/main/assets/bg3.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
     background-size: cover;
 }
 /* Overlay for better readability */
