@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from PIL import Image   # ✅ REQUIRED
+from PIL import Image
 
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
@@ -10,16 +10,29 @@ from views.model import model_page
 from views.prediction import prediction_page
 
 
-# ---------------- PAGE CONFIG ----------------
+# ---------------- PAGE CONFIG (MUST BE FIRST) ----------------
 st.set_page_config(
     page_title="Customer Profiling Dashboard",
     layout="wide"
 )
 
 
+# ---------------- LOAD CSS (THIS WAS MISSING ❗) ----------------
+def load_css():
+    css_path = os.path.join(
+        os.path.dirname(__file__),
+        "assets",
+        "styles.css"
+    )
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()   # ✅ DO NOT REMOVE
+
+
 # ---------------- SIDEBAR ----------------
 
-# ---- LOGO ABOVE TITLE (SAFE METHOD) ----
+# ---- LOGO (ABOVE TITLE, RESIZED, SAFE) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -28,7 +41,7 @@ logo_path = os.path.join(
 
 if os.path.exists(logo_path):
     logo = Image.open(logo_path)
-    st.sidebar.image(logo, width=160)   # 👈 adjust size here
+    st.sidebar.image(logo, width=160)
 else:
     st.sidebar.warning("Logo not found")
 
