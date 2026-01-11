@@ -1,5 +1,5 @@
 /* ========== STREAMLIT SIDEBAR — FINAL COMPACT ADMIN FIX ========== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
     --sidebar-bg: linear-gradient(180deg, #0b0b18 0%, #14142a 60%, #111827 100%);
