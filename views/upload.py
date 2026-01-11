@@ -23,22 +23,32 @@ def inject_table_css():
             margin: 0 auto;
         }
 
+        /* Column headers (purple stays same) */
         table.custom-table th {
             background-color: #5b5fe8;
             color: white !important;
             font-weight: 700;
-            padding: 8px 16px;
+            padding: 10px 18px;
             text-align: center;
+            border-right: 1px solid #4f52d9;
         }
 
+        /* Table body cells (GREY like preprocessing page) */
         table.custom-table td {
-            padding: 8px 16px;
+            background-color: #f5f6fa;   /* 👈 soft grey */
+            color: #1f2937;
+            padding: 10px 18px;
             text-align: center;
             border-top: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        /* Zebra effect (very subtle) */
+        table.custom-table tbody tr:nth-child(even) td {
+            background-color: #eef0f7;
         }
     </style>
     """, unsafe_allow_html=True)
-
 
 # ===============================
 # Render Compact Styled Table
