@@ -86,8 +86,8 @@ html body * {
     margin-top: 1rem;
     margin-bottom: 0.8rem;
 
-    width: 72px;          /* 🔥 SIZE CONTROL HERE */
-    height: 72px;         /* 🔥 SIZE CONTROL HERE */
+    width: 80px;          /* 🔥 SIZE CONTROL HERE */
+    height: 80px;         /* 🔥 SIZE CONTROL HERE */
 
     border-radius: 18px;
     background: rgba(255,255,255,0.2);
