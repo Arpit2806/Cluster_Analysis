@@ -49,34 +49,54 @@ def inject_table_css():
         }
 
         /* ===============================
-           BUTTON STYLING (GLOBAL)
+           BUTTON STYLING (FIXED)
            =============================== */
         div.stButton > button {
             background-color: #5b5fe8 !important;
-            color: white !important;
+            color: #ffffff !important;
             font-weight: 600;
-            border-radius: 10px;
-            padding: 0.6rem 1.4rem;
+            font-size: 15px;
+            border-radius: 12px;
+            padding: 0.7rem 1.6rem;
             border: none;
+        }
+
+        /* IMPORTANT: force text color */
+        div.stButton > button span {
+            color: #ffffff !important;
         }
 
         div.stButton > button:hover {
             background-color: #4a4fd8 !important;
-            color: white !important;
+            color: #ffffff !important;
+        }
+
+        div.stButton > button:hover span {
+            color: #ffffff !important;
+        }
+
+        div.stButton > button:active,
+        div.stButton > button:focus {
+            background-color: #4348c9 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
         }
 
         /* File uploader button */
         div[data-testid="stFileUploader"] button {
             background-color: #5b5fe8 !important;
-            color: white !important;
+            color: #ffffff !important;
             font-weight: 600;
-            border-radius: 10px;
+            border-radius: 12px;
             border: none;
+        }
+
+        div[data-testid="stFileUploader"] button span {
+            color: #ffffff !important;
         }
 
         div[data-testid="stFileUploader"] button:hover {
             background-color: #4a4fd8 !important;
-            color: white !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -100,7 +120,7 @@ def upload_page():
     st.write("Upload your customer dataset (CSV format).")
 
     # ===============================
-    # Reset Dataset (Optional)
+    # Reset Dataset
     # ===============================
     if "data" in st.session_state:
         if st.button("🔄 Reset Dataset"):
