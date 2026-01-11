@@ -1,33 +1,48 @@
 import streamlit as st
 
+from views.upload import upload_page
+from views.preprocessing import preprocessing_page
+from views.eda import eda_page
+from views.feature_engineering import feature_engineering_page
+from views.model import model_page
+from views.prediction import prediction_page
+
 st.set_page_config(
     page_title="Customer Profiling Dashboard",
     layout="wide"
 )
 
-# ---------------- SIDEBAR ----------------
+# ---------- SIDEBAR ----------
 st.sidebar.title("📊 Customer_Profiling_Dashboard")
 st.sidebar.info("🔷 Logo will be added here")
 
-st.sidebar.markdown("### Pages")
+page = st.sidebar.selectbox(
+    "Pages",
+    (
+        "📂 Upload Dataset",
+        "🛠️ Preprocessing Stage",
+        "📊 EDA",
+        "⚙️ Feature Engineering",
+        "🤖 Model Building",
+        "📈 Prediction & Insights"
+    )
+)
 
-st.sidebar.page_link("views/upload.py", label="📂 Upload Dataset")
-st.sidebar.page_link("views/preprocessing.py", label="🛠️ Preprocessing Stage")
-# st.sidebar.page_link("pages/eda.py", label="📊 EDA")
-# st.sidebar.page_link("pages/feature_engineering.py", label="⚙️ Feature Engineering")
-# st.sidebar.page_link("pages/model.py", label="🤖 Model Building")
-# st.sidebar.page_link("pages/prediction.py", label="📈 Prediction & Insights")
+# ---------- ROUTING ----------
+if page == "📂 Upload Dataset":
+    upload_page()
 
-# ---------------- MAIN ----------------
-st.title("Customer Profiling Dashboard")
-st.write("""
-Welcome to the Customer Profiling Dashboard.
+elif page == "🛠️ Preprocessing Stage":
+    preprocessing_page()
 
-Use the sidebar to navigate through different stages:
-1. Upload Dataset  
-2. Preprocessing  
-3. EDA  
-4. Feature Engineering  
-5. Model Building  
-6. Prediction & Insights  
-""")
+elif page == "📊 EDA":
+    eda_page()
+
+elif page == "⚙️ Feature Engineering":
+    feature_engineering_page()
+
+elif page == "🤖 Model Building":
+    model_page()
+
+elif page == "📈 Prediction & Insights":
+    prediction_page()
