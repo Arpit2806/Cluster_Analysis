@@ -47,7 +47,7 @@ logo_path = os.path.join(
 if os.path.exists(logo_path):
     img = Image.open(logo_path).convert("RGBA")
 
-    size = (90, 90)
+    size = (110, 110)
     img = img.resize(size)
 
     mask = Image.new("L", size, 0)
