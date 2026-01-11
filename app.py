@@ -7,6 +7,13 @@ from views.feature_engineering import feature_engineering_page
 from views.model import model_page
 from views.prediction import prediction_page
 
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css("assets/styles.css")
+
+
 st.set_page_config(
     page_title="Customer Profiling Dashboard",
     layout="wide"
