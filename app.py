@@ -37,7 +37,7 @@ if "active_page" not in st.session_state:
 
 # ================= SIDEBAR =================
 
-# ---- CIRCULAR PROFILE LOGO (CENTERED & COMPACT) ----
+# ---- CIRCULAR PROFILE LOGO (CENTERED) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -56,5 +56,63 @@ if os.path.exists(logo_path):
     img.putalpha(mask)
 
     col1, col2, col3 = st.sidebar.columns([1, 2, 1])
-    wi
+    with col2:
+        st.image(img)
+else:
+    st.sidebar.warning("Logo not found")
 
+
+# ---- TITLE ----
+st.sidebar.title("Customer Profiling Dashboard")
+
+
+# ================= SIDEBAR BUTTON NAVIGATION =================
+
+if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
+    st.session_state.active_page = "Upload"
+
+if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
+    st.session_state.active_page = "Preprocessing"
+
+if st.sidebar.button("📊 EDA", use_container_width=True):
+    st.session_state.active_page = "EDA"
+
+if st.sidebar.button("⚙️ Feature Engineering", use_container_width=True):
+    st.session_state.active_page = "Feature"
+
+if st.sidebar.button("🤖 Model Building", use_container_width=True):
+    st.session_state.active_page = "Model"
+
+if st.sidebar.button("📈 Prediction & Insights", use_container_width=True):
+    st.session_state.active_page = "Prediction"
+
+
+# ================= MAIN ROUTING =================
+if st.session_state.active_page == "Upload":
+    upload_page()
+
+elif st.session_state.active_page == "Preprocessing":
+    preprocessing_page()
+
+elif st.session_state.active_page == "EDA":
+    eda_page()
+
+elif st.session_state.active_page == "Feature":
+    feature_engineering_page()
+
+elif st.session_state.active_page == "Model":
+    model_page()
+
+elif st.session_state.active_page == "Prediction":
+    prediction_page()
+
+
+# ================= FOOTER (PAGES ONLY) =================
+st.markdown(
+    """
+    <div class="app-footer">
+        DMUSL End-Term Hackathon
+    </div>
+    """,
+    unsafe_allow_html=True
+)
