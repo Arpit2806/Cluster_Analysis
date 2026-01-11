@@ -1,60 +1,123 @@
 /* =========================================================
-   FINAL REFINEMENT — CLEAN, TIGHT, PREMIUM
+   STABLE PREMIUM STREAMLIT DASHBOARD — FINAL
+   (High contrast, readable, professional)
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap');
 
-/* ---------- REMOVE STREAMLIT TOP BAR (FIXES "key") ---------- */
+:root {
+    --sidebar-bg: #5b5fe8;        /* solid purple */
+    --sidebar-text: #ffffff;
+    --sidebar-hover: rgba(255,255,255,0.18);
+
+    --page-bg: #f5f6fa;
+    --card-bg: #ffffff;
+
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+
+    --radius-lg: 22px;
+    --radius-md: 14px;
+
+    --shadow-lg: 0 20px 50px rgba(0,0,0,0.18);
+    --shadow-sm: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ---------------- RESET ---------------- */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--page-bg);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+html body,
+html body * {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* ---------------- REMOVE STREAMLIT TOP BAR ---------------- */
 header[data-testid="stHeader"],
 div[data-testid="stToolbar"],
 div[data-testid="stDecoration"] {
     display: none !important;
 }
 
-/* ---------- SIDEBAR PULL-UP ---------- */
+/* ---------------- APP SHELL ---------------- */
+.stApp {
+    background: var(--page-bg) !important;
+    padding: 2.4rem !important;
+}
+
+/* ---------------- MAIN APP CONTAINER ---------------- */
+[data-testid="stAppViewContainer"] {
+    background: #e9eaf2;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* ---------------- SIDEBAR (FIXED & SOLID) ---------------- */
 [data-testid="stSidebar"] {
-    padding-top: 0 !important;
+    background: var(--sidebar-bg) !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    padding-top: 1.2rem !important;
 }
 
 [data-testid="stSidebar"] > div {
-    margin-top: 0 !important;
     padding-top: 0 !important;
+    margin-top: 0 !important;
 }
 
-/* ---------- LOGO ---------- */
+[data-testid="stSidebar"] * {
+    color: var(--sidebar-text) !important;
+    opacity: 1 !important; /* 🔥 IMPORTANT */
+}
+
+/* ---------------- LOGO ---------------- */
 [data-testid="stSidebar"] img {
-    margin-top: 0.8rem !important;
-    margin-bottom: 0.6rem !important;
+    display: block;
+    margin: 0 auto 0.8rem auto;
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.18);
+    padding: 10px;
 }
 
-/* ---------- TITLE (MAGICAL, PREMIUM) ---------- */
+/* ---------------- SIDEBAR TITLE ---------------- */
 [data-testid="stSidebar"] h1 {
-    max-width: 220px;
-    margin: 0 auto 1.2rem auto !important;
-
-    font-size: 1.5rem;        /* 🔥 bigger */
-    font-weight: 900;
-    line-height: 1.25;
-    letter-spacing: 0.8px;
-
     text-align: center;
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: 0.5px;
 
-    background: linear-gradient(180deg, #ffffff 0%, #eaeaff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin: 0 auto 1.8rem auto !important;
+    max-width: 220px;
+
+    color: #ffffff !important;
 }
 
-/* ---------- NAV BUTTON STACK (NO GAPS) ---------- */
+/* Remove default Streamlit headers */
+[data-testid="stSidebar"] h3 {
+    display: none !important;
+}
+
+/* ---------------- SIDEBAR BUTTONS ---------------- */
 [data-testid="stSidebar"] .stButton {
-    margin: -12px 0 !important;   /* 🔥 tighter */
+    margin: -8px 0 !important;
 }
 
-/* ---------- BUTTON STYLE ---------- */
 [data-testid="stSidebar"] .stButton > button {
-    width: 94%;
+    width: 92%;
     height: 44px;
-
-    margin: -4px auto !important; /* 🔥 removes space */
+    margin: -2px auto !important;
     padding: 0 20px;
 
     background: transparent;
@@ -62,26 +125,69 @@ div[data-testid="stDecoration"] {
     border-radius: 999px;
 
     font-size: 0.9rem;
-    font-weight: 800;             /* 🔥 bold */
-    text-align: left;             /* 🔥 left aligned */
+    font-weight: 700;
+    text-align: left;
 
-    white-space: nowrap;          /* 🔥 single line */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    color: #ffffff;
+    color: #ffffff !important;
 
     transition: background 0.15s ease;
 }
 
-/* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.22);
+    background: var(--sidebar-hover);
 }
 
-/* Active */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
     background: #ffffff;
-    color: #6c5ce7;
-    font-weight: 900;
+    color: var(--sidebar-bg) !important;
+    font-weight: 800;
+}
+
+/* ---------------- MAIN CONTENT ---------------- */
+.block-container {
+    background: var(--card-bg);
+    margin: 1.8rem;
+    border-radius: var(--radius-lg);
+    padding: 2.8rem 3.4rem 4.5rem 3.4rem !important;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ---------------- HEADINGS ---------------- */
+h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+p, label {
+    color: var(--text-secondary);
+}
+
+/* ---------------- FILE UPLOADER ---------------- */
+[data-testid="stFileUploader"] {
+    background: #f9fafb;
+    border-radius: var(--radius-md);
+    padding: 1.6rem !important;
+}
+
+/* ---------------- FOOTER ---------------- */
+.app-footer {
+    position: fixed;
+    bottom: 1.2rem;
+    left: calc(260px + 2.4rem);
+    right: 2.4rem;
+
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7280;
 }
