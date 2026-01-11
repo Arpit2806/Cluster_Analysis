@@ -2,38 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-def inject_table_css():
-    st.markdown("""
-    <style>
-        table.custom-table {
-            margin: 16px auto;
-            border-collapse: collapse;
-            font-size: 14px;
-            font-family: Inter, system-ui, sans-serif;
-            white-space: nowrap;
-        }
-        table.custom-table th {
-            background-color: #5b5fe8;
-            color: white !important;
-            font-weight: 700;
-            padding: 8px 16px;
-            text-align: center;
-        }
-        table.custom-table td {
-            padding: 8px 16px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-def render_compact_table(df):
-    df = df.reset_index(drop=True)
-    html = df.to_html(index=False, classes="custom-table", border=0)
-    st.markdown(html, unsafe_allow_html=True)
-
 def upload_page():
-    inject_table_css()  # 🔥 IMPORTANT
+    inject_table_css()
 
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
@@ -46,13 +16,24 @@ def upload_page():
 
         st.success("✅ Dataset uploaded successfully!")
 
-        # Preview
+        # ===============================
+        # PREVIEW (Styled like others)
+        # ===============================
         st.subheader("🔍 Preview of Data")
-        st.dataframe(df.head(), use_container_width=True)
+
+        preview_df = df.head()
+        st.markdown(
+            "<div style='display:flex; justify-content:center;'>",
+            unsafe_allow_html=True
+        )
+        render_compact_table(preview_df)
+        st.markdown("</div>", unsafe_allow_html=True)
 
         st.divider()
 
-        # Dataset Overview
+        # ===============================
+        # DATASET OVERVIEW
+        # ===============================
         st.subheader("📊 Dataset Overview")
 
         overview_df = pd.DataFrame({
@@ -70,11 +51,15 @@ def upload_page():
             ]
         })
 
+        st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
         render_compact_table(overview_df)
+        st.markdown("</div>", unsafe_allow_html=True)
 
         st.divider()
 
-        # Column Details
+        # ===============================
+        # COLUMN DETAILS
+        # ===============================
         st.subheader("📋 Column Details")
 
         if "show_num" not in st.session_state:
@@ -92,14 +77,32 @@ def upload_page():
             if st.button("Display Categorical Columns"):
                 st.session_state.show_cat = not st.session_state.show_cat
 
+        # ===============================
+        # NUMERICAL → LEFT ALIGNED
+        # ===============================
         if st.session_state.show_num:
             num_df = pd.DataFrame({
                 "Numerical Columns": df.select_dtypes(include=np.number).columns
             })
-            render_compact_table(num_df)
 
+            st.markdown(
+                "<div style='display:flex; justify-content:flex-start;'>",
+                unsafe_allow_html=True
+            )
+            render_compact_table(num_df)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # ===============================
+        # CATEGORICAL → RIGHT ALIGNED
+        # ===============================
         if st.session_state.show_cat:
             cat_df = pd.DataFrame({
                 "Categorical Columns": df.select_dtypes(exclude=np.number).columns
             })
+
+            st.markdown(
+                "<div style='display:flex; justify-content:flex-end;'>",
+                unsafe_allow_html=True
+            )
             render_compact_table(cat_df)
+            st.markdown("</div>", unsafe_allow_html=True)
