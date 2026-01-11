@@ -116,7 +116,7 @@ html, body {
 
 /* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
 .stApp {
-    background: url("assets/bg2.png") no-repeat center center fixed;
+    background: url("assets/bg3.jpg") no-repeat center center fixed;
     background-size: cover;
 }
 /* Overlay for better readability */
