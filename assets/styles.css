@@ -1,39 +1,79 @@
-/* Sidebar */
+/* ===== GLOBAL ===== */
+html, body {
+    font-family: "Inter", "Segoe UI", sans-serif;
+    background-color: #f6f8fa;
+}
+
+/* ===== SIDEBAR ===== */
 [data-testid="stSidebar"] {
+    background-color: #1e7f5c;   /* Deep professional green */
     width: 320px;
     min-width: 320px;
-    background-color: #2e7d32;
+    padding-top: 20px;
 }
 
 /* Sidebar text */
 [data-testid="stSidebar"] * {
-    color: white;
+    color: #ffffff;
 }
 
-/* Sidebar buttons */
-.stButton > button {
-    background-color: #1b5e20;
-    color: white;
-    border-radius: 8px;
-    padding: 10px;
-    font-weight: 600;
-    border: none;
+/* Sidebar title */
+[data-testid="stSidebar"] h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 10px;
 }
 
-.stButton > button:hover {
-    background-color: #388e3c;
+/* ===== RADIO BUTTONS (NAVIGATION) ===== */
+div[role="radiogroup"] > label {
+    background-color: transparent;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Footer */
-.footer {
+div[role="radiogroup"] > label:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+div[role="radiogroup"] input:checked + div {
+    background-color: #ffffff;
+    color: #1e7f5c !important;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-weight: 700;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main .block-container {
+    padding: 2rem 3rem 6rem 3rem; /* bottom space for footer */
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: #1f2933;
+    font-weight: 700;
+}
+
+/* Dataframes */
+[data-testid="stDataFrame"] {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* ===== FOOTER ===== */
+.app-footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #2e7d32;
+    background-color: #1e7f5c;
     color: white;
     text-align: center;
-    padding: 12px;
-    font-weight: bold;
-    z-index: 100;
+    padding: 14px;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 999;
 }
