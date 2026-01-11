@@ -46,7 +46,7 @@ else:
     st.sidebar.warning("Logo not found")
 
 # ---- TITLE ----
-st.sidebar.title("📊 Customer Profiling Dashboard")
+st.sidebar.title("Customer Profiling Dashboard")
 
 
 # ---- NAVIGATION ----
