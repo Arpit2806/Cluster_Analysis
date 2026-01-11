@@ -2,49 +2,39 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# =========================================================
-# Helper: Compact, Centered, Styled Table (NO STRETCH)
-# =========================================================
-def render_compact_table(df):
-    df = df.reset_index(drop=True)
-
-    html = df.to_html(
-        index=False,
-        escape=False,
-        border=0
-    )
-
-    styled_html = f"""
+def inject_table_css():
+    st.markdown("""
     <style>
-        .custom-table {{
+        table.custom-table {
             margin: 16px auto;
             border-collapse: collapse;
             font-size: 14px;
             font-family: Inter, system-ui, sans-serif;
             white-space: nowrap;
-        }}
-        .custom-table th {{
+        }
+        table.custom-table th {
             background-color: #5b5fe8;
-            color: white;
-            font-weight: 600;
+            color: white !important;
+            font-weight: 700;
             padding: 8px 16px;
             text-align: center;
-        }}
-        .custom-table td {{
+        }
+        table.custom-table td {
             padding: 8px 16px;
             text-align: center;
             border-top: 1px solid #e5e7eb;
-        }}
+        }
     </style>
-    {html.replace('<table', '<table class="custom-table"')}
-    """
+    """, unsafe_allow_html=True)
 
-    st.markdown(styled_html, unsafe_allow_html=True)
+def render_compact_table(df):
+    df = df.reset_index(drop=True)
+    html = df.to_html(index=False, classes="custom-table", border=0)
+    st.markdown(html, unsafe_allow_html=True)
 
-# =========================================================
-# Upload Page
-# =========================================================
 def upload_page():
+    inject_table_css()  # 🔥 IMPORTANT
+
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
 
@@ -56,17 +46,13 @@ def upload_page():
 
         st.success("✅ Dataset uploaded successfully!")
 
-        # ===============================
         # Preview
-        # ===============================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
 
         st.divider()
 
-        # ===============================
         # Dataset Overview
-        # ===============================
         st.subheader("📊 Dataset Overview")
 
         overview_df = pd.DataFrame({
@@ -88,9 +74,7 @@ def upload_page():
 
         st.divider()
 
-        # ===============================
-        # Column Details (Toggle Buttons)
-        # ===============================
+        # Column Details
         st.subheader("📋 Column Details")
 
         if "show_num" not in st.session_state:
