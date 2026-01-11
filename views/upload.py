@@ -3,19 +3,22 @@ import pandas as pd
 import numpy as np
 
 
+# ===============================
+# Inject CSS (Scoped to App Only)
+# ===============================
 def inject_table_css():
     st.markdown("""
     <style>
     /* ===============================
        TABLE STYLING
        =============================== */
-    .table-wrapper {
+    section.main .table-wrapper {
         max-width: 100%;
         overflow-x: auto;
         margin: 16px auto;
     }
 
-    table.custom-table {
+    section.main table.custom-table {
         border-collapse: collapse;
         font-size: 14px;
         font-family: Inter, system-ui, sans-serif;
@@ -23,83 +26,70 @@ def inject_table_css():
         margin: 0 auto;
     }
 
-    table.custom-table th {
+    section.main table.custom-table th {
         background-color: #5b5fe8;
         color: #ffffff !important;
         font-weight: 700;
         padding: 10px 18px;
         text-align: center;
+        border-right: 1px solid #4f52d9;
     }
 
-    table.custom-table td {
+    section.main table.custom-table td {
         background-color: #f5f6fa;
         color: #1f2937;
         padding: 10px 18px;
         text-align: center;
         border-top: 1px solid #e5e7eb;
+        border-right: 1px solid #e5e7eb;
     }
 
-    table.custom-table tbody tr:nth-child(even) td {
+    section.main table.custom-table tbody tr:nth-child(even) td {
         background-color: #eef0f7;
     }
 
     /* ===============================
-       🔥 BUTTON FIX (STREAMLIT HACK)
+       BUTTONS – APP ONLY (SAFE)
        =============================== */
-
-    /* Base button */
-    button {
+    section.main div.stButton > button {
         background-color: #5b5fe8 !important;
         color: #ffffff !important;
         font-weight: 600 !important;
-        border-radius: 14px !important;
-        padding: 0.8rem 1.8rem !important;
-        border: none !important;
+        font-size: 15px;
+        border-radius: 12px;
+        padding: 0.7rem 1.6rem;
+        border: none;
     }
 
-    /* All text inside button */
-    button * {
+    section.main div.stButton > button * {
         color: #ffffff !important;
         fill: #ffffff !important;
     }
 
-    /* Streamlit specific */
-    div[data-testid^="stButton"] button {
-        background-color: #5b5fe8 !important;
-        color: #ffffff !important;
-    }
-
-    div[data-testid^="stButton"] button * {
-        color: #ffffff !important;
-    }
-
-    /* Hover */
-    button:hover {
+    section.main div.stButton > button:hover {
         background-color: #4a4fd8 !important;
-        color: #ffffff !important;
     }
 
-    button:hover * {
-        color: #ffffff !important;
-    }
-
-    /* Focus / active */
-    button:focus,
-    button:active {
+    section.main div.stButton > button:focus,
+    section.main div.stButton > button:active {
         background-color: #4348c9 !important;
-        color: #ffffff !important;
         box-shadow: none !important;
     }
 
-    /* File uploader button */
-    div[data-testid="stFileUploader"] button,
-    div[data-testid="stFileUploader"] button * {
+    /* File uploader button – app only */
+    section.main div[data-testid="stFileUploader"] button {
         background-color: #5b5fe8 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        border-radius: 12px;
+        border: none;
+    }
+
+    section.main div[data-testid="stFileUploader"] button * {
         color: #ffffff !important;
     }
     </style>
     """, unsafe_allow_html=True)
-
 
 
 # ===============================
@@ -107,7 +97,10 @@ def inject_table_css():
 # ===============================
 def render_compact_table(df):
     html = df.to_html(index=False, classes="custom-table", border=0)
-    st.markdown(f"<div class='table-wrapper'>{html}</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='table-wrapper'>{html}</div>",
+        unsafe_allow_html=True
+    )
 
 
 # ===============================
