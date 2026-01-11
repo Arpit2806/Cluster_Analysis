@@ -4,67 +4,57 @@ import numpy as np
 
 
 # ===============================
-# Purple + White Styling (ONLY UI)
+# Purple + White Table Styling
 # ===============================
-def inject_purple_white_css():
+def inject_table_css():
     st.markdown("""
     <style>
-    /* Page headers */
-    h1, h2, h3 {
-        color: #5b5fe8;
-        font-weight: 700;
-    }
+        .table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 16px auto;
+        }
 
-    /* Dataframe header */
-    thead tr th {
-        background-color: #5b5fe8 !important;
-        color: white !important;
-        font-weight: 700;
-        text-align: center;
-    }
+        table.custom-table {
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: Inter, system-ui, sans-serif;
+            white-space: nowrap;
+            margin: 0 auto;
+        }
 
-    /* Dataframe cells */
-    tbody tr td {
-        background-color: #f7f8ff;
-        color: #1f2937;
-        text-align: center;
-    }
+        table.custom-table th {
+            background-color: #5b5fe8;
+            color: white !important;
+            font-weight: 700;
+            padding: 8px 16px;
+            text-align: center;
+        }
 
-    /* Remove index column */
-    .row_heading.level0 {
-        display: none;
-    }
-    .blank {
-        display: none;
-    }
-
-    /* Buttons */
-    div.stButton > button {
-        background-color: #5b5fe8;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 0.5rem 1.2rem;
-    }
-
-    div.stButton > button:hover {
-        background-color: #4a4fd8;
-        color: white;
-    }
-
-    /* Alerts */
-    .stAlert {
-        border-left: 6px solid #5b5fe8;
-    }
+        table.custom-table td {
+            background-color: #f7f8ff;
+            color: #1f2937;
+            padding: 8px 16px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
     </style>
     """, unsafe_allow_html=True)
+
+
+# ===============================
+# Render Styled Table
+# ===============================
+def render_table(df):
+    html = df.to_html(index=False, classes="custom-table", border=0)
+    st.markdown(f"<div class='table-wrapper'>{html}</div>", unsafe_allow_html=True)
 
 
 # ===============================
 # Preprocessing Page
 # ===============================
 def preprocessing_page():
-    inject_purple_white_css()
+    inject_table_css()
 
     st.header("🛠️ Preprocessing Stage")
 
@@ -85,17 +75,14 @@ def preprocessing_page():
         col_data = df[col]
         missing_count = col_data.isnull().sum()
 
-        # Outlier detection using IQR (numeric only)
         outliers = 0
         if pd.api.types.is_numeric_dtype(col_data):
             Q1 = col_data.quantile(0.25)
             Q3 = col_data.quantile(0.75)
             IQR = Q3 - Q1
-            lower_bound = Q1 - 1.5 * IQR
-            upper_bound = Q3 + 1.5 * IQR
-            outliers = col_data[
-                (col_data < lower_bound) | (col_data > upper_bound)
-            ].count()
+            lower = Q1 - 1.5 * IQR
+            upper = Q3 + 1.5 * IQR
+            outliers = col_data[(col_data < lower) | (col_data > upper)].count()
 
         summary.append({
             "Column Name": col,
@@ -105,22 +92,20 @@ def preprocessing_page():
             "Unique Values": col_data.nunique()
         })
 
-    summary_df = pd.DataFrame(summary)
-    st.dataframe(summary_df, use_container_width=True, hide_index=True)
+    render_table(pd.DataFrame(summary))
 
     # =========================
     # Duplicate Records
     # =========================
     st.subheader("🧬 Duplicate Records")
 
-    duplicate_count = df.duplicated().sum()
+    dup_count = df.duplicated().sum()
 
-    if duplicate_count > 0:
-        st.warning(f"⚠️ Duplicate Rows Found: {duplicate_count}")
-        st.dataframe(
-            df[df.duplicated()],
-            use_container_width=True,
-            hide_index=True
-        )
+    if dup_count > 0:
+        render_table(pd.DataFrame({
+            "Metric": ["Duplicate Rows Found"],
+            "Value": [dup_count]
+        }))
+        render_table(df[df.duplicated()])
     else:
-        st.success("✅ No duplicate rows found")
+        render_table(pd.DataFrame({"Status": ["No duplicate rows found"]}))
