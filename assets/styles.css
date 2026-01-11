@@ -114,6 +114,25 @@ html, body {
     display: none !important;
 }
 
+/* ========== GLOBAL PAGE BACKGROUND IMAGE ========== */
+.stApp {
+    background: url("assets/bg.png") no-repeat center center fixed;
+    background-size: cover;
+}
+/* Overlay for better readability */
+/* [data-testid="stAppViewContainer"] {
+    background: rgba(255, 255, 255, 0.85);
+} */
+
+/* [data-testid="stAppViewContainer"] {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+[data-testid="stAppViewContainer"] {
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.6);
+} */
+
 /* ========== PAGE-ONLY FIXED FOOTER (NOT SIDEBAR) ========== */
 .app-footer {
     position: fixed;
