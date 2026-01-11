@@ -123,9 +123,9 @@ html, body {
     background-size: cover;
 }
 /* Overlay for better readability */
-/* [data-testid="stAppViewContainer"] {
+[data-testid="stAppViewContainer"] {
     background: rgba(255, 255, 255, 0.85);
-} */
+} 
 
 /* [data-testid="stAppViewContainer"] {
     background: rgba(0, 0, 0, 0.6);
@@ -174,7 +174,7 @@ header[data-testid="stHeader"]::after {
 header[data-testid="stHeader"] {
     box-shadow: none !important;
 }
-header[data-testid="stHeader"] {
+/* header[data-testid="stHeader"] {
     background: rgba(11, 11, 24, 0.6) !important;
     backdrop-filter: blur(8px);
-}
+} */
