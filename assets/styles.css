@@ -1,29 +1,25 @@
-/* ========== STREAMLIT ADMIN DASHBOARD — FINAL FIX ========== */
+/* ========== STREAMLIT SIDEBAR – FINAL HARD FIX ========== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
     --sidebar-bg: linear-gradient(180deg, #0b0b18 0%, #14142a 60%, #111827 100%);
     --accent: #22d3ee;
-    --accent-2: #818cf8;
     --text: #e5e7eb;
     --glass: rgba(255,255,255,0.05);
     --border: rgba(255,255,255,0.14);
 }
 
-/* ========== GLOBAL RESET ========== */
-* {
-    box-sizing: border-box;
-}
+/* ========== GLOBAL ========== */
+* { box-sizing: border-box; }
 
 html, body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
     background: #f8fafc;
-    overflow-x: hidden;
 }
 
-/* ========== MAIN CONTENT (SPACE FROM SIDEBAR) ========== */
+/* ========== MAIN CONTENT GAP FROM SIDEBAR ========== */
 .block-container {
     padding: 2.2rem 3rem 4rem 3rem !important;
 }
@@ -37,23 +33,10 @@ html, body {
     margin: 0 !important;
 }
 
-/* 🔥 REMOVE STREAMLIT’S TOP GHOST SPACE */
+/* 🔥 HARD FIX 1: PULL CONTENT UP (REMOVES SPACE ABOVE IMAGE) */
 [data-testid="stSidebar"] > div {
+    margin-top: -42px !important;   /* 👈 THIS IS THE REAL FIX */
     padding-top: 0 !important;
-    margin-top: 0 !important;
-}
-
-/* 🔥 REMOVE SIDEBAR HEADER CONTAINER */
-[data-testid="stSidebar"] header {
-    padding: 0 !important;
-    margin: 0 !important;
-    height: 0 !important;
-}
-
-/* 🔥 REMOVE COLUMN-BASED EXTRA SPACE (CRITICAL) */
-[data-testid="stSidebar"] [data-testid="column"] {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
 }
 
 /* Sidebar text */
@@ -64,11 +47,10 @@ html, body {
 /* ========== SIDEBAR TITLE ========== */
 [data-testid="stSidebar"] h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 700;
     text-align: center;
-    margin: 0.4rem 0 0.6rem 0 !important;
-    padding: 0 !important;
+    margin: 0.3rem 0 0.5rem 0 !important;
     background: linear-gradient(135deg, #38bdf8, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -79,31 +61,31 @@ html, body {
     font-size: 0.7rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 0.8rem 0 0.4rem 0 !important;
+    margin: 0.6rem 0 0.3rem 0 !important;
     padding: 0 1rem;
     color: #9ca3af;
 }
 
-/* ========== SIDEBAR BUTTONS (TIGHT STACK) ========== */
+/* ========== HARD FIX 2: BUTTON STACK COMPRESSION ========== */
 
 /* Kill wrapper spacing */
 [data-testid="stSidebar"] .stButton {
-    margin: 0 !important;
+    margin: -2px 0 !important;   /* 👈 compress wrappers */
     padding: 0 !important;
 }
 
 /* Actual buttons */
 [data-testid="stSidebar"] .stButton > button {
     width: 100%;
-    height: 40px;                 /* single-line text */
-    margin: 4px 0 !important;     /* 🔥 reduced gap */
+    height: 38px;               /* compact */
+    margin: 2px 0 !important;   /* 👈 VERY tight gap */
     padding: 0 14px;
 
     background: var(--glass);
     border: 1.5px solid var(--border);
     border-radius: 14px;
 
-    font-size: 0.75rem;           /* 🔥 smaller font */
+    font-size: 0.75rem;
     font-weight: 500;
     text-align: left;
 
@@ -118,27 +100,23 @@ html, body {
 [data-testid="stSidebar"] .stButton > button:hover {
     border-color: var(--accent);
     background: rgba(255,255,255,0.12);
-    box-shadow: 0 6px 16px rgba(34,211,238,0.35);
 }
 
 /* Active (optional) */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg, #22d3ee, #818cf8);
     color: #ffffff;
     font-weight: 700;
-    border-color: var(--accent);
+    border-color: #22d3ee;
 }
 
-/* ========== REMOVE IMAGE FULLSCREEN / HOVER ICON ========== */
-[data-testid="stImage"] button {
-    display: none !important;
-}
-
+/* ========== REMOVE IMAGE FULLSCREEN ICON ========== */
+[data-testid="stImage"] button,
 [data-testid="stImage"] div[role="button"] {
     display: none !important;
 }
 
-/* ========== FOOTER (TRUE BOTTOM) ========== */
+/* ========== FOOTER ========== */
 .app-footer {
     position: fixed;
     left: 0;
