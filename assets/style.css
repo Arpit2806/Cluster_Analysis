@@ -1,0 +1,39 @@
+/* Sidebar */
+[data-testid="stSidebar"] {
+    width: 320px;
+    min-width: 320px;
+    background-color: #2e7d32;
+}
+
+/* Sidebar text */
+[data-testid="stSidebar"] * {
+    color: white;
+}
+
+/* Sidebar buttons */
+.stButton > button {
+    background-color: #1b5e20;
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 600;
+    border: none;
+}
+
+.stButton > button:hover {
+    background-color: #388e3c;
+}
+
+/* Footer */
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #2e7d32;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-weight: bold;
+    z-index: 100;
+}
