@@ -10,14 +10,14 @@ from views.model import model_page
 from views.prediction import prediction_page
 
 
-# ---------------- PAGE CONFIG (MUST BE FIRST) ----------------
+# ================= PAGE CONFIG =================
 st.set_page_config(
     page_title="Customer Profiling Dashboard",
     layout="wide"
 )
 
 
-# ---------------- LOAD CSS (THIS WAS MISSING ❗) ----------------
+# ================= LOAD CSS =================
 def load_css():
     css_path = os.path.join(
         os.path.dirname(__file__),
@@ -27,12 +27,17 @@ def load_css():
     with open(css_path) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-load_css()   # ✅ DO NOT REMOVE
+load_css()
 
 
-# ---------------- SIDEBAR ----------------
+# ================= SESSION STATE =================
+if "active_page" not in st.session_state:
+    st.session_state.active_page = "Upload"
 
-# ---- LOGO (ABOVE TITLE, RESIZED, SAFE) ----
+
+# ================= SIDEBAR =================
+
+# ---- LOGO (ABOVE TITLE) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -49,35 +54,54 @@ else:
 st.sidebar.title("Customer Profiling Dashboard")
 
 
-# ---- NAVIGATION ----
-page = st.sidebar.radio(
-    "Pages",
-    [
-        "📂 Upload Dataset",
-        "🛠️ Preprocessing Stage",
-        "📊 EDA",
-        "⚙️ Feature Engineering",
-        "🤖 Model Building",
-        "📈 Prediction & Insights"
-    ]
-)
+# ---- NAVIGATION (BUTTON-BASED / VERTICAL TABS) ----
+st.sidebar.markdown("### Navigation")
+
+if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
+    st.session_state.active_page = "Upload"
+
+if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
+    st.session_state.active_page = "Preprocessing"
+
+if st.sidebar.button("📊 EDA", use_container_width=True):
+    st.session_state.active_page = "EDA"
+
+if st.sidebar.button("⚙️ Feature Engineering", use_container_width=True):
+    st.session_state.active_page = "Feature"
+
+if st.sidebar.button("🤖 Model Building", use_container_width=True):
+    st.session_state.active_page = "Model"
+
+if st.sidebar.button("📈 Prediction & Insights", use_container_width=True):
+    st.session_state.active_page = "Prediction"
 
 
-# ---------------- ROUTING ----------------
-if page == "📂 Upload Dataset":
+# ================= MAIN ROUTING =================
+if st.session_state.active_page == "Upload":
     upload_page()
 
-elif page == "🛠️ Preprocessing Stage":
+elif st.session_state.active_page == "Preprocessing":
     preprocessing_page()
 
-elif page == "📊 EDA":
+elif st.session_state.active_page == "EDA":
     eda_page()
 
-elif page == "⚙️ Feature Engineering":
+elif st.session_state.active_page == "Feature":
     feature_engineering_page()
 
-elif page == "🤖 Model Building":
+elif st.session_state.active_page == "Model":
     model_page()
 
-elif page == "📈 Prediction & Insights":
+elif st.session_state.active_page == "Prediction":
     prediction_page()
+
+
+# ================= FOOTER =================
+st.markdown(
+    """
+    <div class="app-footer">
+        DMUSL End-Term Hackathon
+    </div>
+    """,
+    unsafe_allow_html=True
+)
