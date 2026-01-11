@@ -1,28 +1,24 @@
 /* =========================================================
-   MODERN SAAS DASHBOARD — CRM / PRODUCT UI STYLE
-   Inspired by high-end web apps (Aventri-style)
+   PREMIUM SAAS DASHBOARD — FIXED & REFINED
    ========================================================= */
 
-/* ---------------- FONT ---------------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
 
-/* ---------------- DESIGN TOKENS ---------------- */
 :root {
-    --bg-app: #6c5ce7;                 /* outer background */
-    --bg-shell: #e9e9ee;               /* app container */
-    --bg-sidebar: #6c5ce7;             /* sidebar color */
-    --bg-content: #ffffff;             /* main page */
+    --bg-app: #6c5ce7;
+    --bg-shell: #e9e9ee;
+    --bg-sidebar: #6c5ce7;
+    --bg-content: #ffffff;
 
     --text-primary: #111827;
-    --text-secondary: #6b7280;
+    --text-secondary: #eaeaff;
     --text-on-dark: #ffffff;
 
-    --accent: #6c5ce7;
-    --accent-soft: rgba(108,92,231,0.18);
+    --accent: #ffffff;
+    --accent-soft: rgba(255,255,255,0.18);
 
     --radius-lg: 26px;
     --radius-md: 16px;
-    --radius-sm: 12px;
 
     --shadow-xl: 0 24px 60px rgba(17,24,39,0.25);
     --shadow-soft: 0 10px 30px rgba(17,24,39,0.08);
@@ -37,22 +33,27 @@ html, body {
     margin: 0;
     padding: 0;
     background: var(--bg-app);
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 /* Force font everywhere */
 html body,
 html body * {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* ---------------- REMOVE STREAMLIT TOP BAR (KEY ISSUE) ---------------- */
+header[data-testid="stHeader"] {
+    display: none !important;
 }
 
 /* ---------------- APP SHELL ---------------- */
 .stApp {
     background: var(--bg-app) !important;
-    padding: 3rem !important;
+    padding: 2.4rem !important;
 }
 
-/* ---------------- MAIN APP CONTAINER ---------------- */
+/* ---------------- MAIN CONTAINER ---------------- */
 [data-testid="stAppViewContainer"] {
     background: var(--bg-shell);
     border-radius: var(--radius-lg);
@@ -65,16 +66,15 @@ html body * {
     background: var(--bg-sidebar);
     width: 260px !important;
     min-width: 260px !important;
-    border-right: none;
+    padding-top: 1.2rem !important; /* 🔥 pulled up */
 }
 
-/* Remove Streamlit spacing */
+/* Remove extra inner spacing */
 [data-testid="stSidebar"] > div {
     margin-top: 0 !important;
-    padding-top: 1.8rem !important;
+    padding-top: 0 !important;
 }
 
-/* Sidebar text */
 [data-testid="stSidebar"] * {
     color: var(--text-on-dark);
 }
@@ -82,22 +82,28 @@ html body * {
 /* ---------------- LOGO ---------------- */
 [data-testid="stSidebar"] img {
     display: block;
-    margin: 0 auto 1.2rem auto;
+    margin: 0 auto 0.6rem auto;
     width: 64px;
     height: 64px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.16);
     padding: 10px;
 }
 
-/* ---------------- SIDEBAR TITLE ---------------- */
+/* ---------------- TITLE (MAGICAL) ---------------- */
 [data-testid="stSidebar"] h1 {
+    max-width: 220px;
+    margin: 0 auto 1.6rem auto !important;
     text-align: center;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    margin-bottom: 2rem !important;
-    color: #ffffff;
+
+    font-size: 1.35rem;            /* 🔥 bigger */
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: 0.6px;
+
+    background: linear-gradient(180deg, #ffffff, #dcdcff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Remove Streamlit section headers */
@@ -105,112 +111,66 @@ html body * {
     display: none !important;
 }
 
-/* ---------------- NAVIGATION BUTTONS ---------------- */
+/* ---------------- NAV BUTTONS ---------------- */
 [data-testid="stSidebar"] .stButton {
-    margin: 0.35rem 0 !important;
+    margin: -10px 0 !important;   /* 🔥 negative spacing */
 }
 
 /* Button base */
 [data-testid="stSidebar"] .stButton > button {
-    width: 90%;
+    width: 92%;
     height: 44px;
-    margin: 0 auto !important;
-    padding: 0 18px;
+    margin: -3px auto !important; /* 🔥 no gap */
+    padding: 0 20px;
 
     background: transparent;
     border: none;
-    border-radius: 999px; /* pill style */
+    border-radius: 999px;
 
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 800;             /* 🔥 bold */
+    text-align: left;             /* 🔥 left aligned */
 
-    color: rgba(255,255,255,0.9);
+    white-space: nowrap;          /* 🔥 single line */
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    transition: background 0.15s ease, color 0.15s ease;
+    color: #ffffff;
+
+    transition: background 0.15s ease;
 }
 
 /* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.22);
 }
 
 /* Active */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
     background: #ffffff;
-    color: var(--accent);
-    font-weight: 700;
+    color: #6c5ce7;
+    font-weight: 900;
 }
 
-/* ---------------- MAIN CONTENT AREA ---------------- */
+/* ---------------- MAIN CONTENT ---------------- */
 .block-container {
     background: var(--bg-content);
     margin: 1.8rem;
     border-radius: var(--radius-lg);
-    padding: 2.5rem 3rem 5rem 3rem !important;
+    padding: 2.6rem 3.2rem 5rem 3.2rem !important;
     box-shadow: var(--shadow-soft);
-}
-
-/* ---------------- PAGE HEADERS ---------------- */
-h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--text-primary);
-}
-
-h2 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-h3 {
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-/* ---------------- CARDS / SECTIONS ---------------- */
-[data-testid="stFileUploader"],
-[data-testid="stDataFrame"],
-[data-testid="stMetric"],
-[data-testid="stForm"] {
-    background: #ffffff;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft);
-    padding: 1.6rem !important;
-    border: none;
-}
-
-/* ---------------- FILE UPLOADER ---------------- */
-[data-testid="stFileUploader"] section {
-    background: #f8fafc;
-    border-radius: var(--radius-sm);
-    border: 1px dashed #e5e7eb;
-}
-
-/* ---------------- REMOVE STREAMLIT HEADER ---------------- */
-header[data-testid="stHeader"] {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-header[data-testid="stHeader"]::after {
-    display: none !important;
 }
 
 /* ---------------- FOOTER ---------------- */
 .app-footer {
     position: fixed;
     bottom: 1.2rem;
-    left: calc(260px + 3rem);
-    right: 3rem;
+    left: calc(260px + 2.4rem);
+    right: 2.4rem;
 
     background: transparent;
     color: #6b7280;
     font-size: 0.8rem;
     font-weight: 500;
     text-align: center;
-
-    z-index: 1000;
 }
