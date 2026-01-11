@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# =========================================================
+# Inject CSS for compact purple-white tables
+# =========================================================
 def inject_table_css():
     st.markdown("""
     <style>
@@ -27,13 +30,19 @@ def inject_table_css():
     </style>
     """, unsafe_allow_html=True)
 
+# =========================================================
+# Render compact table (NO stretch, NO index)
+# =========================================================
 def render_compact_table(df):
     df = df.reset_index(drop=True)
     html = df.to_html(index=False, classes="custom-table", border=0)
     st.markdown(html, unsafe_allow_html=True)
 
+# =========================================================
+# Upload Page
+# =========================================================
 def upload_page():
-    inject_table_css()  # 🔥 IMPORTANT
+    inject_table_css()
 
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
@@ -46,13 +55,17 @@ def upload_page():
 
         st.success("✅ Dataset uploaded successfully!")
 
+        # ===============================
         # Preview
+        # ===============================
         st.subheader("🔍 Preview of Data")
         st.dataframe(df.head(), use_container_width=True)
 
         st.divider()
 
+        # ===============================
         # Dataset Overview
+        # ===============================
         st.subheader("📊 Dataset Overview")
 
         overview_df = pd.DataFrame({
@@ -74,7 +87,9 @@ def upload_page():
 
         st.divider()
 
-        # Column Details
+        # ===============================
+        # Column Details (VERTICAL FLOW)
+        # ===============================
         st.subheader("📋 Column Details")
 
         if "show_num" not in st.session_state:
@@ -82,21 +97,21 @@ def upload_page():
         if "show_cat" not in st.session_state:
             st.session_state.show_cat = False
 
-        col1, col2 = st.columns(2)
-
-        with col1:
-            if st.button("Display Numerical Columns"):
-                st.session_state.show_num = not st.session_state.show_num
-
-        with col2:
-            if st.button("Display Categorical Columns"):
-                st.session_state.show_cat = not st.session_state.show_cat
+        # -------- Button 1 --------
+        if st.button("Display Numerical Columns"):
+            st.session_state.show_num = not st.session_state.show_num
 
         if st.session_state.show_num:
             num_df = pd.DataFrame({
                 "Numerical Columns": df.select_dtypes(include=np.number).columns
             })
             render_compact_table(num_df)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # -------- Button 2 --------
+        if st.button("Display Categorical Columns"):
+            st.session_state.show_cat = not st.session_state.show_cat
 
         if st.session_state.show_cat:
             cat_df = pd.DataFrame({
