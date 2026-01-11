@@ -1,134 +1,136 @@
-/* ========== PREMIUM ADMIN DASHBOARD (BUTTON NAV) ========== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* ========== STREAMLIT ADMIN SIDEBAR — HARD FIX ========== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
-    --sidebar-bg: linear-gradient(180deg, #0c0c1a 0%, #1a1a2e 70%, #16213e 100%);
-    --primary-accent: #00d4ff;
-    --secondary-accent: #bc13fe;
-    --text-light: #e0e6ed;
-    --glass-bg: rgba(255,255,255,0.05);
-    --glass-border: rgba(255,255,255,0.15);
+    --sidebar-bg: linear-gradient(180deg, #0b0b18 0%, #14142a 60%, #111827 100%);
+    --accent: #22d3ee;
+    --text: #e5e7eb;
+    --glass: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.14);
 }
 
-/* ========== GLOBAL ========== */
-* { box-sizing: border-box; }
+/* ========== GLOBAL RESET ========== */
+* {
+    box-sizing: border-box;
+}
 
 html, body {
-    font-family: 'Inter', sans-serif;
-    background: #f6f7fb;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
 }
 
-/* MAIN CONTENT SPACING */
+/* ========== MAIN CONTENT SPACING (GAP FROM SIDEBAR) ========== */
 .block-container {
-    padding: 2rem 3rem 4rem 2.5rem;
+    padding: 2.2rem 3rem 4rem 3rem !important;
 }
 
-/* ========== SIDEBAR ========== */
+/* ========== SIDEBAR ROOT ========== */
 [data-testid="stSidebar"] {
     background: var(--sidebar-bg);
     width: 280px !important;
     min-width: 280px !important;
-
-    /* 🔥 KEY FIX 1: remove top gap */
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-
-    box-shadow: inset 0 0 60px rgba(0,0,0,0.6);
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* Remove Streamlit’s internal top spacing */
-[data-testid="stSidebar"] > div:first-child {
-    margin-top: 0 !important;
+/* 🔥 KILL THE TOP SPACE (CRITICAL FIX) */
+[data-testid="stSidebar"] > div {
     padding-top: 0 !important;
+    margin-top: 0 !important;
 }
 
-/* Sidebar text color */
+/* 🔥 KILL STREAMLIT HEADER CONTAINER */
+[data-testid="stSidebar"] header {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 0 !important;
+}
+
+/* Sidebar text */
 [data-testid="stSidebar"] * {
-    color: var(--text-light);
+    color: var(--text);
 }
 
-/* SIDEBAR TITLE */
+/* ========== SIDEBAR TITLE ========== */
 [data-testid="stSidebar"] h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     text-align: center;
-
-    /* 🔥 tighter spacing */
-    margin: 0.4rem 0 0.8rem 0;
-
-    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+    margin: 0.4rem 0 0.6rem 0 !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #38bdf8, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* ========== NAVIGATION LABEL ========= */
+/* ========== NAV LABEL ========== */
 [data-testid="stSidebar"] h3 {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 0.8rem 0 0.6rem 0;
-    color: #9aa4b2;
+    margin: 0.8rem 0 0.4rem 0 !important;
+    padding: 0 1rem;
+    color: #9ca3af;
 }
 
-/* ========== SIDEBAR BUTTONS ========= */
+/* ========== BUTTON STACK — ZERO GAP ========== */
 
-/* 🔥 KEY FIX 2: reduce space between buttons */
+/* Remove Streamlit wrapper spacing */
 [data-testid="stSidebar"] .stButton {
-    margin-bottom: 4px;    /* 👈 reduced gap */
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Buttons */
+/* Actual buttons */
 [data-testid="stSidebar"] .stButton > button {
     width: 100%;
-    height: 42px;                 /* compact but readable */
-    background: var(--glass-bg);
-    border: 1.5px solid var(--glass-border);
+    height: 40px;                 /* single-line guaranteed */
+    margin: 4px 0 !important;     /* 🔥 tight spacing */
+    padding: 0 14px;
+
+    background: var(--glass);
+    border: 1.5px solid var(--border);
     border-radius: 14px;
 
-    font-size: 0.78rem;           /* single-line text */
+    font-size: 0.75rem;           /* 🔥 smaller text */
     font-weight: 500;
-
-    padding: 0 14px;
     text-align: left;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    backdrop-filter: blur(16px);
     transition: all 0.2s ease;
 }
 
 /* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(255,255,255,0.14);
-    border-color: var(--primary-accent);
-    box-shadow: 0 6px 18px rgba(0,212,255,0.35);
-    transform: translateY(-1px);
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 6px 16px rgba(34,211,238,0.35);
 }
 
-/* Active (if enabled later) */
+/* Active (optional future use) */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
-    background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-    color: white;
+    background: linear-gradient(135deg, #22d3ee, #818cf8);
+    color: #ffffff;
     font-weight: 700;
-    border-color: var(--primary-accent);
+    border-color: #22d3ee;
 }
 
-/* ========== FOOTER ========= */
+/* ========== FOOTER (TRUE BOTTOM) ========== */
 .app-footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background: #0c0c1a;
+    background: #0b0b18;
     padding: 0.9rem;
     text-align: center;
-    color: #cbd5e1;
+    color: #c7d2fe;
     font-weight: 600;
-    z-index: 999;
+    z-index: 9999;
 }
