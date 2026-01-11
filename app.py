@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+from PIL import Image
 
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
@@ -7,33 +9,45 @@ from views.feature_engineering import feature_engineering_page
 from views.model import model_page
 from views.prediction import prediction_page
 
-import os
-# from PIL import Image
 
-# logo_path = os.path.join(
-#     os.path.dirname(__file__),
-#     "assets",
-#     "logo1.png"
-# )
-
-# logo = Image.open(logo_path)
-# st.sidebar.image(logo, use_container_width=True)
-
-
-
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Customer Profiling Dashboard",
     layout="wide"
 )
 
+
+# ---------------- LOAD CSS (MUST BE HERE) ----------------
+def load_css():
+    css_path = os.path.join(
+        os.path.dirname(__file__),
+        "assets",
+        "styles.css"
+    )
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
+
+
 # ---------------- SIDEBAR ----------------
-import os
-
-logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo1.png")
-st.sidebar.image(logo_path, use_container_width=True)
 st.sidebar.title("📊 Customer Profiling Dashboard")
-# st.sidebar.info("🔷 Logo will be added here")
 
+# ---- LOGO (SAFE + RESIZED) ----
+logo_path = os.path.join(
+    os.path.dirname(__file__),
+    "assets",
+    "logo1.png"
+)
+
+if os.path.exists(logo_path):
+    logo = Image.open(logo_path)
+    st.sidebar.image(logo, width=180)   # 👈 adjust size here
+else:
+    st.sidebar.warning("Logo not found")
+
+
+# ---- NAVIGATION ----
 page = st.sidebar.radio(
     "Pages",
     [
@@ -45,6 +59,7 @@ page = st.sidebar.radio(
         "📈 Prediction & Insights"
     ]
 )
+
 
 # ---------------- ROUTING ----------------
 if page == "📂 Upload Dataset":
