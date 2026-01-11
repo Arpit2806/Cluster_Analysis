@@ -55,10 +55,12 @@ def upload_page():
         st.success("✅ Dataset uploaded successfully!")
 
         # ===============================
-        # Preview of Data
+        # Preview of Data (Styled, No Index)
         # ===============================
         st.subheader("🔍 Preview of Data")
-        st.dataframe(df.head(), use_container_width=True)
+
+        preview_df = df.head().copy()
+        render_compact_table(preview_df)
 
         st.divider()
 
