@@ -37,14 +37,7 @@ if "active_page" not in st.session_state:
 
 # ================= SIDEBAR =================
 
-# ---- CIRCULAR PROFILE-STYLE LOGO (ABOVE TITLE) ----
-logo_path = os.path.join(
-    os.path.dirname(__file__),
-    "assets",
-    "logo1.png"
-)
-
-# ---- CIRCULAR PROFILE-STYLE LOGO (CENTER ALIGNED) ----
+# ---- CIRCULAR PROFILE LOGO (CENTERED & COMPACT) ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -54,75 +47,14 @@ logo_path = os.path.join(
 if os.path.exists(logo_path):
     img = Image.open(logo_path).convert("RGBA")
 
-    # Resize logo (profile size)
     size = (90, 90)
     img = img.resize(size)
 
-    # Create circular mask
     mask = Image.new("L", size, 0)
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0, size[0], size[1]), fill=255)
     img.putalpha(mask)
 
-    # Center align using columns
     col1, col2, col3 = st.sidebar.columns([1, 2, 1])
-    with col2:
-        st.image(img)
-else:
-    st.sidebar.warning("Logo not found")
+    wi
 
-# ---- TITLE ----
-st.sidebar.title("Customer Profiling Dashboard")
-
-
-# ---- NAVIGATION (VERTICAL BUTTONS / ADMIN STYLE) ----
-st.sidebar.markdown("### Navigation")
-
-if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
-    st.session_state.active_page = "Upload"
-
-if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
-    st.session_state.active_page = "Preprocessing"
-
-if st.sidebar.button("📊 EDA", use_container_width=True):
-    st.session_state.active_page = "EDA"
-
-if st.sidebar.button("⚙️ Feature Engineering", use_container_width=True):
-    st.session_state.active_page = "Feature"
-
-if st.sidebar.button("🤖 Model Building", use_container_width=True):
-    st.session_state.active_page = "Model"
-
-if st.sidebar.button("📈 Prediction & Insights", use_container_width=True):
-    st.session_state.active_page = "Prediction"
-
-
-# ================= MAIN ROUTING =================
-if st.session_state.active_page == "Upload":
-    upload_page()
-
-elif st.session_state.active_page == "Preprocessing":
-    preprocessing_page()
-
-elif st.session_state.active_page == "EDA":
-    eda_page()
-
-elif st.session_state.active_page == "Feature":
-    feature_engineering_page()
-
-elif st.session_state.active_page == "Model":
-    model_page()
-
-elif st.session_state.active_page == "Prediction":
-    prediction_page()
-
-
-# ================= FOOTER =================
-st.markdown(
-    """
-    <div class="app-footer">
-        DMUSL End-Term Hackathon
-    </div>
-    """,
-    unsafe_allow_html=True
-)
