@@ -93,7 +93,9 @@ def preprocessing_page():
             IQR = Q3 - Q1
             lower_bound = Q1 - 1.5 * IQR
             upper_bound = Q3 + 1.5 * IQR
-            outliers = col_data[(col_data < lower_bound) | (col_data > upper_bound)].count()
+            outliers = col_data[
+                (col_data < lower_bound) | (col_data > upper_bound)
+            ].count()
 
         summary.append({
             "Column Name": col,
@@ -115,6 +117,10 @@ def preprocessing_page():
 
     if duplicate_count > 0:
         st.warning(f"⚠️ Duplicate Rows Found: {duplicate_count}")
-        st.dataframe(df[df.duplicated()], use_container_width=True, hide_index=True)
+        st.dataframe(
+            df[df.duplicated()],
+            use_container_width=True,
+            hide_index=True
+        )
     else:
         st.success("✅ No duplicate rows found")
