@@ -75,16 +75,25 @@ html body * {
     color: var(--text-light);
 }
 
-/* ========== LOGO ========== */
+/* =========================================================
+   SIDEBAR LOGO — PERFECT CENTER + SIZE CONTROL
+   ========================================================= */
+
 [data-testid="stSidebar"] img {
     display: block;
-    margin: 1.2rem auto 0.6rem auto;
-    width: 64px;
-    height: 64px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 0.8rem;
+
+    width: 72px;          /* 🔥 SIZE CONTROL HERE */
+    height: 72px;         /* 🔥 SIZE CONTROL HERE */
+
     border-radius: 18px;
     background: rgba(255,255,255,0.2);
     padding: 8px;
 }
+
 
 /* ========== SIDEBAR TITLE ========== */
 [data-testid="stSidebar"] h1 {
@@ -250,4 +259,23 @@ header[data-testid="stHeader"]::after {
 /* Optional: cleaner vertical scroll */
 [data-testid="stSidebar"] {
     overflow-y: auto;
+}
+
+
+/* =========================================================
+   PAGE FOOTER — COMPACT, BOLD, CAPS
+   ========================================================= */
+
+.app-footer {
+    max-width: 520px;              /* 🔥 width kam */
+    margin: 0 auto;                /* center align */
+    
+    font-weight: 800;              /* BOLD */
+    text-transform: uppercase;     /* CAPS */
+    letter-spacing: 1px;           /* premium feel */
+
+    background: transparent;       /* clean */
+    border-top: none;
+
+    color: #6b7280;
 }
