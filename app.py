@@ -16,7 +16,7 @@ st.set_page_config(
 st.sidebar.title("📊 Customer_Profiling_Dashboard")
 st.sidebar.info("🔷 Logo will be added here")
 
-page = st.sidebar.selectbox(
+page = st.sidebar.radio(
     "Pages",
     [
         "📂 Upload Dataset",
