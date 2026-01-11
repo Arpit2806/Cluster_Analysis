@@ -1,29 +1,34 @@
 /* =========================================================
-   PREMIUM SAAS DASHBOARD — MARKET STANDARD
-   Inspired by Stripe, Notion, Linear, Retool
+   MODERN SAAS DASHBOARD — CRM / PRODUCT UI STYLE
+   Inspired by high-end web apps (Aventri-style)
    ========================================================= */
 
-/* ---------- FONT ---------- */
+/* ---------------- FONT ---------------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ---------- DESIGN TOKENS ---------- */
+/* ---------------- DESIGN TOKENS ---------------- */
 :root {
-    --bg-page: #f6f7fb;
-    --bg-sidebar: #ffffff;
-    --bg-card: #ffffff;
+    --bg-app: #6c5ce7;                 /* outer background */
+    --bg-shell: #e9e9ee;               /* app container */
+    --bg-sidebar: #6c5ce7;             /* sidebar color */
+    --bg-content: #ffffff;             /* main page */
 
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-on-dark: #ffffff;
 
-    --accent: #6366f1;           /* Indigo (modern SaaS standard) */
-    --accent-soft: rgba(99,102,241,0.12);
+    --accent: #6c5ce7;
+    --accent-soft: rgba(108,92,231,0.18);
 
-    --border-soft: #e5e7eb;
-    --shadow-soft: 0 8px 24px rgba(15,23,42,0.06);
+    --radius-lg: 26px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+
+    --shadow-xl: 0 24px 60px rgba(17,24,39,0.25);
+    --shadow-soft: 0 10px 30px rgba(17,24,39,0.08);
 }
 
-/* ---------- GLOBAL RESET ---------- */
+/* ---------------- RESET ---------------- */
 * {
     box-sizing: border-box;
 }
@@ -31,153 +36,160 @@
 html, body {
     margin: 0;
     padding: 0;
-    background: var(--bg-page);
+    background: var(--bg-app);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-primary);
 }
 
-/* Force font everywhere (Streamlit override) */
+/* Force font everywhere */
 html body,
 html body * {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* ---------- APP BACKGROUND ---------- */
+/* ---------------- APP SHELL ---------------- */
 .stApp {
-    background: var(--bg-page) !important;
+    background: var(--bg-app) !important;
+    padding: 3rem !important;
 }
 
-/* ---------- MAIN CONTENT ---------- */
-.block-container {
-    padding: 2.8rem 3.5rem 5rem 3.5rem !important;
+/* ---------------- MAIN APP CONTAINER ---------------- */
+[data-testid="stAppViewContainer"] {
+    background: var(--bg-shell);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
 }
 
-/* ---------- SIDEBAR ---------- */
+/* ---------------- SIDEBAR ---------------- */
 [data-testid="stSidebar"] {
     background: var(--bg-sidebar);
-    width: 280px !important;
-    min-width: 280px !important;
-    border-right: 1px solid var(--border-soft);
+    width: 260px !important;
+    min-width: 260px !important;
+    border-right: none;
 }
 
-/* Remove default Streamlit spacing */
+/* Remove Streamlit spacing */
 [data-testid="stSidebar"] > div {
-    margin-top: -24px !important;
-    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 1.8rem !important;
 }
 
 /* Sidebar text */
 [data-testid="stSidebar"] * {
-    color: var(--text-primary);
+    color: var(--text-on-dark);
 }
 
-/* ---------- LOGO ---------- */
+/* ---------------- LOGO ---------------- */
 [data-testid="stSidebar"] img {
     display: block;
-    margin: 1.6rem auto 0.8rem auto;
-    width: 78px;
-    height: 78px;
-    border-radius: 20px;
-    background: var(--bg-card);
-    box-shadow: var(--shadow-soft);
+    margin: 0 auto 1.2rem auto;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.15);
     padding: 10px;
 }
 
-/* ---------- SIDEBAR TITLE ---------- */
+/* ---------------- SIDEBAR TITLE ---------------- */
 [data-testid="stSidebar"] h1 {
-    max-width: 220px;
-    margin: 0 auto 1.8rem auto !important;
     text-align: center;
-
-    font-size: 1.05rem;
-    line-height: 1.4;
+    font-size: 1rem;
     font-weight: 700;
-    letter-spacing: 0.2px;
-
-    color: var(--text-primary);
+    letter-spacing: 0.3px;
+    margin-bottom: 2rem !important;
+    color: #ffffff;
 }
 
-/* Remove Streamlit section label */
+/* Remove Streamlit section headers */
 [data-testid="stSidebar"] h3 {
     display: none !important;
 }
 
-/* ---------- NAVIGATION BUTTONS ---------- */
+/* ---------------- NAVIGATION BUTTONS ---------------- */
 [data-testid="stSidebar"] .stButton {
-    margin: -6px 0 !important;
+    margin: 0.35rem 0 !important;
 }
 
 /* Button base */
 [data-testid="stSidebar"] .stButton > button {
-    width: 100%;
-    height: 40px;
+    width: 90%;
+    height: 44px;
+    margin: 0 auto !important;
     padding: 0 18px;
-    margin: -2px 0 !important;
 
     background: transparent;
     border: none;
-    border-radius: 12px;
+    border-radius: 999px; /* pill style */
 
     font-size: 0.82rem;
     font-weight: 600;
     text-align: left;
 
-    color: var(--text-secondary);
+    color: rgba(255,255,255,0.9);
 
     transition: background 0.15s ease, color 0.15s ease;
 }
 
 /* Hover */
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: var(--accent-soft);
-    color: var(--accent);
+    background: rgba(255,255,255,0.18);
 }
 
 /* Active */
 [data-testid="stSidebar"] .stButton > button[data-active="true"] {
-    background: var(--accent-soft);
+    background: #ffffff;
     color: var(--accent);
     font-weight: 700;
 }
 
-/* ---------- PAGE HEADERS ---------- */
-h1, h2 {
+/* ---------------- MAIN CONTENT AREA ---------------- */
+.block-container {
+    background: var(--bg-content);
+    margin: 1.8rem;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 3rem 5rem 3rem !important;
+    box-shadow: var(--shadow-soft);
+}
+
+/* ---------------- PAGE HEADERS ---------------- */
+h1 {
+    font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text-primary);
 }
 
-h3, h4 {
+h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+h3 {
     font-weight: 600;
     color: var(--text-secondary);
 }
 
-/* ---------- CARDS (UPLOAD, EDA, OUTPUT SECTIONS) ---------- */
+/* ---------------- CARDS / SECTIONS ---------------- */
 [data-testid="stFileUploader"],
 [data-testid="stDataFrame"],
 [data-testid="stMetric"],
 [data-testid="stForm"] {
-    background: var(--bg-card);
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-soft);
     padding: 1.6rem !important;
-    border: 1px solid var(--border-soft);
+    border: none;
 }
 
-/* ---------- FILE UPLOADER ---------- */
+/* ---------------- FILE UPLOADER ---------------- */
 [data-testid="stFileUploader"] section {
     background: #f8fafc;
-    border-radius: 12px;
-    border: 1px dashed var(--border-soft);
+    border-radius: var(--radius-sm);
+    border: 1px dashed #e5e7eb;
 }
 
-/* ---------- REMOVE IMAGE FULLSCREEN ICON ---------- */
-[data-testid="stImage"] button,
-[data-testid="stImage"] div[role="button"] {
-    display: none !important;
-}
-
-/* ---------- REMOVE STREAMLIT TOP BAR ---------- */
+/* ---------------- REMOVE STREAMLIT HEADER ---------------- */
 header[data-testid="stHeader"] {
     background: transparent !important;
     box-shadow: none !important;
@@ -187,26 +199,18 @@ header[data-testid="stHeader"]::after {
     display: none !important;
 }
 
-/* ---------- FOOTER ---------- */
+/* ---------------- FOOTER ---------------- */
 .app-footer {
     position: fixed;
-    bottom: 0;
-    left: 280px;
-    right: 0;
+    bottom: 1.2rem;
+    left: calc(260px + 3rem);
+    right: 3rem;
 
-    background: var(--bg-sidebar);
-    border-top: 1px solid var(--border-soft);
-
-    color: var(--text-muted);
+    background: transparent;
+    color: #6b7280;
     font-size: 0.8rem;
     font-weight: 500;
     text-align: center;
 
-    padding: 0.9rem;
     z-index: 1000;
-}
-
-/* Prevent overlap */
-.block-container {
-    padding-bottom: 5rem !important;
 }
