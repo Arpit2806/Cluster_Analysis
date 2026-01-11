@@ -44,23 +44,30 @@ logo_path = os.path.join(
     "logo1.png"
 )
 
+# ---- CIRCULAR PROFILE-STYLE LOGO (CENTER ALIGNED) ----
+logo_path = os.path.join(
+    os.path.dirname(__file__),
+    "assets",
+    "logo1.png"
+)
+
 if os.path.exists(logo_path):
     img = Image.open(logo_path).convert("RGBA")
 
     # Resize logo (profile size)
-    size = (90, 90)   # 👈 adjust if needed
+    size = (90, 90)
     img = img.resize(size)
 
     # Create circular mask
     mask = Image.new("L", size, 0)
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0, size[0], size[1]), fill=255)
-
-    # Apply mask
     img.putalpha(mask)
 
-    # Display logo
-    st.sidebar.image(img)
+    # Center align using columns
+    col1, col2, col3 = st.sidebar.columns([1, 2, 1])
+    with col2:
+        st.image(img)
 else:
     st.sidebar.warning("Logo not found")
 
