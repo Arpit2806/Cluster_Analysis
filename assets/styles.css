@@ -1,4 +1,4 @@
-/* ========== PREMIUM THEME - COMPACT SIDEBAR ========== */
+/* ========== PREMIUM THEME - CENTERED PAGES + TAB HIGHLIGHT ========== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
@@ -11,8 +11,8 @@
     --neon-pink: #ff0080;
     --shadow-neon: 0 0 30px rgba(0, 212, 255, 0.5);
     --shadow-glow: 0 25px 50px rgba(0,0,0,0.25);
-    --radio-height: 48px; /* Slightly smaller for compact sidebar */
-    --radio-border-radius: 14px; /* Maximum border coverage */
+    --radio-height: 48px;
+    --radio-border-radius: 14px;
 }
 
 * { box-sizing: border-box; }
@@ -30,85 +30,72 @@ html, body {
     padding: 3rem 4rem 8rem 0;
 }
 
-/* ========== COMPACT SIDEBAR - MAX BORDER BUTTONS ========== */
+/* ========== SIDEBAR - CENTERED PAGES TITLE ========== */
 [data-testid="stSidebar"] {
     background: var(--sidebar-gradient);
-    width: 280px !important; /* Reduced from 340px */
+    width: 280px !important;
     min-width: 280px !important;
-    padding: 1rem 0 1rem 0 !important; /* Zero side padding */
+    padding: 1rem 0 1rem 0 !important;
     margin: 0;
     box-shadow: var(--shadow-glow), inset 0 0 50px rgba(0,0,0,0.5);
 }
 
 [data-testid="stSidebar"] > div:first-child {
-    padding: 0 1.2rem !important; /* Tight content padding */
+    padding: 0 1.2rem !important;
 }
 
 [data-testid="stSidebar"] * {
     color: #e0e6ed;
 }
 
+/* CENTER "PAGES" HEADLINE */
 [data-testid="stSidebar"] h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.5rem; /* Smaller for compact */
+    font-size: 1.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 0 1.5rem 0;
-    text-align: center;
+    margin: 0 0 1.5rem 0 !important;
+    text-align: center !important;
     padding: 0 0.5rem;
+    width: 100%;
 }
 
-/* Active page indicator - Adjusted for compact */
-[data-testid="stSidebar"] [aria-selected="true"]::after {
-    content: '';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 32px;
-    background: linear-gradient(180deg, var(--neon-blue), var(--neon-pink));
-    border-radius: 2px;
-    box-shadow: var(--shadow-neon);
-    animation: pulse 2s infinite;
+/* HIDE RADIO CIRCLES - TAB HIGHLIGHT ONLY */
+div[role="radiogroup"] input[type="radio"] {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
 }
 
-/* COMPACT RADIO BUTTONS - FULL WIDTH BORDERS */
-div[role="radiogroup"] {
-    margin-bottom: 0.25rem;
-    padding: 0 0.2rem; /* Edge-to-edge */
-}
-
+/* TAB HIGHLIGHT STYLE - NO CIRCLES */
 div[role="radiogroup"] > label {
-    margin: 0 0 6px 0 !important; /* Tighter spacing */
-    padding: 0 16px !important; /* Compact horizontal padding */
+    margin: 0 0 6px 0 !important;
+    padding: 0 16px !important;
     height: var(--radio-height) !important;
     line-height: var(--radio-height) !important;
-    border-radius: var(--radio-border-radius) !important; /* Maximum rounded */
+    border-radius: var(--radio-border-radius) !important;
     background: rgba(255,255,255,0.03);
-    border: 2px solid rgba(255,255,255,0.12); /* Thicker border */
+    border: 2px solid rgba(255,255,255,0.12);
     backdrop-filter: blur(15px);
     transition: all 0.3s ease;
     font-weight: 500;
-    font-size: 0.9rem; /* Compact text */
+    font-size: 0.9rem;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
-    width: calc(100% - 4px) !important; /* Full width minus padding */
-    justify-content: space-between;
+    justify-content: flex-start;
+    width: calc(100% - 4px) !important;
+    cursor: pointer;
 }
 
-div[role="radiogroup"] > label:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--neon-blue);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3), var(--shadow-neon);
-}
-
-div[role="radiogroup"] input:checked + div + label {
+/* ACTIVE TAB - FULL HIGHLIGHT */
+div[role="radiogroup"] input:checked + div + label,
+div[role="radiogroup"] input:checked + label {
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
     border-color: var(--neon-blue) !important;
     border-width: 2px !important;
@@ -117,14 +104,20 @@ div[role="radiogroup"] input:checked + div + label {
     box-shadow: 0 10px 25px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
 }
 
-div[role="radiogroup"] input:checked + div + label::after {
-    content: '✓';
-    right: 16px;
-    font-size: 1rem;
-    font-weight: bold;
+/* HOVER EFFECT */
+div[role="radiogroup"] > label:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--neon-blue);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3), var(--shadow-neon);
 }
 
-/* Section headers - Compact */
+/* REMOVE CHECKMARK FOR CLEAN TAB LOOK */
+div[role="radiogroup"] input:checked + div + label::after,
+div[role="radiogroup"] input:checked + label::after {
+    display: none !important;
+}
+
+/* Section headers */
 .sidebar-section, [data-testid="stSidebar"] h3 {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 0.8rem;
@@ -136,6 +129,7 @@ div[role="radiogroup"] input:checked + div + label::after {
     text-transform: uppercase;
     margin: 1.5rem 0 0.5rem 0 !important;
     padding: 0.5rem 1rem 0.25rem 1rem;
+    position: relative;
 }
 
 .sidebar-section::after {
@@ -149,7 +143,7 @@ div[role="radiogroup"] input:checked + div + label::after {
     box-shadow: 0 0 8px var(--neon-blue);
 }
 
-/* ========== MAIN CONTENT ========== */
+/* ========== MAIN CONTENT - UNCHANGED ========== */
 h1, h2 {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 800;
@@ -160,7 +154,6 @@ h1, h2 {
 
 h1 { font-size: 3rem; letter-spacing: -1px; }
 
-/* Status, Upload, Cards - Unchanged premium styling */
 [data-testid="stStatusWidget"] {
     background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2));
     backdrop-filter: blur(20px);
@@ -230,7 +223,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: var(--shadow-neon);
 }
 
-/* Dataframes */
 .stDataFrame {
     background: rgba(255,255,255,0.15) !important;
     backdrop-filter: blur(20px);
@@ -240,7 +232,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: var(--shadow-glow);
 }
 
-/* Animations */
 @keyframes neonSweep {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
@@ -260,7 +251,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     color: #a0aec0;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
     [data-testid="stSidebar"] { width: 100% !important; min-width: 100% !important; }
     .block-container { padding: 2rem 1rem 6rem 1rem; }
