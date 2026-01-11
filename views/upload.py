@@ -3,103 +3,103 @@ import pandas as pd
 import numpy as np
 
 
-# ===============================
-# Inject CSS (Tables + Buttons)
-# ===============================
 def inject_table_css():
     st.markdown("""
     <style>
-        /* ===============================
-           TABLE STYLING
-           =============================== */
-        .table-wrapper {
-            max-width: 100%;
-            overflow-x: auto;
-            margin: 16px auto;
-        }
+    /* ===============================
+       TABLE STYLING
+       =============================== */
+    .table-wrapper {
+        max-width: 100%;
+        overflow-x: auto;
+        margin: 16px auto;
+    }
 
-        table.custom-table {
-            border-collapse: collapse;
-            font-size: 14px;
-            font-family: Inter, system-ui, sans-serif;
-            white-space: nowrap;
-            margin: 0 auto;
-        }
+    table.custom-table {
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family: Inter, system-ui, sans-serif;
+        white-space: nowrap;
+        margin: 0 auto;
+    }
 
-        table.custom-table th {
-            background-color: #5b5fe8;
-            color: white !important;
-            font-weight: 700;
-            padding: 10px 18px;
-            text-align: center;
-            border-right: 1px solid #4f52d9;
-        }
+    table.custom-table th {
+        background-color: #5b5fe8;
+        color: #ffffff !important;
+        font-weight: 700;
+        padding: 10px 18px;
+        text-align: center;
+    }
 
-        table.custom-table td {
-            background-color: #f5f6fa;
-            color: #1f2937;
-            padding: 10px 18px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-            border-right: 1px solid #e5e7eb;
-        }
+    table.custom-table td {
+        background-color: #f5f6fa;
+        color: #1f2937;
+        padding: 10px 18px;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+    }
 
-        table.custom-table tbody tr:nth-child(even) td {
-            background-color: #eef0f7;
-        }
+    table.custom-table tbody tr:nth-child(even) td {
+        background-color: #eef0f7;
+    }
 
-        /* ===============================
-           BUTTON STYLING (FIXED)
-           =============================== */
-        div.stButton > button {
-            background-color: #5b5fe8 !important;
-            color: #ffffff !important;
-            font-weight: 600;
-            font-size: 15px;
-            border-radius: 12px;
-            padding: 0.7rem 1.6rem;
-            border: none;
-        }
+    /* ===============================
+       🔥 BUTTON FIX (STREAMLIT HACK)
+       =============================== */
 
-        /* IMPORTANT: force text color */
-        div.stButton > button span {
-            color: #ffffff !important;
-        }
+    /* Base button */
+    button {
+        background-color: #5b5fe8 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        border-radius: 14px !important;
+        padding: 0.8rem 1.8rem !important;
+        border: none !important;
+    }
 
-        div.stButton > button:hover {
-            background-color: #4a4fd8 !important;
-            color: #ffffff !important;
-        }
+    /* All text inside button */
+    button * {
+        color: #ffffff !important;
+        fill: #ffffff !important;
+    }
 
-        div.stButton > button:hover span {
-            color: #ffffff !important;
-        }
+    /* Streamlit specific */
+    div[data-testid^="stButton"] button {
+        background-color: #5b5fe8 !important;
+        color: #ffffff !important;
+    }
 
-        div.stButton > button:active,
-        div.stButton > button:focus {
-            background-color: #4348c9 !important;
-            color: #ffffff !important;
-            box-shadow: none !important;
-        }
+    div[data-testid^="stButton"] button * {
+        color: #ffffff !important;
+    }
 
-        /* File uploader button */
-        div[data-testid="stFileUploader"] button {
-            background-color: #5b5fe8 !important;
-            color: #ffffff !important;
-            font-weight: 600;
-            border-radius: 12px;
-            border: none;
-        }
+    /* Hover */
+    button:hover {
+        background-color: #4a4fd8 !important;
+        color: #ffffff !important;
+    }
 
-        div[data-testid="stFileUploader"] button span {
-            color: #ffffff !important;
-        }
+    button:hover * {
+        color: #ffffff !important;
+    }
 
-        div[data-testid="stFileUploader"] button:hover {
-            background-color: #4a4fd8 !important;
-        }
+    /* Focus / active */
+    button:focus,
+    button:active {
+        background-color: #4348c9 !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+    }
+
+    /* File uploader button */
+    div[data-testid="stFileUploader"] button,
+    div[data-testid="stFileUploader"] button * {
+        background-color: #5b5fe8 !important;
+        color: #ffffff !important;
+    }
     </style>
     """, unsafe_allow_html=True)
+
 
 
 # ===============================
