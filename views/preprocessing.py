@@ -12,22 +12,6 @@ def preprocessing_page():
     df = st.session_state["data"]
 
     # =========================
-    # Dataset Overview
-    # =========================
-    st.subheader("📊 Dataset Overview")
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Rows", df.shape[0])
-    col2.metric("Columns", df.shape[1])
-    col3.metric("Total Missing Values", df.isnull().sum().sum())
-
-    # =========================
-    # Dataset Preview
-    # =========================
-    st.subheader("👀 Dataset Preview")
-    st.dataframe(df.head(), use_container_width=True)
-
-    # =========================
     # Column-wise Data Quality Summary
     # =========================
     st.subheader("📌 Column-wise Data Quality Summary")
@@ -82,17 +66,4 @@ def preprocessing_page():
         columns={"index": "Column", 0: "Missing Count"}
     ), use_container_width=True)
 
-    # =========================
-    # Handle Missing Values
-    # =========================
-    if st.button("⚙️ Handle Missing Values"):
-        df_processed = df.copy()
-
-        for col in df_processed.columns:
-            if df_processed[col].dtype == "object":
-                df_processed[col].fillna("Unknown", inplace=True)
-            else:
-                df_processed[col].fillna(df_processed[col].mean(), inplace=True)
-
-        st.session_state["processed_data"] = df_processed
-        st.success("✅ Missing values handled and saved as processed data")
+   
