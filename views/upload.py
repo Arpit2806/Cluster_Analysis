@@ -2,19 +2,27 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# =========================================================
-# Inject CSS for compact purple-white tables
-# =========================================================
+
+# ===============================
+# Inject CSS for Styled Tables
+# ===============================
 def inject_table_css():
     st.markdown("""
     <style>
-        table.custom-table {
+        .table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
             margin: 16px auto;
+        }
+
+        table.custom-table {
             border-collapse: collapse;
             font-size: 14px;
             font-family: Inter, system-ui, sans-serif;
             white-space: nowrap;
+            margin: 0 auto;
         }
+
         table.custom-table th {
             background-color: #5b5fe8;
             color: white !important;
@@ -22,6 +30,7 @@ def inject_table_css():
             padding: 8px 16px;
             text-align: center;
         }
+
         table.custom-table td {
             padding: 8px 16px;
             text-align: center;
@@ -30,16 +39,23 @@ def inject_table_css():
     </style>
     """, unsafe_allow_html=True)
 
-# =========================================================
-# Render compact table (NO pandas index)
-# =========================================================
+
+# ===============================
+# Render Compact Styled Table
+# ===============================
 def render_compact_table(df):
     html = df.to_html(index=False, classes="custom-table", border=0)
-    st.markdown(html, unsafe_allow_html=True)
+    wrapped_html = f"""
+    <div class="table-wrapper">
+        {html}
+    </div>
+    """
+    st.markdown(wrapped_html, unsafe_allow_html=True)
 
-# =========================================================
+
+# ===============================
 # Upload Page
-# =========================================================
+# ===============================
 def upload_page():
     inject_table_css()
 
@@ -55,10 +71,9 @@ def upload_page():
         st.success("✅ Dataset uploaded successfully!")
 
         # ===============================
-        # Preview of Data (Styled, No Index)
+        # Preview of Data (NO INDEX)
         # ===============================
         st.subheader("🔍 Preview of Data")
-
         preview_df = df.head().copy()
         render_compact_table(preview_df)
 
@@ -89,41 +104,37 @@ def upload_page():
         st.divider()
 
         # ===============================
-        # Column Details (Vertical Flow)
+        # Column Details
         # ===============================
         st.subheader("📋 Column Details")
 
+        # Session state toggles
         if "show_num" not in st.session_state:
             st.session_state.show_num = False
         if "show_cat" not in st.session_state:
             st.session_state.show_cat = False
 
-        # -------- Button 1: Numerical Columns --------
+        # Buttons stacked vertically
         if st.button("Display Numerical Columns"):
             st.session_state.show_num = not st.session_state.show_num
 
         if st.session_state.show_num:
             num_cols = df.select_dtypes(include=np.number).columns.tolist()
-
             num_df = pd.DataFrame({
                 "Index": range(1, len(num_cols) + 1),
                 "Numerical Columns": num_cols
             })
-
             render_compact_table(num_df)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # -------- Button 2: Categorical Columns --------
         if st.button("Display Categorical Columns"):
             st.session_state.show_cat = not st.session_state.show_cat
 
         if st.session_state.show_cat:
             cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
-
             cat_df = pd.DataFrame({
                 "Index": range(1, len(cat_cols) + 1),
                 "Categorical Columns": cat_cols
             })
-
             render_compact_table(cat_df)
