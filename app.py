@@ -28,20 +28,18 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-# ---- LOGO (SAFE + RESIZED) ----
-logo_path = os.path.join(
-    os.path.dirname(__file__),
-    "assets",
-    "logo1.png"
+
+logo = Image.open(logo_path)
+st.sidebar.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="data:image/png;base64,{}" width="160">
+    </div>
+    """.format(logo.tobytes()),
+    unsafe_allow_html=True
 )
 
-
-# ---------------- SIDEBAR ----------------
-st.sidebar.title("Customer Profiling Dashboard")
-
-
-
-
+st.sidebar.title("📊 Customer Profiling Dashboard")
 
 # ---- NAVIGATION ----
 page = st.sidebar.radio(
