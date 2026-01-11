@@ -1,133 +1,67 @@
 /* =========================================================
-   PREMIUM SAAS DASHBOARD — FIXED & REFINED
+   FINAL REFINEMENT — CLEAN, TIGHT, PREMIUM
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
 
-:root {
-    --bg-app: #6c5ce7;
-    --bg-shell: #e9e9ee;
-    --bg-sidebar: #6c5ce7;
-    --bg-content: #ffffff;
-
-    --text-primary: #111827;
-    --text-secondary: #eaeaff;
-    --text-on-dark: #ffffff;
-
-    --accent: #ffffff;
-    --accent-soft: rgba(255,255,255,0.18);
-
-    --radius-lg: 26px;
-    --radius-md: 16px;
-
-    --shadow-xl: 0 24px 60px rgba(17,24,39,0.25);
-    --shadow-soft: 0 10px 30px rgba(17,24,39,0.08);
-}
-
-/* ---------------- RESET ---------------- */
-* {
-    box-sizing: border-box;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg-app);
-    font-family: 'Inter', system-ui, sans-serif;
-}
-
-/* Force font everywhere */
-html body,
-html body * {
-    font-family: 'Inter', system-ui, sans-serif !important;
-}
-
-/* ---------------- REMOVE STREAMLIT TOP BAR (KEY ISSUE) ---------------- */
-header[data-testid="stHeader"] {
+/* ---------- REMOVE STREAMLIT TOP BAR (FIXES "key") ---------- */
+header[data-testid="stHeader"],
+div[data-testid="stToolbar"],
+div[data-testid="stDecoration"] {
     display: none !important;
 }
 
-/* ---------------- APP SHELL ---------------- */
-.stApp {
-    background: var(--bg-app) !important;
-    padding: 2.4rem !important;
-}
-
-/* ---------------- MAIN CONTAINER ---------------- */
-[data-testid="stAppViewContainer"] {
-    background: var(--bg-shell);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    overflow: hidden;
-}
-
-/* ---------------- SIDEBAR ---------------- */
+/* ---------- SIDEBAR PULL-UP ---------- */
 [data-testid="stSidebar"] {
-    background: var(--bg-sidebar);
-    width: 260px !important;
-    min-width: 260px !important;
-    padding-top: 1.2rem !important; /* 🔥 pulled up */
+    padding-top: 0 !important;
 }
 
-/* Remove extra inner spacing */
 [data-testid="stSidebar"] > div {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
 
-[data-testid="stSidebar"] * {
-    color: var(--text-on-dark);
-}
-
-/* ---------------- LOGO ---------------- */
+/* ---------- LOGO ---------- */
 [data-testid="stSidebar"] img {
-    display: block;
-    margin: 0 auto 0.6rem auto;
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.16);
-    padding: 10px;
+    margin-top: 0.8rem !important;
+    margin-bottom: 0.6rem !important;
 }
 
-/* ---------------- TITLE (MAGICAL) ---------------- */
+/* ---------- TITLE (MAGICAL, PREMIUM) ---------- */
 [data-testid="stSidebar"] h1 {
     max-width: 220px;
-    margin: 0 auto 1.6rem auto !important;
-    text-align: center;
+    margin: 0 auto 1.2rem auto !important;
 
-    font-size: 1.35rem;            /* 🔥 bigger */
+    font-size: 1.5rem;        /* 🔥 bigger */
     font-weight: 900;
     line-height: 1.25;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
 
-    background: linear-gradient(180deg, #ffffff, #dcdcff);
+    text-align: center;
+
+    background: linear-gradient(180deg, #ffffff 0%, #eaeaff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Remove Streamlit section headers */
-[data-testid="stSidebar"] h3 {
-    display: none !important;
-}
-
-/* ---------------- NAV BUTTONS ---------------- */
+/* ---------- NAV BUTTON STACK (NO GAPS) ---------- */
 [data-testid="stSidebar"] .stButton {
-    margin: -10px 0 !important;   /* 🔥 negative spacing */
+    margin: -12px 0 !important;   /* 🔥 tighter */
 }
 
-/* Button base */
+/* ---------- BUTTON STYLE ---------- */
 [data-testid="stSidebar"] .stButton > button {
-    width: 92%;
+    width: 94%;
     height: 44px;
-    margin: -3px auto !important; /* 🔥 no gap */
+
+    margin: -4px auto !important; /* 🔥 removes space */
     padding: 0 20px;
 
     background: transparent;
     border: none;
     border-radius: 999px;
 
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 800;             /* 🔥 bold */
     text-align: left;             /* 🔥 left aligned */
 
@@ -150,27 +84,4 @@ header[data-testid="stHeader"] {
     background: #ffffff;
     color: #6c5ce7;
     font-weight: 900;
-}
-
-/* ---------------- MAIN CONTENT ---------------- */
-.block-container {
-    background: var(--bg-content);
-    margin: 1.8rem;
-    border-radius: var(--radius-lg);
-    padding: 2.6rem 3.2rem 5rem 3.2rem !important;
-    box-shadow: var(--shadow-soft);
-}
-
-/* ---------------- FOOTER ---------------- */
-.app-footer {
-    position: fixed;
-    bottom: 1.2rem;
-    left: calc(260px + 2.4rem);
-    right: 2.4rem;
-
-    background: transparent;
-    color: #6b7280;
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-align: center;
 }
