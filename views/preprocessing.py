@@ -2,11 +2,69 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+
+# ===============================
+# Purple + White Styling (ONLY UI)
+# ===============================
+def inject_purple_white_css():
+    st.markdown("""
+    <style>
+    /* Page headers */
+    h1, h2, h3 {
+        color: #5b5fe8;
+        font-weight: 700;
+    }
+
+    /* Dataframe header */
+    thead tr th {
+        background-color: #5b5fe8 !important;
+        color: white !important;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    /* Dataframe cells */
+    tbody tr td {
+        background-color: #f7f8ff;
+        color: #1f2937;
+        text-align: center;
+    }
+
+    /* Remove index column */
+    .row_heading.level0 {
+        display: none;
+    }
+    .blank {
+        display: none;
+    }
+
+    /* Buttons */
+    div.stButton > button {
+        background-color: #5b5fe8;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+    }
+
+    div.stButton > button:hover {
+        background-color: #4a4fd8;
+        color: white;
+    }
+
+    /* Alerts */
+    .stAlert {
+        border-left: 6px solid #5b5fe8;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+
 # ===============================
 # Preprocessing Page
 # ===============================
 def preprocessing_page():
-    inject_table_css()
+    inject_purple_white_css()
 
     st.header("🛠️ Preprocessing Stage")
 
@@ -16,41 +74,9 @@ def preprocessing_page():
 
     df = st.session_state["data"]
 
-    # ===============================
-    # Dataset Preview
-    # ===============================
-    st.subheader("🔍 Dataset Preview")
-    render_compact_table(df.head())
-
-    st.divider()
-
-    # ===============================
-    # Dataset Health Overview
-    # ===============================
-    st.subheader("📊 Dataset Health Overview")
-
-    overview_df = pd.DataFrame({
-        "Metric": [
-            "Total Rows",
-            "Total Columns",
-            "Total Missing Values",
-            "Duplicate Rows"
-        ],
-        "Value": [
-            df.shape[0],
-            df.shape[1],
-            df.isnull().sum().sum(),
-            df.duplicated().sum()
-        ]
-    })
-
-    render_compact_table(overview_df)
-
-    st.divider()
-
-    # ===============================
+    # =========================
     # Column-wise Data Quality Summary
-    # ===============================
+    # =========================
     st.subheader("📌 Column-wise Data Quality Summary")
 
     summary = []
@@ -58,81 +84,37 @@ def preprocessing_page():
     for col in df.columns:
         col_data = df[col]
         missing_count = col_data.isnull().sum()
-        missing_pct = round((missing_count / len(df)) * 100, 2)
 
+        # Outlier detection using IQR (numeric only)
         outliers = 0
         if pd.api.types.is_numeric_dtype(col_data):
             Q1 = col_data.quantile(0.25)
             Q3 = col_data.quantile(0.75)
             IQR = Q3 - Q1
-            lower = Q1 - 1.5 * IQR
-            upper = Q3 + 1.5 * IQR
-            outliers = col_data[(col_data < lower) | (col_data > upper)].count()
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            outliers = col_data[(col_data < lower_bound) | (col_data > upper_bound)].count()
 
         summary.append({
             "Column Name": col,
             "Data Type": col_data.dtype,
             "Missing Values": missing_count,
-            "Missing %": missing_pct,
             "Outliers (IQR)": outliers,
             "Unique Values": col_data.nunique()
         })
 
     summary_df = pd.DataFrame(summary)
-    render_compact_table(summary_df)
+    st.dataframe(summary_df, use_container_width=True, hide_index=True)
 
-    st.divider()
-
-    # ===============================
+    # =========================
     # Duplicate Records
-    # ===============================
+    # =========================
     st.subheader("🧬 Duplicate Records")
 
     duplicate_count = df.duplicated().sum()
 
     if duplicate_count > 0:
-        dup_info_df = pd.DataFrame({
-            "Metric": ["Duplicate Rows Found"],
-            "Value": [duplicate_count]
-        })
-        render_compact_table(dup_info_df)
-
-        st.markdown("**Duplicate Rows Preview**")
-        render_compact_table(df[df.duplicated()])
+        st.warning(f"⚠️ Duplicate Rows Found: {duplicate_count}")
+        st.dataframe(df[df.duplicated()], use_container_width=True, hide_index=True)
     else:
-        render_compact_table(pd.DataFrame({
-            "Status": ["No duplicate rows found"]
-        }))
-
-    st.divider()
-
-    # ===============================
-    # Missing Values Table
-    # ===============================
-    st.subheader("❓ Missing Values per Column")
-
-    missing_df = (
-        df.isnull()
-        .sum()
-        .reset_index()
-        .rename(columns={"index": "Column Name", 0: "Missing Count"})
-    )
-
-    render_compact_table(missing_df)
-
-    st.divider()
-
-    # ===============================
-    # Handle Missing Values
-    # ===============================
-    if st.button("⚙️ Handle Missing Values"):
-        df_processed = df.copy()
-
-        for col in df_processed.columns:
-            if df_processed[col].dtype == "object":
-                df_processed[col].fillna("Unknown", inplace=True)
-            else:
-                df_processed[col].fillna(df_processed[col].mean(), inplace=True)
-
-        st.session_state["processed_data"] = df_processed
-        st.success("✅ Missing values handled and stored as processed data")
+        st.success("✅ No duplicate rows found")
