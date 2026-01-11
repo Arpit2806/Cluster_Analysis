@@ -23,7 +23,7 @@ def inject_table_css():
             margin: 0 auto;
         }
 
-        /* Column headers (purple stays same) */
+        /* Column headers */
         table.custom-table th {
             background-color: #5b5fe8;
             color: white !important;
@@ -33,9 +33,9 @@ def inject_table_css():
             border-right: 1px solid #4f52d9;
         }
 
-        /* Table body cells (GREY like preprocessing page) */
+        /* Table body cells (soft grey) */
         table.custom-table td {
-            background-color: #f5f6fa;   /* 👈 soft grey */
+            background-color: #f5f6fa;
             color: #1f2937;
             padding: 10px 18px;
             text-align: center;
@@ -43,28 +43,38 @@ def inject_table_css():
             border-right: 1px solid #e5e7eb;
         }
 
-        /* Zebra effect (very subtle) */
+        /* Zebra rows */
         table.custom-table tbody tr:nth-child(even) td {
             background-color: #eef0f7;
+        }
+
+        /* Buttons */
+        div.stButton > button {
+            background-color: #5b5fe8;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+        }
+
+        div.stButton > button:hover {
+            background-color: #4a4fd8;
+            color: white;
         }
     </style>
     """, unsafe_allow_html=True)
 
+
 # ===============================
-# Render Compact Styled Table
+# Render Styled Table
 # ===============================
 def render_compact_table(df):
     html = df.to_html(index=False, classes="custom-table", border=0)
-    wrapped_html = f"""
-    <div class="table-wrapper">
-        {html}
-    </div>
-    """
-    st.markdown(wrapped_html, unsafe_allow_html=True)
+    st.markdown(f"<div class='table-wrapper'>{html}</div>", unsafe_allow_html=True)
 
 
 # ===============================
-# Upload Page
+# Upload Page (Session Persistent)
 # ===============================
 def upload_page():
     inject_table_css()
@@ -72,79 +82,94 @@ def upload_page():
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
 
-    uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
+    # ===============================
+    # Reset Dataset (Optional)
+    # ===============================
+    if "data" in st.session_state:
+        if st.button("🔄 Reset Dataset"):
+            st.session_state.clear()
+            st.experimental_rerun()
 
-    if uploaded_file:
+    # ===============================
+    # Upload / Reuse Dataset
+    # ===============================
+    if "data" in st.session_state:
+        df = st.session_state["data"]
+        st.success("✅ Dataset already loaded")
+
+    else:
+        uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
+
+        if uploaded_file is None:
+            st.info("📌 Please upload a CSV file to continue")
+            return
+
         df = pd.read_csv(uploaded_file)
         st.session_state["data"] = df
-
         st.success("✅ Dataset uploaded successfully!")
 
-        # ===============================
-        # Preview of Data (NO INDEX)
-        # ===============================
-        st.subheader("🔍 Preview of Data")
-        preview_df = df.head().copy()
-        render_compact_table(preview_df)
+    # ===============================
+    # Preview of Data
+    # ===============================
+    st.subheader("🔍 Preview of Data")
+    render_compact_table(df.head())
 
-        st.divider()
+    st.divider()
 
-        # ===============================
-        # Dataset Overview
-        # ===============================
-        st.subheader("📊 Dataset Overview")
+    # ===============================
+    # Dataset Overview
+    # ===============================
+    st.subheader("📊 Dataset Overview")
 
-        overview_df = pd.DataFrame({
-            "Metric": [
-                "Total Rows",
-                "Total Columns",
-                "Numerical Columns",
-                "Categorical Columns"
-            ],
-            "Value": [
-                df.shape[0],
-                df.shape[1],
-                df.select_dtypes(include=np.number).shape[1],
-                df.select_dtypes(exclude=np.number).shape[1]
-            ]
+    overview_df = pd.DataFrame({
+        "Metric": [
+            "Total Rows",
+            "Total Columns",
+            "Numerical Columns",
+            "Categorical Columns"
+        ],
+        "Value": [
+            df.shape[0],
+            df.shape[1],
+            df.select_dtypes(include=np.number).shape[1],
+            df.select_dtypes(exclude=np.number).shape[1]
+        ]
+    })
+
+    render_compact_table(overview_df)
+
+    st.divider()
+
+    # ===============================
+    # Column Details
+    # ===============================
+    st.subheader("📋 Column Details")
+
+    if "show_num" not in st.session_state:
+        st.session_state.show_num = False
+    if "show_cat" not in st.session_state:
+        st.session_state.show_cat = False
+
+    if st.button("Display Numerical Columns"):
+        st.session_state.show_num = not st.session_state.show_num
+
+    if st.session_state.show_num:
+        num_cols = df.select_dtypes(include=np.number).columns.tolist()
+        num_df = pd.DataFrame({
+            "Index": range(1, len(num_cols) + 1),
+            "Numerical Columns": num_cols
         })
+        render_compact_table(num_df)
 
-        render_compact_table(overview_df)
+    st.markdown("<br>", unsafe_allow_html=True)
 
-        st.divider()
+    if st.button("Display Categorical Columns"):
+        st.session_state.show_cat = not st.session_state.show_cat
 
-        # ===============================
-        # Column Details
-        # ===============================
-        st.subheader("📋 Column Details")
-
-        # Session state toggles
-        if "show_num" not in st.session_state:
-            st.session_state.show_num = False
-        if "show_cat" not in st.session_state:
-            st.session_state.show_cat = False
-
-        # Buttons stacked vertically
-        if st.button("Display Numerical Columns"):
-            st.session_state.show_num = not st.session_state.show_num
-
-        if st.session_state.show_num:
-            num_cols = df.select_dtypes(include=np.number).columns.tolist()
-            num_df = pd.DataFrame({
-                "Index": range(1, len(num_cols) + 1),
-                "Numerical Columns": num_cols
-            })
-            render_compact_table(num_df)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        if st.button("Display Categorical Columns"):
-            st.session_state.show_cat = not st.session_state.show_cat
-
-        if st.session_state.show_cat:
-            cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
-            cat_df = pd.DataFrame({
-                "Index": range(1, len(cat_cols) + 1),
-                "Categorical Columns": cat_cols
-            })
-            render_compact_table(cat_df)
+    if st.session_state.show_cat:
+        cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
+        cat_df = pd.DataFrame({
+            "Index": range(1, len(cat_cols) + 1),
+            "Categorical Columns": cat_cols
+        })
+        render_compact_table(cat_df)
