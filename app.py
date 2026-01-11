@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from PIL import Image
+from PIL import Image   # ✅ REQUIRED
 
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
@@ -17,59 +17,17 @@ st.set_page_config(
 )
 
 
-# ---------------- LOAD CSS (MUST BE HERE) ----------------
-def load_css():
-    css_path = os.path.join(
-        os.path.dirname(__file__),
-        "assets",
-        "styles.css"
-    )
-    with open(css_path) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+# ---------------- SIDEBAR ----------------
 
-load_css()
-
-logo = Image.open(logo_path)
-st.sidebar.markdown(
-    """
-    <div style="text-align: center;">
-        <img src="data:image/png;base64,{}" width="160">
-    </div>
-    """.format(logo.tobytes()),
-    unsafe_allow_html=True
+# ---- LOGO ABOVE TITLE (SAFE METHOD) ----
+logo_path = os.path.join(
+    os.path.dirname(__file__),
+    "assets",
+    "logo1.png"
 )
 
-st.sidebar.title("📊 Customer Profiling Dashboard")
-
-# ---- NAVIGATION ----
-page = st.sidebar.radio(
-    "Pages",
-    [
-        "📂 Upload Dataset",
-        "🛠️ Preprocessing Stage",
-        "📊 EDA",
-        "⚙️ Feature Engineering",
-        "🤖 Model Building",
-        "📈 Prediction & Insights"
-    ]
-)
-
-
-# ---------------- ROUTING ----------------
-if page == "📂 Upload Dataset":
-    upload_page()
-
-elif page == "🛠️ Preprocessing Stage":
-    preprocessing_page()
-
-elif page == "📊 EDA":
-    eda_page()
-
-elif page == "⚙️ Feature Engineering":
-    feature_engineering_page()
-
-elif page == "🤖 Model Building":
-    model_page()
-
-elif page == "📈 Prediction & Insights":
-    prediction_page()
+if os.path.exists(logo_path):
+    logo = Image.open(logo_path)
+    st.sidebar.image(logo, width=160)   # 👈 adjust size here
+else:
+    st.side
