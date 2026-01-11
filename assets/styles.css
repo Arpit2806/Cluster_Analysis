@@ -1,9 +1,8 @@
-/* ========== PREMIUM NEOMORPHISM + NEON THEME - REFINED ========== */
+/* ========== PREMIUM THEME - COMPACT SIDEBAR ========== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --sidebar-gradient: linear-gradient(180deg, #0c0c1a 0%, #1a1a2e 70%, #16213e 100%);
     --card-bg: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
@@ -12,12 +11,11 @@
     --neon-pink: #ff0080;
     --shadow-neon: 0 0 30px rgba(0, 212, 255, 0.5);
     --shadow-glow: 0 25px 50px rgba(0,0,0,0.25);
-    --radio-height: 52px; /* Fixed height for uniform size */
+    --radio-height: 48px; /* Slightly smaller for compact sidebar */
+    --radio-border-radius: 14px; /* Maximum border coverage */
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
     font-family: 'Inter', sans-serif;
@@ -30,144 +28,125 @@ html, body {
 
 .block-container {
     padding: 3rem 4rem 8rem 0;
-    backdrop-filter: blur(10px);
 }
 
-/* ========== REFINED SIDEBAR - NO WASTED SPACE ========== */
+/* ========== COMPACT SIDEBAR - MAX BORDER BUTTONS ========== */
 [data-testid="stSidebar"] {
     background: var(--sidebar-gradient);
-    position: relative;
-    width: 340px !important;
-    min-width: 340px !important;
-    padding: 1.5rem 0 1.5rem 0 !important; /* Zero side padding */
+    width: 280px !important; /* Reduced from 340px */
+    min-width: 280px !important;
+    padding: 1rem 0 1rem 0 !important; /* Zero side padding */
     margin: 0;
-    overflow: visible;
     box-shadow: var(--shadow-glow), inset 0 0 50px rgba(0,0,0,0.5);
 }
 
 [data-testid="stSidebar"] > div:first-child {
-    padding: 0 1.5rem !important; /* Content padding only */
-}
-
-[data-testid="stSidebar"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
-    animation: neonSweep 3s infinite;
+    padding: 0 1.2rem !important; /* Tight content padding */
 }
 
 [data-testid="stSidebar"] * {
     color: #e0e6ed;
-    font-weight: 400;
 }
 
 [data-testid="stSidebar"] h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.5rem; /* Smaller for compact */
     font-weight: 700;
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin: 0 0 2rem 0;
+    margin: 0 0 1.5rem 0;
     text-align: center;
-    letter-spacing: -0.5px;
-    padding: 0 1rem; /* Prevent overflow */
+    padding: 0 0.5rem;
 }
 
-/* Active page indicator */
-[data-testid="stSidebar"] [aria-selected="true"] {
-    position: relative;
-}
-
+/* Active page indicator - Adjusted for compact */
 [data-testid="stSidebar"] [aria-selected="true"]::after {
     content: '';
     position: absolute;
-    left: 12px; /* Adjusted for content padding */
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 4px;
-    height: 40px;
+    width: 3px;
+    height: 32px;
     background: linear-gradient(180deg, var(--neon-blue), var(--neon-pink));
     border-radius: 2px;
     box-shadow: var(--shadow-neon);
     animation: pulse 2s infinite;
 }
 
-/* REFINED RADIO BUTTONS - UNIFORM SIZE, TIGHT SPACING */
+/* COMPACT RADIO BUTTONS - FULL WIDTH BORDERS */
 div[role="radiogroup"] {
-    margin-bottom: 0.5rem; /* Tight group spacing */
+    margin-bottom: 0.25rem;
+    padding: 0 0.2rem; /* Edge-to-edge */
 }
 
 div[role="radiogroup"] > label {
-    margin: 0 0 8px 0 !important; /* Reduced spacing between buttons */
-    padding: 0 20px !important; /* Consistent horizontal padding */
-    height: var(--radio-height) !important; /* Fixed uniform height */
-    line-height: var(--radio-height) !important; /* Perfect vertical centering */
-    border-radius: 16px !important; /* Consistent radius */
+    margin: 0 0 6px 0 !important; /* Tighter spacing */
+    padding: 0 16px !important; /* Compact horizontal padding */
+    height: var(--radio-height) !important;
+    line-height: var(--radio-height) !important;
+    border-radius: var(--radio-border-radius) !important; /* Maximum rounded */
     background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.12); /* Thicker border */
     backdrop-filter: blur(15px);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
+    transition: all 0.3s ease;
     font-weight: 500;
+    font-size: 0.9rem; /* Compact text */
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
-    cursor: pointer;
-    /* NO translateX or scale to prevent text movement */
+    width: calc(100% - 4px) !important; /* Full width minus padding */
+    justify-content: space-between;
 }
 
 div[role="radiogroup"] > label:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(0,212,255,0.3);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3), var(--shadow-neon);
+    background: rgba(255,255,255,0.1);
+    border-color: var(--neon-blue);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3), var(--shadow-neon);
 }
 
 div[role="radiogroup"] input:checked + div + label {
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
     border-color: var(--neon-blue) !important;
+    border-width: 2px !important;
     color: white !important;
     font-weight: 700;
-    box-shadow: 0 12px 30px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    box-shadow: 0 10px 25px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
 }
 
 div[role="radiogroup"] input:checked + div + label::after {
     content: '✓';
-    position: absolute;
-    right: 20px;
-    font-size: 1.1rem;
+    right: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
-/* Section headers */
+/* Section headers - Compact */
 .sidebar-section, [data-testid="stSidebar"] h3 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    margin: 2rem 0 0.75rem 0 !important;
-    padding: 0.75rem 1.5rem 0.5rem 1.5rem;
-    position: relative;
+    margin: 1.5rem 0 0.5rem 0 !important;
+    padding: 0.5rem 1rem 0.25rem 1rem;
 }
 
 .sidebar-section::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 1.5rem;
-    width: 40px;
+    left: 1rem;
+    width: 30px;
     height: 2px;
     background: var(--neon-blue);
-    box-shadow: 0 0 10px var(--neon-blue);
+    box-shadow: 0 0 8px var(--neon-blue);
 }
 
 /* ========== MAIN CONTENT ========== */
@@ -177,12 +156,11 @@ h1, h2 {
     background: linear-gradient(135deg, #ffffff, #f0f4ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 1.5rem;
 }
 
 h1 { font-size: 3rem; letter-spacing: -1px; }
 
-/* Status messages */
+/* Status, Upload, Cards - Unchanged premium styling */
 [data-testid="stStatusWidget"] {
     background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2));
     backdrop-filter: blur(20px);
@@ -192,7 +170,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: 0 20px 60px rgba(16,185,129,0.2);
 }
 
-/* Upload areas */
 .stFileUploader {
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(20px);
@@ -211,18 +188,15 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: 0 20px 60px rgba(0,212,255,0.3);
 }
 
-/* Cards */
-.admin-card, .stExpander, [data-testid="column"] > div > div {
+.admin-card, .stExpander {
     background: var(--card-bg);
     backdrop-filter: blur(30px);
     border-radius: 28px;
     border: 1px solid var(--glass-border);
     padding: 2.5rem;
     margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
     box-shadow: var(--shadow-glow);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.4s ease;
 }
 
 .admin-card:hover {
@@ -231,7 +205,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: 0 30px 80px rgba(0,0,0,0.4), var(--shadow-neon);
 }
 
-/* Buttons */
 .stButton > button {
     background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
     backdrop-filter: blur(25px);
@@ -241,9 +214,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     padding: 16px 32px;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
-    position: relative;
-    overflow: hidden;
     box-shadow: 10px 10px 20px rgba(0,0,0,0.2), -10px -10px 20px rgba(255,255,255,0.1);
     transition: all 0.3s ease;
 }
@@ -251,12 +221,11 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
 .stButton > button:hover {
     transform: translateY(-3px);
     border-color: var(--neon-blue);
-    box-shadow: 0 20px 50px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow: 0 20px 50px rgba(0,212,255,0.4);
 }
 
-/* Progress */
 [data-testid="stProgress"] > div > div > div {
-    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
     border-radius: 12px;
     box-shadow: var(--shadow-neon);
 }
@@ -271,13 +240,7 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     box-shadow: var(--shadow-glow);
 }
 
-.stDataFrame thead th {
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1)) !important;
-    color: white !important;
-    font-weight: 600;
-}
-
-/* ========== ANIMATIONS - NO TEXT MOVEMENT ========== */
+/* Animations */
 @keyframes neonSweep {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
@@ -285,10 +248,9 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
 
 @keyframes pulse {
     0%, 100% { box-shadow: 0 0 10px var(--neon-blue); }
-    50% { box-shadow: 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue); }
+    50% { box-shadow: 0 0 30px var(--neon-blue); }
 }
 
-/* Footer */
 .app-footer {
     background: rgba(12,12,26,0.95);
     backdrop-filter: blur(30px);
@@ -296,8 +258,6 @@ h1 { font-size: 3rem; letter-spacing: -1px; }
     padding: 1.5rem 3rem;
     text-align: center;
     color: #a0aec0;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
 }
 
 /* Responsive */
