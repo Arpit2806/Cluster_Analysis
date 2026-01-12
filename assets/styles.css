@@ -279,3 +279,39 @@ header[data-testid="stHeader"]::after {
 
     color: #6b7280;
 }
+
+/* =========================================================
+   MAIN PAGE BUTTONS (SAFE, NO CONFLICT)
+   ========================================================= */
+
+/* Only buttons in MAIN CONTENT, not sidebar, not toolbar */
+section.main div.stButton > button {
+    background-color: var(--purple) !important;
+    color: var(--text-light) !important;
+
+    font-weight: 600;
+    font-size: 0.9rem;
+
+    border-radius: var(--radius-md);
+    padding: 0.6rem 1.4rem;
+
+    border: none;
+    transition: background 0.15s ease;
+}
+
+/* Text inside button */
+section.main div.stButton > button * {
+    color: var(--text-light) !important;
+}
+
+/* Hover */
+section.main div.stButton > button:hover {
+    background-color: #4a4fd8 !important;
+}
+
+/* Active / focus */
+section.main div.stButton > button:active,
+section.main div.stButton > button:focus {
+    background-color: #4348c9 !important;
+    box-shadow: none !important;
+}
