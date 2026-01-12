@@ -5,7 +5,8 @@ from PIL import Image, ImageDraw
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
 from views.eda import eda_page
-from views.feature_engineering import supervised_page
+from views.supervised import supervised_learning_page
+from views.unsupervised import unsupervised_learning_page
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -37,7 +38,7 @@ if "active_page" not in st.session_state:
 
 # ================= SIDEBAR =================
 
-# ---- CIRCULAR PROFILE LOGO (CENTERED) ----
+# ---- CIRCULAR PROFILE LOGO ----
 logo_path = os.path.join(
     os.path.dirname(__file__),
     "assets",
@@ -46,7 +47,6 @@ logo_path = os.path.join(
 
 if os.path.exists(logo_path):
     img = Image.open(logo_path).convert("RGBA")
-
     size = (110, 110)
     img = img.resize(size)
 
@@ -66,7 +66,7 @@ else:
 st.sidebar.title("Customer Profiling Dashboard")
 
 
-# ================= SIDEBAR BUTTON NAVIGATION =================
+# ================= SIDEBAR NAVIGATION =================
 
 if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
     st.session_state.active_page = "Upload"
@@ -78,7 +78,10 @@ if st.sidebar.button("📊 EDA", use_container_width=True):
     st.session_state.active_page = "EDA"
 
 if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
-    st.session_state.active_page = "supervised"
+    st.session_state.active_page = "Supervised"
+
+if st.sidebar.button("🧩 Unsupervised Learning", use_container_width=True):
+    st.session_state.active_page = "Unsupervised"
 
 if st.sidebar.button("🤖 Model Building", use_container_width=True):
     st.session_state.active_page = "Model"
@@ -97,8 +100,11 @@ elif st.session_state.active_page == "Preprocessing":
 elif st.session_state.active_page == "EDA":
     eda_page()
 
-elif st.session_state.active_page == "supervised":
-    feature_engineering_page()
+elif st.session_state.active_page == "Supervised":
+    supervised_learning_page()
+
+elif st.session_state.active_page == "Unsupervised":
+    unsupervised_learning_page()
 
 elif st.session_state.active_page == "Model":
     model_page()
@@ -107,7 +113,7 @@ elif st.session_state.active_page == "Prediction":
     prediction_page()
 
 
-# ================= FOOTER (PAGES ONLY) =================
+# ================= FOOTER =================
 st.markdown(
     """
     <div class="app-footer">
