@@ -75,8 +75,6 @@ def eda_page():
                 fig, ax = plt.subplots(figsize=(3.4, 2.3))
                 ax.hist(df[col].dropna(), bins=20)
                 ax.set_title(col, fontsize=9)
-                ax.set_xlabel("")
-                ax.set_ylabel("")
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
@@ -163,7 +161,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 5. SPEARMAN CORRELATION (CATEGORICAL)
+    # 5. SPEARMAN CORRELATION
     # ==================================================
     st.subheader("📐 Spearman Correlation with Target (Categorical)")
 
@@ -223,7 +221,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SHAP FEATURE IMPORTANCE (FINAL, STABLE)
+    # 6. SHAP FEATURE IMPORTANCE
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
@@ -285,13 +283,27 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 7. INSIGHTS
+    # 7. TEMP DATAFRAME PREVIEW (FOR NEXT PAGES)
+    # ==================================================
+    st.subheader("📄 Final Dataset After Preprocessing")
+
+    df_temp = df.drop(columns=corr_drop_cols, errors="ignore")
+
+    st.session_state["df_temp"] = df_temp
+
+    st.write("This dataframe will be used for modeling and further analysis.")
+    st.dataframe(df_temp.head(), use_container_width=True)
+
+    st.divider()
+
+    # ==================================================
+    # 8. INSIGHTS
     # ==================================================
     st.subheader("🧠 Key Insights")
 
     st.markdown("""
     - Irrelevant columns are removed before all analysis  
     - Correlation-only exclusions apply consistently to SHAP  
-    - Pearson and Spearman focus on target relationships  
-    - SHAP explains feature importance robustly and safely  
+    - Target-aware correlations improve interpretability  
+    - `df_temp` is finalized and ready for modeling  
     """)
