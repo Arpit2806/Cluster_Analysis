@@ -212,14 +212,17 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SHAP (TOP 10 FEATURES MINIMUM)
+    # 6. SHAP (CORRELATION DROPS APPLIED)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
     if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
 
-        X = df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
-        y = df[target]
+        # APPLY correlation-only drop to SHAP
+        shap_df = df.drop(columns=corr_drop_cols, errors="ignore")
+
+        X = shap_df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
+        y = shap_df[target]
 
         if X.shape[1] >= 2:
             model = RandomForestRegressor(
@@ -256,8 +259,7 @@ def eda_page():
 
     st.markdown("""
     - Irrelevant identifier columns are removed before analysis  
-    - Univariate analysis highlights distributions and dominant categories  
-    - Pearson correlation shows linear relationships with the target  
-    - Spearman correlation captures monotonic categorical effects  
-    - SHAP explains feature importance from a model perspective  
+    - Correlation-only exclusions now apply consistently to SHAP  
+    - Pearson and Spearman focus strictly on target relationships  
+    - SHAP reflects the exact feature set chosen by the user  
     """)
