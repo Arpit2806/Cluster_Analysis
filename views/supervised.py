@@ -13,9 +13,6 @@ from sklearn.linear_model import LinearRegression, Ridge, LogisticRegression
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-import statsmodels.api as sm
-
 
 def supervised_learning_page():
 
@@ -51,33 +48,8 @@ def supervised_learning_page():
     X = df.drop(columns=[target])
     y = df[target]
 
+    # Encode categorical features
     X = pd.get_dummies(X, drop_first=True)
-
-    # ==================================================
-    # VIF ANALYSIS (NUMERICAL FEATURES)
-    # ==================================================
-    st.subheader("📌 Multicollinearity Check (VIF)")
-
-    vif_df = None
-    if problem_type == "Regression":
-        X_vif = sm.add_constant(X.select_dtypes(include=np.number))
-
-        vif_data = []
-        for i in range(1, X_vif.shape[1]):
-            vif_data.append({
-                "Feature": X_vif.columns[i],
-                "VIF": variance_inflation_factor(X_vif.values, i)
-            })
-
-        vif_df = pd.DataFrame(vif_data).sort_values(by="VIF", ascending=False)
-        st.dataframe(vif_df, use_container_width=True)
-
-        drop_vif = st.checkbox("Drop features with VIF > 5")
-
-        if drop_vif:
-            high_vif_features = vif_df[vif_df["VIF"] > 5]["Feature"].tolist()
-            X.drop(columns=high_vif_features, inplace=True, errors="ignore")
-            st.info(f"Dropped: {high_vif_features}")
 
     st.divider()
 
@@ -131,6 +103,8 @@ def supervised_learning_page():
         st.warning("⚠️ Select at least one model.")
         return
 
+    st.divider()
+
     # ==================================================
     # TRAINING & EVALUATION
     # ==================================================
@@ -141,7 +115,13 @@ def supervised_learning_page():
     for model_name in selected_models:
         model = model_options[model_name]
 
-        if model_name in ["Linear Regression", "Ridge Regression", "Logistic Regression", "KNN"]:
+        # Scale-dependent models
+        if model_name in [
+            "Linear Regression",
+            "Ridge Regression",
+            "Logistic Regression",
+            "KNN"
+        ]:
             model.fit(X_train_scaled, y_train)
             y_pred = model.predict(X_test_scaled)
         else:
@@ -167,6 +147,8 @@ def supervised_learning_page():
     results_df = pd.DataFrame(results)
     st.dataframe(results_df, use_container_width=True)
 
+    st.divider()
+
     # ==================================================
     # BEST MODEL SELECTION
     # ==================================================
@@ -182,13 +164,11 @@ def supervised_learning_page():
     st.session_state["best_model_name"] = best_row["Model"]
     st.session_state["model_comparison"] = results_df
 
-    st.divider()
-
     st.markdown("""
     ### 🧠 What this page does
-    - Automatically detects problem type  
-    - Checks multicollinearity using VIF  
-    - Trains multiple models  
-    - Compares them objectively  
+    - Automatically detects regression vs classification  
+    - Encodes categorical features  
+    - Trains multiple supervised models  
+    - Compares models using appropriate metrics  
     - Selects the best-performing model  
     """)
