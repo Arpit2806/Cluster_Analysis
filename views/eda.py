@@ -116,21 +116,24 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 4. CORRELATION (NUMERICAL – HEATMAP STYLE)
+    # 4. PEARSON CORRELATION (NUMERICAL)
     # ==================================================
-    st.subheader("🔥 Correlation with Target (Numerical)")
+    st.subheader("🔥 Pearson Correlation with Target")
 
     if st.session_state.target_var and pd.api.types.is_numeric_dtype(corr_df[target]):
 
         num_df = corr_df.select_dtypes(include=np.number)
+        num_df = num_df.loc[:, num_df.nunique() > 1]
+
         corr_vals = (
-            num_df.corr()[[target]]
-            .sort_values(by=target, ascending=False)
+            num_df.corr()[target]
+            .drop(target, errors="ignore")
+            .sort_values(ascending=False)
+            .to_frame(name=target)
         )
 
-        fig, ax = plt.subplots(
-            figsize=(3.2, len(corr_vals) * 0.28)
-        )
+        fig_height = max(4, len(corr_vals) * 0.3)
+        fig, ax = plt.subplots(figsize=(3.2, fig_height))
 
         sns.heatmap(
             corr_vals,
@@ -141,6 +144,7 @@ def eda_page():
             annot_kws={"size": 8},
             ax=ax
         )
+
         ax.set_title("Pearson Correlation with Target", fontsize=10)
         plt.tight_layout()
 
@@ -150,7 +154,7 @@ def eda_page():
 
         plt.close(fig)
     else:
-        st.info("Numerical correlation requires a numerical target.")
+        st.info("Pearson correlation requires a numerical target.")
 
     st.divider()
 
@@ -170,13 +174,17 @@ def eda_page():
                 columns=cat_corr_cols
             )
 
-            spearman_vals = encoded.apply(
-                lambda x: x.corr(corr_df[target], method="spearman")
-            ).to_frame(name=target).sort_values(by=target, ascending=False)
+            encoded = encoded.loc[:, encoded.nunique() > 1]
 
-            fig, ax = plt.subplots(
-                figsize=(3.2, len(spearman_vals) * 0.28)
+            spearman_vals = (
+                encoded.apply(lambda x: x.corr(corr_df[target], method="spearman"))
+                .dropna()
+                .sort_values(ascending=False)
+                .to_frame(name=target)
             )
+
+            fig_height = max(3, len(spearman_vals) * 0.35)
+            fig, ax = plt.subplots(figsize=(3.2, fig_height))
 
             sns.heatmap(
                 spearman_vals,
@@ -187,6 +195,7 @@ def eda_page():
                 annot_kws={"size": 8},
                 ax=ax
             )
+
             ax.set_title("Spearman Correlation with Target", fontsize=10)
             plt.tight_layout()
 
@@ -203,7 +212,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SHAP (CENTER-ALIGNED)
+    # 6. SHAP (TOP 10 FEATURES MINIMUM)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
@@ -223,8 +232,10 @@ def eda_page():
             explainer = shap.Explainer(model, X)
             shap_values = explainer(X)
 
+            max_feats = min(10, X.shape[1])
+
             fig = plt.figure(figsize=(4, 3))
-            shap.plots.bar(shap_values, max_display=8, show=False)
+            shap.plots.bar(shap_values, max_display=max_feats, show=False)
 
             _, center_col, _ = st.columns([1, 2, 1])
             with center_col:
@@ -245,8 +256,8 @@ def eda_page():
 
     st.markdown("""
     - Irrelevant identifier columns are removed before analysis  
-    - Univariate analysis reveals distributions and dominant categories  
-    - Correlation focuses strictly on the target variable  
-    - Spearman correlation captures categorical relationships  
-    - SHAP provides interpretable feature importance  
+    - Univariate analysis highlights distributions and dominant categories  
+    - Pearson correlation shows linear relationships with the target  
+    - Spearman correlation captures monotonic categorical effects  
+    - SHAP explains feature importance from a model perspective  
     """)
