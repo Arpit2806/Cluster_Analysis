@@ -33,14 +33,23 @@ def supervised_learning_page():
         return
 
     # ==================================================
-    # PROBLEM TYPE DETECTION
+    # PROBLEM TYPE DETECTION (CORRECT LOGIC)
     # ==================================================
-    if pd.api.types.is_numeric_dtype(df[target]):
+    unique_vals = df[target].nunique()
+
+    if unique_vals == 2:
+        problem_type = "Classification"
+    elif pd.api.types.is_numeric_dtype(df[target]):
         problem_type = "Regression"
     else:
         problem_type = "Classification"
 
-    st.success(f"Detected problem type: **{problem_type}**")
+    st.success(
+        f"Detected problem type: **{problem_type}** "
+        f"(Target has {unique_vals} unique values)"
+    )
+
+    st.divider()
 
     # ==================================================
     # FEATURE / TARGET SPLIT
@@ -48,20 +57,27 @@ def supervised_learning_page():
     X = df.drop(columns=[target])
     y = df[target]
 
-    # Encode categorical features
+    # One-hot encode categorical features
     X = pd.get_dummies(X, drop_first=True)
-
-    st.divider()
 
     # ==================================================
     # TRAIN-TEST SPLIT
     # ==================================================
     st.subheader("🔀 Train-Test Split")
 
-    test_size = st.slider("Test size (%)", 20, 40, 30) / 100
+    test_size = st.slider(
+        "Test size (%)",
+        min_value=20,
+        max_value=40,
+        value=30
+    ) / 100
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=42
+        X,
+        y,
+        test_size=test_size,
+        random_state=42,
+        stratify=y if problem_type == "Classification" else None
     )
 
     # ==================================================
@@ -70,6 +86,8 @@ def supervised_learning_page():
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
+
+    st.divider()
 
     # ==================================================
     # MODEL SELECTION
@@ -81,15 +99,17 @@ def supervised_learning_page():
             "Linear Regression": LinearRegression(),
             "Ridge Regression": Ridge(alpha=1.0),
             "Random Forest Regressor": RandomForestRegressor(
-                n_estimators=100, random_state=42
+                n_estimators=100,
+                random_state=42
             )
         }
     else:
         model_options = {
             "Logistic Regression": LogisticRegression(max_iter=1000),
-            "KNN": KNeighborsClassifier(n_neighbors=5),
+            "KNN Classifier": KNeighborsClassifier(n_neighbors=5),
             "Random Forest Classifier": RandomForestClassifier(
-                n_estimators=100, random_state=42
+                n_estimators=100,
+                random_state=42
             )
         }
 
@@ -115,12 +135,12 @@ def supervised_learning_page():
     for model_name in selected_models:
         model = model_options[model_name]
 
-        # Scale-dependent models
+        # Models that require scaling
         if model_name in [
             "Linear Regression",
             "Ridge Regression",
             "Logistic Regression",
-            "KNN"
+            "KNN Classifier"
         ]:
             model.fit(X_train_scaled, y_train)
             y_pred = model.predict(X_test_scaled)
@@ -131,7 +151,7 @@ def supervised_learning_page():
         if problem_type == "Regression":
             results.append({
                 "Model": model_name,
-                "R2": r2_score(y_test, y_pred),
+                "R²": r2_score(y_test, y_pred),
                 "RMSE": np.sqrt(mean_squared_error(y_test, y_pred)),
                 "MAE": mean_absolute_error(y_test, y_pred)
             })
@@ -139,9 +159,15 @@ def supervised_learning_page():
             results.append({
                 "Model": model_name,
                 "Accuracy": accuracy_score(y_test, y_pred),
-                "Precision": precision_score(y_test, y_pred, average="weighted"),
-                "Recall": recall_score(y_test, y_pred, average="weighted"),
-                "F1 Score": f1_score(y_test, y_pred, average="weighted")
+                "Precision": precision_score(
+                    y_test, y_pred, average="weighted", zero_division=0
+                ),
+                "Recall": recall_score(
+                    y_test, y_pred, average="weighted", zero_division=0
+                ),
+                "F1 Score": f1_score(
+                    y_test, y_pred, average="weighted", zero_division=0
+                )
             })
 
     results_df = pd.DataFrame(results)
@@ -155,20 +181,27 @@ def supervised_learning_page():
     st.subheader("🏆 Best Model")
 
     if problem_type == "Regression":
-        best_row = results_df.sort_values(by="R2", ascending=False).iloc[0]
+        best_row = results_df.sort_values(by="R²", ascending=False).iloc[0]
+        primary_metric = "R²"
     else:
         best_row = results_df.sort_values(by="F1 Score", ascending=False).iloc[0]
+        primary_metric = "F1 Score"
 
-    st.success(f"Best Model: **{best_row['Model']}**")
+    st.success(
+        f"Best Model: **{best_row['Model']}** "
+        f"({primary_metric} = {best_row[primary_metric]:.3f})"
+    )
 
+    # Store for later pages
     st.session_state["best_model_name"] = best_row["Model"]
     st.session_state["model_comparison"] = results_df
 
     st.markdown("""
     ### 🧠 What this page does
-    - Automatically detects regression vs classification  
-    - Encodes categorical features  
-    - Trains multiple supervised models  
-    - Compares models using appropriate metrics  
-    - Selects the best-performing model  
+    - Correctly detects **classification vs regression**
+    - Treats **binary 0/1 targets as classification**
+    - Encodes categorical features automatically
+    - Trains multiple supervised models
+    - Compares models using appropriate metrics
+    - Selects and stores the best model
     """)
