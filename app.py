@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
 from views.eda import eda_page
-from views.feature_engineering import feature_engineering_page
+from views.feature_engineering import supervised_page
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -97,7 +97,7 @@ elif st.session_state.active_page == "Preprocessing":
 elif st.session_state.active_page == "EDA":
     eda_page()
 
-elif st.session_state.active_page == "Feature":
+elif st.session_state.active_page == "supervised":
     feature_engineering_page()
 
 elif st.session_state.active_page == "Model":
