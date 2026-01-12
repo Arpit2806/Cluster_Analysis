@@ -39,6 +39,29 @@ def inject_table_css():
             text-align: center;
             border-top: 1px solid #e5e7eb;
         }
+
+        /* ---------- FORM BUTTON ---------- */
+        div.stFormSubmitButton > button {
+            width: 100%;
+            font-weight: 700;
+            font-size: 14px;
+            color: white !important;
+            background: linear-gradient(135deg, #5b5fe8, #6d71ff);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        div.stFormSubmitButton > button:hover {
+            background: linear-gradient(135deg, #4a4fd8, #5b60ff);
+        }
+
+        div.stFormSubmitButton > button * {
+            color: white !important;
+            fill: white !important;
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -116,15 +139,15 @@ def preprocessing_page():
     st.divider()
 
     # =========================
-    # Outlier Inspection (Toggle Boxplots)
+    # Boxplots Toggle (Numerical)
     # =========================
     if "show_boxplots" not in st.session_state:
         st.session_state.show_boxplots = False
 
     with st.form("boxplot_toggle_form"):
-    toggle_boxplot = st.form_submit_button("📦 Boxplots for Numerical Columns")
+        toggle = st.form_submit_button("📦 Boxplots for Numerical Columns")
 
-    if toggle_boxplot:
+    if toggle:
         st.session_state.show_boxplots = not st.session_state.show_boxplots
 
     if st.session_state.show_boxplots:
@@ -132,8 +155,8 @@ def preprocessing_page():
 
         num_cols = df.select_dtypes(include=np.number).columns.tolist()
 
-        if len(num_cols) == 0:
-            st.info("No numerical columns available for boxplot analysis.")
+        if not num_cols:
+            st.info("No numerical columns available.")
         else:
             cols_per_row = 4
             rows = [
@@ -142,10 +165,9 @@ def preprocessing_page():
             ]
 
             for row in rows:
-                col_containers = st.columns(cols_per_row)
-
+                containers = st.columns(cols_per_row)
                 for idx, col_name in enumerate(row):
-                    with col_containers[idx]:
+                    with containers[idx]:
                         st.markdown(
                             f"<p style='text-align:center; font-weight:600; font-size:13px;'>{col_name}</p>",
                             unsafe_allow_html=True
