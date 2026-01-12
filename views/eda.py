@@ -17,21 +17,22 @@ def eda_page():
         return
 
     # ==================================================
-    # ORIGINAL DATA (NEVER TOUCHED)
+    # BASE COPY
     # ==================================================
-    original_df = st.session_state["data"].copy()
+    df = st.session_state["data"].copy()
 
     # ==================================================
-    # 0. GLOBAL DROP (IRRELEVANT COLUMNS)
+    # 0. GLOBAL DROP (IDs, INDEX ETC.)
     # ==================================================
     st.subheader("🗑 Drop Irrelevant Columns (Global)")
 
     global_drop = st.multiselect(
-        "Remove columns permanently from analysis (IDs, Index, LoanID):",
-        original_df.columns.tolist()
+        "Remove from all analysis (IDs, Index, LoanID):",
+        df.columns.tolist()
     )
 
-    eda_df = original_df.drop(columns=global_drop, errors="ignore")
+    if global_drop:
+        df.drop(columns=global_drop, inplace=True)
 
     st.divider()
 
@@ -40,52 +41,44 @@ def eda_page():
     # ==================================================
     st.subheader("🗑 Drop Categorical Columns")
 
-    cat_cols_all = eda_df.select_dtypes(exclude=np.number).columns.tolist()
+    cat_cols_all = df.select_dtypes(exclude=np.number).columns.tolist()
 
     cat_drop = st.multiselect(
         "Remove categorical columns from analysis:",
         cat_cols_all
     )
 
-    eda_df = eda_df.drop(columns=cat_drop, errors="ignore")
+    if cat_drop:
+        df.drop(columns=cat_drop, inplace=True)
 
     st.divider()
 
     # ==================================================
-    # 2. TARGET VARIABLE SELECTION
+    # 2. TARGET VARIABLE
     # ==================================================
     st.subheader("🎯 Target Variable Selection")
 
+    if "target_var" not in st.session_state:
+        st.session_state.target_var = None
+
     target = st.selectbox(
         "Select target variable:",
-        ["-- Select --"] + eda_df.columns.tolist()
+        ["-- Select --"] + df.columns.tolist()
     )
 
     if target != "-- Select --":
-        st.session_state["target_var"] = target
+        st.session_state.target_var = target
         st.success(f"Target variable set to: {target}")
-    else:
-        st.session_state["target_var"] = None
 
     st.divider()
-
-    # ==================================================
-    # STORE FINAL FEATURES FOR MODELING
-    # ==================================================
-    if st.session_state["target_var"]:
-        st.session_state["model_features"] = [
-            col for col in eda_df.columns if col != st.session_state["target_var"]
-        ]
-    else:
-        st.session_state["model_features"] = []
 
     # ==================================================
     # 3. UNIVARIATE ANALYSIS
     # ==================================================
     st.subheader("📊 Univariate Analysis")
 
-    num_cols = eda_df.select_dtypes(include=np.number).columns.tolist()
-    cat_cols = eda_df.select_dtypes(exclude=np.number).columns.tolist()
+    num_cols = df.select_dtypes(include=np.number).columns.tolist()
+    cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
 
     # ---------- Numerical ----------
     st.markdown("### 🔢 Numerical Features")
@@ -95,7 +88,7 @@ def eda_page():
         for j, col in enumerate(num_cols[i:i + 3]):
             with cols[j]:
                 fig, ax = plt.subplots(figsize=(3.4, 2.3))
-                ax.hist(eda_df[col].dropna(), bins=20)
+                ax.hist(df[col].dropna(), bins=20)
                 ax.set_title(col, fontsize=9)
                 plt.tight_layout()
                 st.pyplot(fig)
@@ -111,7 +104,7 @@ def eda_page():
             cols = st.columns(3)
             for j, col in enumerate(cat_cols[i:i + 3]):
                 with cols[j]:
-                    counts = eda_df[col].value_counts().head(6)
+                    counts = df[col].value_counts().head(6)
                     fig, ax = plt.subplots(figsize=(3.4, 2.3))
                     ax.barh(counts.index, counts.values)
                     ax.set_title(col, fontsize=9)
@@ -124,19 +117,19 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 4. DROP COLUMNS (CORRELATION ONLY)
+    # 4. CORRELATION-ONLY DROP
     # ==================================================
     st.subheader("🗑 Exclude Columns (Correlation Only)")
 
-    if st.session_state["target_var"]:
+    if st.session_state.target_var:
         corr_drop = st.multiselect(
             "Exclude columns only for correlation:",
-            [c for c in eda_df.columns if c != target]
+            [c for c in df.columns if c != target]
         )
     else:
         corr_drop = []
 
-    corr_df = eda_df.drop(columns=corr_drop, errors="ignore")
+    corr_df = df.drop(columns=corr_drop, errors="ignore")
 
     st.divider()
 
@@ -231,14 +224,14 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 7. SHAP (REFLECTS ALL DROPS)
+    # 7. SHAP (AUTO-UPDATED)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
-    if target and pd.api.types.is_numeric_dtype(eda_df[target]):
+    if target and pd.api.types.is_numeric_dtype(df[target]):
 
-        X = eda_df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
-        y = eda_df[target]
+        X = df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
+        y = df[target]
 
         if X.shape[1] >= 2:
             model = RandomForestRegressor(
@@ -268,11 +261,13 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 8. CONFIRM FEATURES FOR MODELING
+    # 8. INSIGHTS
     # ==================================================
-    st.subheader("✅ Features Selected for Modeling")
+    st.subheader("🧠 Key Insights")
 
-    if st.session_state["model_features"]:
-        st.write(st.session_state["model_features"])
-    else:
-        st.info("No features available yet.")
+    st.markdown("""
+    - Global and categorical drops immediately affect all downstream analysis  
+    - Correlation-only drop allows flexible what-if analysis  
+    - Pearson and Spearman capture numerical and categorical relationships  
+    - SHAP dynamically adapts to selected features  
+    """)
