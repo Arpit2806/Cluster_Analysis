@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import shap
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import OrdinalEncoder
 
@@ -55,7 +54,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 2. UNIVARIATE ANALYSIS (ALL AT ONCE)
+    # 2. UNIVARIATE ANALYSIS
     # ==================================================
     st.subheader("📊 Univariate Analysis")
 
@@ -123,7 +122,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 4. SPEARMAN CORRELATION (CATEGORICAL vs TARGET)
+    # 4. SPEARMAN (CATEGORICAL vs TARGET)
     # ==================================================
     st.subheader("📐 Spearman Correlation (Categorical)")
 
@@ -151,9 +150,9 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 5. SHAP (LIGHTWEIGHT, SAFE)
+    # 5. FEATURE IMPORTANCE (MODEL-BASED)
     # ==================================================
-    st.subheader("🧠 SHAP Feature Importance (EDA-level)")
+    st.subheader("🧠 Feature Importance (Model-based)")
 
     if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
 
@@ -162,23 +161,27 @@ def eda_page():
 
         if X.shape[1] >= 2:
             model = RandomForestRegressor(
-                n_estimators=50,
+                n_estimators=100,
                 max_depth=6,
                 random_state=42
             )
             model.fit(X, y)
 
-            explainer = shap.Explainer(model, X)
-            shap_values = explainer(X)
+            importance = pd.Series(
+                model.feature_importances_,
+                index=X.columns
+            ).sort_values(ascending=False)
 
-            fig = plt.figure()
-            shap.plots.bar(shap_values, max_display=10, show=False)
+            fig, ax = plt.subplots(figsize=(6, 4))
+            ax.barh(importance.index, importance.values)
+            ax.set_title("Random Forest Feature Importance")
+            plt.tight_layout()
             st.pyplot(fig)
             plt.close(fig)
         else:
-            st.info("Not enough numerical features for SHAP.")
+            st.info("Not enough numerical features for feature importance.")
     else:
-        st.info("SHAP available only for numerical target.")
+        st.info("Feature importance available only for numerical target.")
 
     st.divider()
 
@@ -188,8 +191,8 @@ def eda_page():
     st.subheader("🧠 Key Insights")
 
     st.markdown("""
-    - Numerical and categorical distributions vary significantly  
-    - Several features show measurable association with the target  
+    - Distributions highlight skewness and variability  
+    - Several features show association with the target  
     - Correlation and Spearman analysis help shortlist predictors  
-    - SHAP highlights feature importance from a model perspective  
+    - Model-based importance gives predictive relevance  
     """)
