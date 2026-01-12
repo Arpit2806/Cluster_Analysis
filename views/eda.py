@@ -22,7 +22,7 @@ def eda_page():
     df = st.session_state["data"].copy()
 
     # ==================================================
-    # 0. GLOBAL DROP COLUMNS (EDA SCOPE)
+    # 0. GLOBAL DROP COLUMNS
     # ==================================================
     st.subheader("🗑 Drop Irrelevant Columns (EDA Scope)")
 
@@ -52,6 +52,8 @@ def eda_page():
     if target != "-- Select --":
         st.session_state.target_var = target
         st.success(f"Target variable set to: {target}")
+    else:
+        st.session_state.target_var = None
 
     st.divider()
 
@@ -73,8 +75,6 @@ def eda_page():
                 fig, ax = plt.subplots(figsize=(3.4, 2.3))
                 ax.hist(df[col].dropna(), bins=20)
                 ax.set_title(col, fontsize=9)
-                ax.set_xlabel("")
-                ax.set_ylabel("")
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
@@ -116,24 +116,28 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 4. PEARSON CORRELATION (NUMERICAL)
+    # 4. PEARSON CORRELATION
     # ==================================================
     st.subheader("🔥 Pearson Correlation with Target")
 
-    if st.session_state.target_var and pd.api.types.is_numeric_dtype(corr_df[target]):
+    if (
+        st.session_state.target_var
+        and st.session_state.target_var in corr_df.columns
+        and pd.api.types.is_numeric_dtype(corr_df[st.session_state.target_var])
+    ):
 
         num_df = corr_df.select_dtypes(include=np.number)
         num_df = num_df.loc[:, num_df.nunique() > 1]
 
         corr_vals = (
-            num_df.corr()[target]
-            .drop(target, errors="ignore")
+            num_df.corr()[st.session_state.target_var]
+            .drop(st.session_state.target_var, errors="ignore")
             .sort_values(ascending=False)
-            .to_frame(name=target)
+            .to_frame(name=st.session_state.target_var)
         )
 
-        fig_height = max(4, len(corr_vals) * 0.3)
-        fig, ax = plt.subplots(figsize=(3.2, fig_height))
+        fig_h = max(4, len(corr_vals) * 0.3)
+        fig, ax = plt.subplots(figsize=(3.2, fig_h))
 
         sns.heatmap(
             corr_vals,
@@ -145,11 +149,9 @@ def eda_page():
             ax=ax
         )
 
-        ax.set_title("Pearson Correlation with Target", fontsize=10)
         plt.tight_layout()
-
-        _, center_col, _ = st.columns([1, 2, 1])
-        with center_col:
+        _, c, _ = st.columns([1, 2, 1])
+        with c:
             st.pyplot(fig)
 
         plt.close(fig)
@@ -163,7 +165,11 @@ def eda_page():
     # ==================================================
     st.subheader("📐 Spearman Correlation with Target (Categorical)")
 
-    if st.session_state.target_var and pd.api.types.is_numeric_dtype(corr_df[target]):
+    if (
+        st.session_state.target_var
+        and st.session_state.target_var in corr_df.columns
+        and pd.api.types.is_numeric_dtype(corr_df[st.session_state.target_var])
+    ):
 
         cat_corr_cols = corr_df.select_dtypes(exclude=np.number).columns.tolist()
 
@@ -177,14 +183,19 @@ def eda_page():
             encoded = encoded.loc[:, encoded.nunique() > 1]
 
             spearman_vals = (
-                encoded.apply(lambda x: x.corr(corr_df[target], method="spearman"))
+                encoded.apply(
+                    lambda x: x.corr(
+                        corr_df[st.session_state.target_var],
+                        method="spearman"
+                    )
+                )
                 .dropna()
                 .sort_values(ascending=False)
-                .to_frame(name=target)
+                .to_frame(name=st.session_state.target_var)
             )
 
-            fig_height = max(3, len(spearman_vals) * 0.35)
-            fig, ax = plt.subplots(figsize=(3.2, fig_height))
+            fig_h = max(3, len(spearman_vals) * 0.35)
+            fig, ax = plt.subplots(figsize=(3.2, fig_h))
 
             sns.heatmap(
                 spearman_vals,
@@ -196,11 +207,9 @@ def eda_page():
                 ax=ax
             )
 
-            ax.set_title("Spearman Correlation with Target", fontsize=10)
             plt.tight_layout()
-
-            _, center_col, _ = st.columns([1, 2, 1])
-            with center_col:
+            _, c, _ = st.columns([1, 2, 1])
+            with c:
                 st.pyplot(fig)
 
             plt.close(fig)
@@ -212,17 +221,23 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SHAP (CORRELATION DROPS APPLIED)
+    # 6. SHAP (CORRELATION DROPS APPLIED + SAFE)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
-    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
+    if (
+        st.session_state.target_var
+        and st.session_state.target_var in df.columns
+        and pd.api.types.is_numeric_dtype(df[st.session_state.target_var])
+    ):
 
-        # APPLY correlation-only drop to SHAP
         shap_df = df.drop(columns=corr_drop_cols, errors="ignore")
 
-        X = shap_df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
-        y = shap_df[target]
+        X = shap_df.select_dtypes(include=np.number).drop(
+            columns=[st.session_state.target_var],
+            errors="ignore"
+        )
+        y = shap_df[st.session_state.target_var]
 
         if X.shape[1] >= 2:
             model = RandomForestRegressor(
@@ -233,15 +248,17 @@ def eda_page():
             model.fit(X, y)
 
             explainer = shap.Explainer(model, X)
-            shap_values = explainer(X)
+
+            # 🔥 CRITICAL FIX
+            shap_values = explainer(X, check_additivity=False)
 
             max_feats = min(10, X.shape[1])
 
             fig = plt.figure(figsize=(4, 3))
             shap.plots.bar(shap_values, max_display=max_feats, show=False)
 
-            _, center_col, _ = st.columns([1, 2, 1])
-            with center_col:
+            _, c, _ = st.columns([1, 2, 1])
+            with c:
                 st.pyplot(fig)
 
             plt.close(fig)
@@ -258,8 +275,8 @@ def eda_page():
     st.subheader("🧠 Key Insights")
 
     st.markdown("""
-    - Irrelevant identifier columns are removed before analysis  
-    - Correlation-only exclusions now apply consistently to SHAP  
-    - Pearson and Spearman focus strictly on target relationships  
+    - Irrelevant columns are removed before all analysis  
+    - Correlation-only exclusions apply consistently to SHAP  
+    - Pearson and Spearman focus on target relationships  
     - SHAP reflects the exact feature set chosen by the user  
     """)
