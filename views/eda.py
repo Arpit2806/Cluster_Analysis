@@ -5,9 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# ===============================
-# EDA PAGE
-# ===============================
 def eda_page():
 
     st.header("📊 Exploratory Data Analysis (EDA)")
@@ -19,7 +16,7 @@ def eda_page():
     df = st.session_state["data"]
 
     # ==================================================
-    # 1. TARGET VARIABLE SELECTION (GLOBAL)
+    # 1. TARGET VARIABLE SELECTION
     # ==================================================
     st.subheader("🎯 Target Variable Selection")
 
@@ -27,7 +24,7 @@ def eda_page():
         st.session_state.target_var = None
 
     target = st.selectbox(
-        "Select the target (dependent) variable:",
+        "Select the target variable:",
         options=["-- Select --"] + df.columns.tolist()
     )
 
@@ -38,109 +35,134 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 2. UNIVARIATE ANALYSIS
+    # 2. UNIVARIATE ANALYSIS (ALL AT ONCE)
     # ==================================================
     st.subheader("📊 Univariate Analysis")
 
-    uni_type = st.radio(
-        "Select variable type:",
-        ["Numerical", "Categorical"],
-        horizontal=True
-    )
+    # ---------- Numerical ----------
+    st.markdown("### 🔢 Numerical Features")
 
-    if uni_type == "Numerical":
-        num_cols = df.select_dtypes(include=np.number).columns.tolist()
+    num_cols = df.select_dtypes(include=np.number).columns.tolist()
 
-        if not num_cols:
-            st.info("No numerical columns available.")
-        else:
-            col = st.selectbox("Select numerical column:", num_cols)
+    if num_cols:
+        rows = [num_cols[i:i + 3] for i in range(0, len(num_cols), 3)]
 
-            st.markdown(f"**Distribution of `{col}`**")
-
-            fig, ax = plt.subplots(1, 2, figsize=(10, 4))
-
-            sns.histplot(df[col].dropna(), kde=True, ax=ax[0])
-            ax[0].set_title("Histogram")
-
-            sns.boxplot(x=df[col].dropna(), ax=ax[1])
-            ax[1].set_title("Boxplot")
-
-            st.pyplot(fig)
-
-            st.markdown("**Summary Statistics**")
-            st.write(df[col].describe())
-
+        for row in rows:
+            cols = st.columns(3)
+            for i, col in enumerate(row):
+                with cols[i]:
+                    fig, ax = plt.subplots(figsize=(3.5, 2.5))
+                    sns.histplot(df[col].dropna(), kde=True, ax=ax)
+                    ax.set_title(col, fontsize=10)
+                    ax.set_xlabel("")
+                    ax.set_ylabel("")
+                    st.pyplot(fig)
     else:
-        cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
+        st.info("No numerical columns available.")
 
-        if not cat_cols:
-            st.info("No categorical columns available.")
-        else:
-            col = st.selectbox("Select categorical column:", cat_cols)
+    st.divider()
 
-            st.markdown(f"**Distribution of `{col}`**")
+    # ---------- Categorical ----------
+    st.markdown("### 🏷 Categorical Features")
 
-            counts = df[col].value_counts()
+    cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
 
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.barplot(x=counts.index, y=counts.values, ax=ax)
-            ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
-            ax.set_title("Category Count")
+    if cat_cols:
+        rows = [cat_cols[i:i + 3] for i in range(0, len(cat_cols), 3)]
 
-            st.pyplot(fig)
-            st.write(counts.to_frame("Count"))
+        for row in rows:
+            cols = st.columns(3)
+            for i, col in enumerate(row):
+                with cols[i]:
+                    counts = df[col].value_counts().head(10)
+                    fig, ax = plt.subplots(figsize=(3.5, 2.5))
+                    sns.barplot(x=counts.values, y=counts.index, ax=ax)
+                    ax.set_title(col, fontsize=10)
+                    ax.set_xlabel("")
+                    ax.set_ylabel("")
+                    st.pyplot(fig)
+    else:
+        st.info("No categorical columns available.")
 
     st.divider()
 
     # ==================================================
-    # 3. BIVARIATE ANALYSIS
+    # 3. BIVARIATE ANALYSIS (ALL vs TARGET)
     # ==================================================
     st.subheader("🔗 Bivariate Analysis")
 
     if st.session_state.target_var is None:
-        st.warning("Please select a target variable first.")
+        st.warning("Please select a target variable.")
     else:
         target = st.session_state.target_var
-        target_is_numeric = pd.api.types.is_numeric_dtype(df[target])
+        target_is_num = pd.api.types.is_numeric_dtype(df[target])
 
-        feature = st.selectbox(
-            "Select feature variable:",
-            [c for c in df.columns if c != target]
-        )
+        features = [c for c in df.columns if c != target]
 
-        st.markdown(f"**Relationship: `{feature}` vs `{target}`**")
+        rows = [features[i:i + 3] for i in range(0, len(features), 3)]
 
-        fig, ax = plt.subplots(figsize=(7, 4))
+        for row in rows:
+            cols = st.columns(3)
+            for i, feature in enumerate(row):
+                with cols[i]:
+                    fig, ax = plt.subplots(figsize=(3.5, 2.5))
 
-        if target_is_numeric:
-            if pd.api.types.is_numeric_dtype(df[feature]):
-                sns.scatterplot(x=df[feature], y=df[target], ax=ax)
-            else:
-                sns.boxplot(x=df[feature], y=df[target], ax=ax)
-        else:
-            if pd.api.types.is_numeric_dtype(df[feature]):
-                sns.boxplot(x=df[target], y=df[feature], ax=ax)
-            else:
-                ct = pd.crosstab(df[feature], df[target])
-                ct.plot(kind="bar", stacked=True, ax=ax)
+                    if target_is_num:
+                        if pd.api.types.is_numeric_dtype(df[feature]):
+                            sns.scatterplot(
+                                x=df[feature], y=df[target], ax=ax, s=10
+                            )
+                        else:
+                            sns.boxplot(
+                                x=df[feature], y=df[target], ax=ax
+                            )
+                    else:
+                        if pd.api.types.is_numeric_dtype(df[feature]):
+                            sns.boxplot(
+                                x=df[target], y=df[feature], ax=ax
+                            )
+                        else:
+                            ct = pd.crosstab(df[feature], df[target])
+                            ct.plot(kind="bar", stacked=True, ax=ax, legend=False)
 
-        st.pyplot(fig)
+                    ax.set_title(feature, fontsize=10)
+                    ax.set_xlabel("")
+                    ax.set_ylabel("")
+                    st.pyplot(fig)
 
     st.divider()
 
     # ==================================================
-    # 4. CORRELATION ANALYSIS
+    # 4. CLEAN CORRELATION HEATMAP
     # ==================================================
-    st.subheader("🔥 Correlation Analysis")
+    st.subheader("🔥 Correlation Analysis (Top Relationships)")
 
     num_df = df.select_dtypes(include=np.number)
 
     if num_df.shape[1] < 2:
-        st.info("Not enough numerical columns for correlation.")
+        st.info("Not enough numerical columns.")
     else:
-        fig, ax = plt.subplots(figsize=(8, 6))
-        sns.heatmap(num_df.corr(), annot=True, cmap="coolwarm", ax=ax)
+        corr = num_df.corr().abs()
+        upper = corr.where(np.triu(np.ones(corr.shape), k=1).astype(bool))
+
+        top_corr = (
+            upper.stack()
+            .sort_values(ascending=False)
+            .head(12)
+        )
+
+        corr_features = list(set(top_corr.index.get_level_values(0)) |
+                             set(top_corr.index.get_level_values(1)))
+
+        fig, ax = plt.subplots(figsize=(6, 5))
+        sns.heatmap(
+            num_df[corr_features].corr(),
+            annot=True,
+            cmap="coolwarm",
+            fmt=".2f",
+            square=True,
+            ax=ax
+        )
         st.pyplot(fig)
 
     st.divider()
@@ -151,9 +173,8 @@ def eda_page():
     st.subheader("🧠 Key Insights from EDA")
 
     st.markdown("""
-    - Dataset structure and variable distributions were analyzed  
-    - Univariate analysis highlighted skewness and dominant categories  
-    - Bivariate analysis revealed relationships with the target variable  
-    - Correlation analysis identified strongly related numerical features  
+    - Numerical features show varied distributions and skewness  
+    - Categorical variables highlight dominant customer segments  
+    - Several features exhibit strong relationships with the target  
+    - Highly correlated numerical features indicate possible redundancy  
     """)
-
