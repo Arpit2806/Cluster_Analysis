@@ -39,7 +39,7 @@ def inject_css():
         }
 
         /* ---------- BUTTONS ---------- */
-        div.stButton > button {
+        div.stFormSubmitButton > button {
             width: 100%;
             text-align: left;
             font-weight: 700;
@@ -53,9 +53,14 @@ def inject_css():
             transition: all 0.2s ease;
         }
 
-        div.stButton > button:hover {
+        div.stFormSubmitButton > button:hover {
             background: linear-gradient(135deg, #4a4fd8, #5b60ff);
             transform: translateY(-1px);
+        }
+
+        div.stFormSubmitButton > button * {
+            color: white !important;
+            fill: white !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -75,7 +80,7 @@ def upload_page():
     st.header("📂 Upload Dataset")
     st.write("Upload your customer dataset (CSV format).")
 
-    # ---------- RESET BUTTON ----------
+    # ---------- RESET ----------
     if "data" in st.session_state:
         with st.form("reset_form"):
             reset = st.form_submit_button("🔁 Reset Dataset")
@@ -134,30 +139,13 @@ def upload_page():
     if "show_cat" not in st.session_state:
         st.session_state.show_cat = False
 
-    # ---------- BUTTON FORM ----------
-    with st.form("column_buttons"):
+    # ---------- NUMERICAL ----------
+    with st.form("numerical_form"):
         show_num = st.form_submit_button("📈 Display Numerical Columns")
-        if show_num:
+
+    if show_num:
         st.session_state.show_num = not st.session_state.show_num
 
-            # ---------- DISPLAY TABLES ----------
-        if st.session_state.show_num:
-        num_cols = df.select_dtypes(include=np.number).columns.tolist()
-        num_df = pd.DataFrame({
-            "Index": range(1, len(num_cols) + 1),
-            "Numerical Columns": num_cols
-        })
-        render_compact_table(num_df)
-
-        show_cat = st.form_submit_button("🏷 Display Categorical Columns")
-
-        if show_num:
-        st.session_state.show_num = not st.session_state.show_num
-
-        if show_cat:
-        st.session_state.show_cat = not st.session_state.show_cat
-
-    # ---------- DISPLAY TABLES ----------
     if st.session_state.show_num:
         num_cols = df.select_dtypes(include=np.number).columns.tolist()
         num_df = pd.DataFrame({
@@ -165,6 +153,13 @@ def upload_page():
             "Numerical Columns": num_cols
         })
         render_compact_table(num_df)
+
+    # ---------- CATEGORICAL ----------
+    with st.form("categorical_form"):
+        show_cat = st.form_submit_button("🏷 Display Categorical Columns")
+
+    if show_cat:
+        st.session_state.show_cat = not st.session_state.show_cat
 
     if st.session_state.show_cat:
         cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
