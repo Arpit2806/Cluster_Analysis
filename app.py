@@ -77,8 +77,8 @@ if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
 if st.sidebar.button("📊 EDA", use_container_width=True):
     st.session_state.active_page = "EDA"
 
-if st.sidebar.button("⚙️ Feature Engineering", use_container_width=True):
-    st.session_state.active_page = "Feature"
+if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
+    st.session_state.active_page = "supervised"
 
 if st.sidebar.button("🤖 Model Building", use_container_width=True):
     st.session_state.active_page = "Model"
