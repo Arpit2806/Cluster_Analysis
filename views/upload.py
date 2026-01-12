@@ -137,12 +137,24 @@ def upload_page():
     # ---------- BUTTON FORM ----------
     with st.form("column_buttons"):
         show_num = st.form_submit_button("📈 Display Numerical Columns")
-        show_cat = st.form_submit_button("🏷 Display Categorical Columns")
-
-    if show_num:
+        if show_num:
         st.session_state.show_num = not st.session_state.show_num
 
-    if show_cat:
+            # ---------- DISPLAY TABLES ----------
+        if st.session_state.show_num:
+        num_cols = df.select_dtypes(include=np.number).columns.tolist()
+        num_df = pd.DataFrame({
+            "Index": range(1, len(num_cols) + 1),
+            "Numerical Columns": num_cols
+        })
+        render_compact_table(num_df)
+
+        show_cat = st.form_submit_button("🏷 Display Categorical Columns")
+
+        if show_num:
+        st.session_state.show_num = not st.session_state.show_num
+
+        if show_cat:
         st.session_state.show_cat = not st.session_state.show_cat
 
     # ---------- DISPLAY TABLES ----------
