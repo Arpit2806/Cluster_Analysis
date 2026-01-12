@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import shap
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import OrdinalEncoder
 
 
 def eda_page():
@@ -12,7 +15,25 @@ def eda_page():
         st.warning("⚠️ Upload dataset first.")
         return
 
-    df = st.session_state["data"]
+    # --------------------------------------------------
+    # Work on a COPY (safe)
+    # --------------------------------------------------
+    df = st.session_state["data"].copy()
+
+    # ==================================================
+    # 0. DROP COLUMNS (USER CONTROL)
+    # ==================================================
+    st.subheader("🗑 Drop Columns (EDA Scope Only)")
+
+    drop_cols = st.multiselect(
+        "Select columns to exclude from analysis:",
+        df.columns.tolist()
+    )
+
+    if drop_cols:
+        df.drop(columns=drop_cols, inplace=True)
+
+    st.divider()
 
     # ==================================================
     # 1. TARGET VARIABLE SELECTION
@@ -23,7 +44,7 @@ def eda_page():
         st.session_state.target_var = None
 
     target = st.selectbox(
-        "Select the target variable:",
+        "Select target variable:",
         ["-- Select --"] + df.columns.tolist()
     )
 
@@ -38,19 +59,22 @@ def eda_page():
     # ==================================================
     st.subheader("📊 Univariate Analysis")
 
+    num_cols = df.select_dtypes(include=np.number).columns.tolist()
+    cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
+
     # ---------- Numerical ----------
     st.markdown("### 🔢 Numerical Features")
-    num_cols = df.select_dtypes(include=np.number).columns.tolist()
 
     for i in range(0, len(num_cols), 3):
         cols = st.columns(3)
-        for j, col in enumerate(num_cols[i:i+3]):
+        for j, col in enumerate(num_cols[i:i + 3]):
             with cols[j]:
-                fig, ax = plt.subplots(figsize=(3.5, 2.5))
+                fig, ax = plt.subplots(figsize=(3.5, 2.3))
                 ax.hist(df[col].dropna(), bins=20)
                 ax.set_title(col, fontsize=9)
                 ax.set_xlabel("")
                 ax.set_ylabel("")
+                plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
 
@@ -58,110 +82,114 @@ def eda_page():
 
     # ---------- Categorical ----------
     st.markdown("### 🏷 Categorical Features")
-    cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
 
     for i in range(0, len(cat_cols), 3):
         cols = st.columns(3)
-        for j, col in enumerate(cat_cols[i:i+3]):
+        for j, col in enumerate(cat_cols[i:i + 3]):
             with cols[j]:
                 counts = df[col].value_counts().head(6)
-                fig, ax = plt.subplots(figsize=(3.5, 2.5))
+                fig, ax = plt.subplots(figsize=(3.5, 2.3))
                 ax.barh(counts.index, counts.values)
                 ax.set_title(col, fontsize=9)
+                plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
 
     st.divider()
 
     # ==================================================
-    # 3. BIVARIATE ANALYSIS (ALL vs TARGET)
+    # 3. CORRELATION (NUMERICAL vs TARGET)
     # ==================================================
-    st.subheader("🔗 Bivariate Analysis")
+    st.subheader("🔥 Correlation with Target (Numerical)")
 
-    if st.session_state.target_var is None:
-        st.warning("Select target variable first.")
-    else:
-        target = st.session_state.target_var
-        target_is_num = pd.api.types.is_numeric_dtype(df[target])
-
-        features = [c for c in df.columns if c != target]
-
-        for i in range(0, len(features), 3):
-            cols = st.columns(3)
-            for j, feat in enumerate(features[i:i+3]):
-                with cols[j]:
-                    fig, ax = plt.subplots(figsize=(3.5, 2.5))
-
-                    if target_is_num:
-                        if pd.api.types.is_numeric_dtype(df[feat]):
-                            ax.scatter(df[feat], df[target], s=8)
-                        else:
-                            top = df[feat].value_counts().head(5).index
-                            plot_df = df[df[feat].isin(top)]
-                            plot_df.boxplot(
-                                column=target,
-                                by=feat,
-                                ax=ax
-                            )
-                            ax.set_xticklabels(ax.get_xticklabels(), rotation=30, fontsize=7)
-                    else:
-                        if pd.api.types.is_numeric_dtype(df[feat]):
-                            df.boxplot(
-                                column=feat,
-                                by=target,
-                                ax=ax
-                            )
-                        else:
-                            top = df[feat].value_counts().head(5).index
-                            plot_df = df[df[feat].isin(top)]
-                            pd.crosstab(plot_df[feat], plot_df[target]).plot(
-                                kind="bar",
-                                stacked=True,
-                                ax=ax,
-                                legend=False
-                            )
-
-                    ax.set_title(feat, fontsize=9)
-                    ax.set_xlabel("")
-                    ax.set_ylabel("")
-                    st.pyplot(fig)
-                    plt.close(fig)
-
-    st.divider()
-
-    # ==================================================
-    # 4. CORRELATION WITH TARGET ONLY
-    # ==================================================
-    st.subheader("🔥 Correlation with Target Variable")
-
-    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[st.session_state.target_var]):
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
 
         corr = (
             df.select_dtypes(include=np.number)
-            .corr()[st.session_state.target_var]
-            .drop(st.session_state.target_var)
+            .corr()[target]
+            .drop(target)
             .sort_values(key=abs, ascending=False)
         )
 
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.barh(corr.index, corr.values)
-        ax.set_title("Correlation with Target")
+        ax.set_title("Pearson Correlation with Target", fontsize=10)
+        plt.tight_layout()
         st.pyplot(fig)
         plt.close(fig)
-
     else:
-        st.info("Correlation available only for numerical target variables.")
+        st.info("Numerical correlation available only for numerical target.")
 
     st.divider()
 
     # ==================================================
-    # 5. INSIGHTS
+    # 4. SPEARMAN CORRELATION (CATEGORICAL vs TARGET)
     # ==================================================
-    st.subheader("🧠 Key Insights from EDA")
+    st.subheader("📐 Spearman Correlation (Categorical)")
+
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]) and cat_cols:
+
+        enc = OrdinalEncoder()
+        cat_encoded = pd.DataFrame(
+            enc.fit_transform(df[cat_cols]),
+            columns=cat_cols
+        )
+
+        spearman = cat_encoded.apply(
+            lambda x: x.corr(df[target], method="spearman")
+        ).sort_values(key=abs, ascending=False)
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.barh(spearman.index, spearman.values)
+        ax.set_title("Spearman Correlation with Target", fontsize=10)
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close(fig)
+    else:
+        st.info("Spearman correlation requires numerical target and categorical features.")
+
+    st.divider()
+
+    # ==================================================
+    # 5. SHAP (LIGHTWEIGHT, SAFE)
+    # ==================================================
+    st.subheader("🧠 SHAP Feature Importance (EDA-level)")
+
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
+
+        X = df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
+        y = df[target]
+
+        if X.shape[1] >= 2:
+            model = RandomForestRegressor(
+                n_estimators=50,
+                max_depth=6,
+                random_state=42
+            )
+            model.fit(X, y)
+
+            explainer = shap.Explainer(model, X)
+            shap_values = explainer(X)
+
+            fig = plt.figure()
+            shap.plots.bar(shap_values, max_display=10, show=False)
+            st.pyplot(fig)
+            plt.close(fig)
+        else:
+            st.info("Not enough numerical features for SHAP.")
+    else:
+        st.info("SHAP available only for numerical target.")
+
+    st.divider()
+
+    # ==================================================
+    # 6. INSIGHTS
+    # ==================================================
+    st.subheader("🧠 Key Insights")
 
     st.markdown("""
-    - Distributions vary significantly across numerical features  
-    - Categorical variables show dominant customer segments  
-    - Several features show visible association with the target  
-    - Target-based correlation helps shortlist important predictors  
+    - Numerical and categorical distributions vary significantly  
+    - Several features show measurable association with the target  
+    - Correlation and Spearman analysis help shortlist predictors  
+    - SHAP highlights feature importance from a model perspective  
     """)
