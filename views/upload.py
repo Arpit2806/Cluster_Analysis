@@ -44,7 +44,7 @@ def inject_css():
             text-align: left;
             font-weight: 700;
             font-size: 14px;
-            color: white;
+            color: white !important;
             background: linear-gradient(135deg, #5b5fe8, #6d71ff);
             border: none;
             border-radius: 10px;
@@ -77,9 +77,11 @@ def upload_page():
 
     # ---------- RESET BUTTON ----------
     if "data" in st.session_state:
-        if st.button("🔁 Reset Dataset"):
-            st.session_state.clear()
-            st.experimental_rerun()
+        with st.form("reset_form"):
+            reset = st.form_submit_button("🔁 Reset Dataset")
+            if reset:
+                st.session_state.clear()
+                st.experimental_rerun()
 
     uploaded_file = st.file_uploader("Choose CSV file", type=["csv"])
 
@@ -132,10 +134,18 @@ def upload_page():
     if "show_cat" not in st.session_state:
         st.session_state.show_cat = False
 
-    # ---------- Numerical ----------
-    if st.button("📈 Display Numerical Columns"):
+    # ---------- BUTTON FORM ----------
+    with st.form("column_buttons"):
+        show_num = st.form_submit_button("📈 Display Numerical Columns")
+        show_cat = st.form_submit_button("🏷 Display Categorical Columns")
+
+    if show_num:
         st.session_state.show_num = not st.session_state.show_num
 
+    if show_cat:
+        st.session_state.show_cat = not st.session_state.show_cat
+
+    # ---------- DISPLAY TABLES ----------
     if st.session_state.show_num:
         num_cols = df.select_dtypes(include=np.number).columns.tolist()
         num_df = pd.DataFrame({
@@ -143,10 +153,6 @@ def upload_page():
             "Numerical Columns": num_cols
         })
         render_compact_table(num_df)
-
-    # ---------- Categorical ----------
-    if st.button("🏷 Display Categorical Columns"):
-        st.session_state.show_cat = not st.session_state.show_cat
 
     if st.session_state.show_cat:
         cat_cols = df.select_dtypes(exclude=np.number).columns.tolist()
