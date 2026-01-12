@@ -17,7 +17,7 @@ def eda_page():
         return
 
     # ==================================================
-    # WORKING COPY (SAFE)
+    # WORKING COPY
     # ==================================================
     df = st.session_state["data"].copy()
 
@@ -223,7 +223,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SHAP (TREEEXPLAINER – STABLE)
+    # 6. SHAP FEATURE IMPORTANCE (FINAL, STABLE)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
@@ -249,7 +249,6 @@ def eda_page():
             )
             model.fit(X, y)
 
-            # ✅ STABLE SHAP IMPLEMENTATION
             explainer = shap.TreeExplainer(
                 model,
                 feature_perturbation="interventional",
@@ -261,10 +260,17 @@ def eda_page():
                 check_additivity=False
             )
 
+            shap_exp = shap.Explanation(
+                values=shap_values,
+                base_values=explainer.expected_value,
+                data=X,
+                feature_names=X.columns
+            )
+
             max_feats = min(10, X.shape[1])
 
             fig = plt.figure(figsize=(4, 3))
-            shap.plots.bar(shap_values, max_display=max_feats, show=False)
+            shap.plots.bar(shap_exp, max_display=max_feats, show=False)
 
             _, c, _ = st.columns([1, 2, 1])
             with c:
@@ -287,5 +293,5 @@ def eda_page():
     - Irrelevant columns are removed before all analysis  
     - Correlation-only exclusions apply consistently to SHAP  
     - Pearson and Spearman focus on target relationships  
-    - SHAP explains feature importance robustly  
+    - SHAP explains feature importance robustly and safely  
     """)
