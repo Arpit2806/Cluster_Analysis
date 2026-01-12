@@ -339,3 +339,18 @@ div.stFormSubmitButton > button:hover {
     transform: translateY(-1px);
 }
 
+/* =========================================================
+   FIX BUTTON TEXT + ICON COLOR (FINAL)
+   ========================================================= */
+
+div.stFormSubmitButton > button * {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+}
+
+div.stFormSubmitButton > button p {
+    color: white !important;
+}
+
+
