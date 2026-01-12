@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 # ===============================
@@ -94,6 +95,8 @@ def preprocessing_page():
 
     render_table(pd.DataFrame(summary))
 
+    st.divider()
+
     # =========================
     # Duplicate Records
     # =========================
@@ -109,3 +112,42 @@ def preprocessing_page():
         render_table(df[df.duplicated()])
     else:
         render_table(pd.DataFrame({"Status": ["No duplicate rows found"]}))
+
+    st.divider()
+
+    # =========================
+    # Outlier Inspection (Toggle Boxplots)
+    # =========================
+    if "show_boxplots" not in st.session_state:
+        st.session_state.show_boxplots = False
+
+    if st.button("📦 Boxplots for Numerical Columns"):
+        st.session_state.show_boxplots = not st.session_state.show_boxplots
+
+    if st.session_state.show_boxplots:
+        st.subheader("📦 Outlier Inspection (Numerical Features)")
+
+        num_cols = df.select_dtypes(include=np.number).columns.tolist()
+
+        if len(num_cols) == 0:
+            st.info("No numerical columns available for boxplot analysis.")
+        else:
+            cols_per_row = 4
+            rows = [
+                num_cols[i:i + cols_per_row]
+                for i in range(0, len(num_cols), cols_per_row)
+            ]
+
+            for row in rows:
+                col_containers = st.columns(cols_per_row)
+
+                for idx, col_name in enumerate(row):
+                    with col_containers[idx]:
+                        st.markdown(
+                            f"<p style='text-align:center; font-weight:600; font-size:13px;'>{col_name}</p>",
+                            unsafe_allow_html=True
+                        )
+                        fig, ax = plt.subplots(figsize=(2.2, 2.2))
+                        ax.boxplot(df[col_name].dropna(), vert=True)
+                        ax.set_xticks([])
+                        st.pyplot(fig)
