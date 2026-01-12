@@ -121,7 +121,10 @@ def preprocessing_page():
     if "show_boxplots" not in st.session_state:
         st.session_state.show_boxplots = False
 
-    if st.button("📦 Boxplots for Numerical Columns"):
+    with st.form("boxplot_toggle_form"):
+    toggle_boxplot = st.form_submit_button("📦 Boxplots for Numerical Columns")
+
+    if toggle_boxplot:
         st.session_state.show_boxplots = not st.session_state.show_boxplots
 
     if st.session_state.show_boxplots:
