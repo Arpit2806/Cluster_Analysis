@@ -17,44 +17,27 @@ def eda_page():
         return
 
     # ==================================================
-    # BASE COPY
+    # WORKING COPY (SAFE)
     # ==================================================
     df = st.session_state["data"].copy()
 
     # ==================================================
-    # 0. GLOBAL DROP (IDs, INDEX ETC.)
+    # 0. GLOBAL DROP COLUMNS (EDA SCOPE)
     # ==================================================
-    st.subheader("🗑 Drop Irrelevant Columns (Global)")
+    st.subheader("🗑 Drop Irrelevant Columns (EDA Scope)")
 
-    global_drop = st.multiselect(
-        "Remove from all analysis (IDs, Index, LoanID):",
+    global_drop_cols = st.multiselect(
+        "Select columns to remove from all analysis (e.g. ID, Index):",
         df.columns.tolist()
     )
 
-    if global_drop:
-        df.drop(columns=global_drop, inplace=True)
+    if global_drop_cols:
+        df.drop(columns=global_drop_cols, inplace=True)
 
     st.divider()
 
     # ==================================================
-    # 1. DROP CATEGORICAL COLUMNS
-    # ==================================================
-    st.subheader("🗑 Drop Categorical Columns")
-
-    cat_cols_all = df.select_dtypes(exclude=np.number).columns.tolist()
-
-    cat_drop = st.multiselect(
-        "Remove categorical columns from analysis:",
-        cat_cols_all
-    )
-
-    if cat_drop:
-        df.drop(columns=cat_drop, inplace=True)
-
-    st.divider()
-
-    # ==================================================
-    # 2. TARGET VARIABLE
+    # 1. TARGET VARIABLE SELECTION
     # ==================================================
     st.subheader("🎯 Target Variable Selection")
 
@@ -73,7 +56,7 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 3. UNIVARIATE ANALYSIS
+    # 2. UNIVARIATE ANALYSIS
     # ==================================================
     st.subheader("📊 Univariate Analysis")
 
@@ -90,6 +73,8 @@ def eda_page():
                 fig, ax = plt.subplots(figsize=(3.4, 2.3))
                 ax.hist(df[col].dropna(), bins=20)
                 ax.set_title(col, fontsize=9)
+                ax.set_xlabel("")
+                ax.set_ylabel("")
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
@@ -97,48 +82,45 @@ def eda_page():
     st.divider()
 
     # ---------- Categorical ----------
-    if cat_cols:
-        st.markdown("### 🏷 Categorical Features")
+    st.markdown("### 🏷 Categorical Features")
 
-        for i in range(0, len(cat_cols), 3):
-            cols = st.columns(3)
-            for j, col in enumerate(cat_cols[i:i + 3]):
-                with cols[j]:
-                    counts = df[col].value_counts().head(6)
-                    fig, ax = plt.subplots(figsize=(3.4, 2.3))
-                    ax.barh(counts.index, counts.values)
-                    ax.set_title(col, fontsize=9)
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                    plt.close(fig)
-    else:
-        st.info("No categorical columns available after dropping.")
+    for i in range(0, len(cat_cols), 3):
+        cols = st.columns(3)
+        for j, col in enumerate(cat_cols[i:i + 3]):
+            with cols[j]:
+                counts = df[col].value_counts().head(6)
+                fig, ax = plt.subplots(figsize=(3.4, 2.3))
+                ax.barh(counts.index, counts.values)
+                ax.set_title(col, fontsize=9)
+                plt.tight_layout()
+                st.pyplot(fig)
+                plt.close(fig)
 
     st.divider()
 
     # ==================================================
-    # 4. CORRELATION-ONLY DROP
+    # 3. DROP COLUMNS (CORRELATION ONLY)
     # ==================================================
-    st.subheader("🗑 Exclude Columns (Correlation Only)")
+    st.subheader("🗑 Exclude Columns from Correlation Only")
 
     if st.session_state.target_var:
-        corr_drop = st.multiselect(
-            "Exclude columns only for correlation:",
+        corr_drop_cols = st.multiselect(
+            "Select columns to exclude (correlation only):",
             [c for c in df.columns if c != target]
         )
     else:
-        corr_drop = []
+        corr_drop_cols = []
 
-    corr_df = df.drop(columns=corr_drop, errors="ignore")
+    corr_df = df.drop(columns=corr_drop_cols, errors="ignore")
 
     st.divider()
 
     # ==================================================
-    # 5. PEARSON CORRELATION
+    # 4. PEARSON CORRELATION (NUMERICAL)
     # ==================================================
     st.subheader("🔥 Pearson Correlation with Target")
 
-    if target and pd.api.types.is_numeric_dtype(corr_df[target]):
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(corr_df[target]):
 
         num_df = corr_df.select_dtypes(include=np.number)
         num_df = num_df.loc[:, num_df.nunique() > 1]
@@ -150,8 +132,8 @@ def eda_page():
             .to_frame(name=target)
         )
 
-        fig_h = max(4, len(corr_vals) * 0.3)
-        fig, ax = plt.subplots(figsize=(3.2, fig_h))
+        fig_height = max(4, len(corr_vals) * 0.3)
+        fig, ax = plt.subplots(figsize=(3.2, fig_height))
 
         sns.heatmap(
             corr_vals,
@@ -163,10 +145,13 @@ def eda_page():
             ax=ax
         )
 
+        ax.set_title("Pearson Correlation with Target", fontsize=10)
         plt.tight_layout()
-        _, c, _ = st.columns([1, 2, 1])
-        with c:
+
+        _, center_col, _ = st.columns([1, 2, 1])
+        with center_col:
             st.pyplot(fig)
+
         plt.close(fig)
     else:
         st.info("Pearson correlation requires a numerical target.")
@@ -174,11 +159,11 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 6. SPEARMAN CORRELATION (CATEGORICAL)
+    # 5. SPEARMAN CORRELATION (CATEGORICAL)
     # ==================================================
     st.subheader("📐 Spearman Correlation with Target (Categorical)")
 
-    if target and pd.api.types.is_numeric_dtype(corr_df[target]):
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(corr_df[target]):
 
         cat_corr_cols = corr_df.select_dtypes(exclude=np.number).columns.tolist()
 
@@ -198,8 +183,8 @@ def eda_page():
                 .to_frame(name=target)
             )
 
-            fig_h = max(3, len(spearman_vals) * 0.35)
-            fig, ax = plt.subplots(figsize=(3.2, fig_h))
+            fig_height = max(3, len(spearman_vals) * 0.35)
+            fig, ax = plt.subplots(figsize=(3.2, fig_height))
 
             sns.heatmap(
                 spearman_vals,
@@ -211,10 +196,13 @@ def eda_page():
                 ax=ax
             )
 
+            ax.set_title("Spearman Correlation with Target", fontsize=10)
             plt.tight_layout()
-            _, c, _ = st.columns([1, 2, 1])
-            with c:
+
+            _, center_col, _ = st.columns([1, 2, 1])
+            with center_col:
                 st.pyplot(fig)
+
             plt.close(fig)
         else:
             st.info("No categorical columns available.")
@@ -224,11 +212,11 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 7. SHAP (AUTO-UPDATED)
+    # 6. SHAP (TOP 10 FEATURES MINIMUM)
     # ==================================================
     st.subheader("🧠 SHAP Feature Importance")
 
-    if target and pd.api.types.is_numeric_dtype(df[target]):
+    if st.session_state.target_var and pd.api.types.is_numeric_dtype(df[target]):
 
         X = df.select_dtypes(include=np.number).drop(columns=[target], errors="ignore")
         y = df[target]
@@ -249,9 +237,10 @@ def eda_page():
             fig = plt.figure(figsize=(4, 3))
             shap.plots.bar(shap_values, max_display=max_feats, show=False)
 
-            _, c, _ = st.columns([1, 2, 1])
-            with c:
+            _, center_col, _ = st.columns([1, 2, 1])
+            with center_col:
                 st.pyplot(fig)
+
             plt.close(fig)
         else:
             st.info("Not enough numerical features for SHAP.")
@@ -261,13 +250,14 @@ def eda_page():
     st.divider()
 
     # ==================================================
-    # 8. INSIGHTS
+    # 7. INSIGHTS
     # ==================================================
     st.subheader("🧠 Key Insights")
 
     st.markdown("""
-    - Global and categorical drops immediately affect all downstream analysis  
-    - Correlation-only drop allows flexible what-if analysis  
-    - Pearson and Spearman capture numerical and categorical relationships  
-    - SHAP dynamically adapts to selected features  
+    - Irrelevant identifier columns are removed before analysis  
+    - Univariate analysis highlights distributions and dominant categories  
+    - Pearson correlation shows linear relationships with the target  
+    - Spearman correlation captures monotonic categorical effects  
+    - SHAP explains feature importance from a model perspective  
     """)
