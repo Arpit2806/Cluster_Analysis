@@ -19,9 +19,9 @@ def factor_analysis_page():
 
     st.markdown("""
     **Why Factor Analysis?**  
-    Factor Analysis helps reduce a large number of correlated variables into a smaller
-    set of meaningful latent factors. It is commonly used for survey and Likert-scale data
-    to uncover hidden behavioral dimensions.
+    Factor Analysis reduces a large set of correlated variables into fewer meaningful
+    latent factors. It is widely used for survey and Likert-scale data to uncover
+    hidden behavioral dimensions.
     """)
 
     # --------------------------------------------------
@@ -68,19 +68,21 @@ def factor_analysis_page():
             return
 
         # --------------------------------------------------
-        # DATA CLEANING (CRITICAL FIX)
+        # DATA CLEANING (MOST IMPORTANT)
         # --------------------------------------------------
         data = df[features].copy()
 
-        # Force numeric & remove invalid values
+        # Ensure numeric
         data = data.apply(pd.to_numeric, errors="coerce")
+
+        # Drop missing values
         data = data.dropna()
 
-        # Remove constant (zero-variance) columns
+        # Remove constant columns (zero variance)
         data = data.loc[:, data.nunique() > 1]
 
         if data.shape[1] < 3:
-            st.error("After cleaning, fewer than 3 valid variables remain for Factor Analysis.")
+            st.error("After cleaning, fewer than 3 valid variables remain.")
             return
 
         if data.shape[0] < 10:
@@ -92,15 +94,19 @@ def factor_analysis_page():
         # --------------------------------------------------
         scaler = StandardScaler()
         data_scaled = scaler.fit_transform(data)
-        data_scaled = pd.DataFrame(data_scaled, columns=data.columns)
+
+        # IMPORTANT: convert to NumPy array only
+        X = np.asarray(data_scaled)
 
         # --------------------------------------------------
         # CORRELATION HEATMAP
         # --------------------------------------------------
         st.subheader("📊 Correlation Heatmap")
 
+        corr = pd.DataFrame(X, columns=data.columns).corr()
+
         fig, ax = plt.subplots(figsize=(8, 5))
-        sns.heatmap(data_scaled.corr(), cmap="coolwarm", ax=ax)
+        sns.heatmap(corr, cmap="coolwarm", ax=ax)
         st.pyplot(fig)
 
         # --------------------------------------------------
@@ -108,7 +114,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         st.subheader("📐 KMO Test")
 
-        kmo_all, kmo_model = calculate_kmo(data_scaled)
+        kmo_all, kmo_model = calculate_kmo(X)
         st.metric("KMO Value", round(kmo_model, 3))
 
         # --------------------------------------------------
@@ -116,7 +122,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         st.subheader("📐 Bartlett’s Test of Sphericity")
 
-        chi_square_value, p_value = calculate_bartlett_sphericity(data_scaled)
+        chi_square_value, p_value = calculate_bartlett_sphericity(X)
 
         st.write(f"Chi-Square Value: **{round(chi_square_value, 2)}**")
         st.write(f"P-Value: **{round(p_value, 6)}**")
@@ -131,12 +137,12 @@ def factor_analysis_page():
         st.success("Data is suitable for Factor Analysis.")
 
         # --------------------------------------------------
-        # EIGENVALUES & SCREE PLOT
+        # SCREE PLOT & EIGENVALUES (FIXED)
         # --------------------------------------------------
         st.subheader("📈 Scree Plot & Eigenvalues")
 
         fa = FactorAnalyzer(rotation=None)
-        fa.fit(data_scaled)
+        fa.fit(X)
 
         eigen_values, _ = fa.get_eigenvalues()
 
@@ -159,7 +165,7 @@ def factor_analysis_page():
         )
 
         # --------------------------------------------------
-        # APPLY FACTOR ANALYSIS
+        # APPLY FACTOR ANALYSIS (VARIMAX)
         # --------------------------------------------------
         st.subheader("🔄 Factor Extraction (Varimax Rotation)")
 
@@ -167,7 +173,7 @@ def factor_analysis_page():
             n_factors=n_factors,
             rotation="varimax"
         )
-        fa.fit(data_scaled)
+        fa.fit(X)
 
         # --------------------------------------------------
         # FACTOR LOADINGS
@@ -184,9 +190,10 @@ def factor_analysis_page():
         # --------------------------------------------------
         # FACTOR SCORES
         # --------------------------------------------------
-        st.subheader("📌 Factor Scores (Optional Output)")
+        st.subheader("📌 Factor Scores")
 
-        factor_scores = fa.transform(data_scaled)
+        factor_scores = fa.transform(X)
+
         factor_scores_df = pd.DataFrame(
             factor_scores,
             columns=[f"Factor {i+1}" for i in range(n_factors)]
