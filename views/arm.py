@@ -1,4 +1,4 @@
-def arm_page():
+    def arm_page():
     import streamlit as st
     import pandas as pd
     import numpy as np
@@ -142,6 +142,34 @@ def arm_page():
         ax.invert_yaxis()
         st.pyplot(fig)
         plt.close(fig)
+
+        # ==================================================
+        # 🔥 VISUAL: TOP-10 RULES BY CONFIDENCE
+        # ==================================================
+        st.subheader("🏆 Top 10 Association Rules (by Confidence)")
+
+        top_10_conf = rules.sort_values("confidence", ascending=False).head(10)
+
+        # Table
+        st.dataframe(
+            top_10_conf[
+                ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
+            ]
+        )
+
+        # Bar chart
+        fig, ax = plt.subplots(figsize=(9, 4))
+        ax.barh(
+            top_10_conf["antecedents_str"] + " → " + top_10_conf["consequents_str"],
+            top_10_conf["confidence"],
+            color=sns.color_palette("coolwarm", 10)
+        )
+        ax.set_xlabel("Confidence")
+        ax.set_title("Top 10 Rules by Confidence")
+        ax.invert_yaxis()
+        st.pyplot(fig)
+        plt.close(fig)
+
 
         # ==================================================
         # 🔥 VISUAL 2: SUPPORT vs CONFIDENCE (LIFT COLORFUL)
