@@ -67,7 +67,11 @@ def arm_page():
         df_encoded = pd.DataFrame(te_array, columns=te.columns_)
 
         st.subheader("📦 Encoded Transactions (Preview)")
-        st.dataframe(df_encoded.head())
+        st.dataframe(
+            df_encoded.head().style
+            .set_properties(**{"font-size": "13px"})
+            .background_gradient(cmap="Blues")
+        )
 
         # --------------------------------------------------
         # ARM PARAMETERS
@@ -92,7 +96,13 @@ def arm_page():
             return
 
         st.subheader("📊 Frequent Itemsets")
-        st.dataframe(frequent_itemsets.sort_values("support", ascending=False))
+        st.dataframe(
+            frequent_itemsets
+            .sort_values("support", ascending=False)
+            .style
+            .background_gradient(cmap="Purples", subset=["support"])
+            .set_properties(**{"font-size": "13px"})
+        )
 
         # --------------------------------------------------
         # ASSOCIATION RULES
@@ -109,24 +119,28 @@ def arm_page():
             st.warning("No association rules found. Adjust thresholds.")
             return
 
-        # Formatting
         rules["antecedents_str"] = rules["antecedents"].apply(lambda x: ", ".join(list(x)))
         rules["consequents_str"] = rules["consequents"].apply(lambda x: ", ".join(list(x)))
         rules["antecedent_len"] = rules["antecedents"].apply(len)
 
         # --------------------------------------------------
-        # ALL RULES TABLE
+        # ALL RULES TABLE (STYLED)
         # --------------------------------------------------
         st.subheader("📜 All Association Rules")
 
         st.dataframe(
             rules[
                 ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
-            ].sort_values("lift", ascending=False)
+            ]
+            .sort_values("lift", ascending=False)
+            .style
+            .background_gradient(cmap="coolwarm", subset=["confidence"])
+            .background_gradient(cmap="viridis", subset=["lift"])
+            .set_properties(**{"font-size": "13px"})
         )
 
         # ==================================================
-        # 🔥 TOP-10 RULES BY LIFT
+        # 🔥 TOP-10 RULES BY LIFT (UNCHANGED)
         # ==================================================
         st.subheader("🏆 Top 10 Association Rules (by Lift)")
 
@@ -145,7 +159,7 @@ def arm_page():
         plt.close(fig)
 
         # ==================================================
-        # 🔥 TOP-10 RULES BY CONFIDENCE
+        # 🔥 TOP-10 RULES BY CONFIDENCE (STYLED TABLE)
         # ==================================================
         st.subheader("🏆 Top 10 Association Rules (by Confidence)")
 
@@ -155,6 +169,10 @@ def arm_page():
             top_10_conf[
                 ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
             ]
+            .style
+            .background_gradient(cmap="coolwarm", subset=["confidence"])
+            .background_gradient(cmap="viridis", subset=["lift"])
+            .set_properties(**{"font-size": "13px"})
         )
 
         fig, ax = plt.subplots(figsize=(9, 4))
@@ -170,7 +188,7 @@ def arm_page():
         plt.close(fig)
 
         # ==================================================
-        # 🔥 SUPPORT vs CONFIDENCE (LIFT COLOR)
+        # 🔥 SUPPORT vs CONFIDENCE
         # ==================================================
         st.subheader("📈 Support vs Confidence (Lift Highlighted)")
 
