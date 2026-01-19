@@ -1,4 +1,3 @@
-pip install factor-analyzer
 def factor_analysis_page():
     import streamlit as st
     import pandas as pd
