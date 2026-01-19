@@ -401,5 +401,20 @@ div.stFormSubmitButton > button p {
 .data-table tbody tr:last-child td {
     border-bottom: none;
 }
+/* =========================================================
+   FOOTER PURPLE RIBBON (BELOW FOOTER)
+   ========================================================= */
+
+.footer-ribbon {
+    position: fixed;
+    bottom: 0;
+    left: 280px;              /* sidebar width */
+    right: 0;
+
+    height: 6px;              /* 🔥 ribbon thickness */
+    background: var(--purple);
+
+    z-index: 999;             /* footer ke neeche, page ke upar */
+}
 
 
