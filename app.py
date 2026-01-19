@@ -28,15 +28,11 @@ def load_css():
         "assets",
         "styles.css"
     )
-    with open(css_path) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    if os.path.exists(css_path):
+        with open(css_path) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-
-
-# ================= SESSION STATE =================
-if "active_page" not in st.session_state:
-    st.session_state.active_page = "Upload"
 
 
 # ================= SIDEBAR =================
@@ -50,17 +46,75 @@ logo_path = os.path.join(
 
 if os.path.exists(logo_path):
     img = Image.open(logo_path).convert("RGBA")
+    img = img.resize((110, 110))
 
-    size = (110, 110)
-    img = img.resize(size)
-
-    mask = Image.new("L", size, 0)
+    mask = Image.new("L", (110, 110), 0)
     draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, size[0], size[1]), fill=255)
+    draw.ellipse((0, 0, 110, 110), fill=255)
     img.putalpha(mask)
 
-    col1, col2, col3 = st.sidebar.columns([1, 2, 1])
-    with col2:
-        st.image(img)
+    st.sidebar.image(img)
 else:
-    st.sidebar.war
+    st.sidebar.warning("Logo not found")
+
+st.sidebar.title("Customer Profiling Dashboard")
+
+
+# ================= SIDEBAR NAVIGATION (CORRECT WAY) =================
+
+page = st.sidebar.radio(
+    "Navigation",
+    [
+        "📂 Upload Dataset",
+        "🛠️ Preprocessing Stage",
+        "📊 EDA",
+        "📉 Factor Analysis",
+        "📊 K-Means Clustering",
+        "🧺 Association Rule Mining",
+        "⚙️ Supervised Learning",
+        "🤖 Model Building",
+        "📈 Prediction & Insights",
+    ],
+    index=0
+)
+
+
+# ================= MAIN ROUTING =================
+
+if page == "📂 Upload Dataset":
+    upload_page()
+
+elif page == "🛠️ Preprocessing Stage":
+    preprocessing_page()
+
+elif page == "📊 EDA":
+    eda_page()
+
+elif page == "📉 Factor Analysis":
+    factor_analysis_page()
+
+elif page == "📊 K-Means Clustering":
+    kmeans_clustering_page()
+
+elif page == "🧺 Association Rule Mining":
+    arm_page()
+
+elif page == "⚙️ Supervised Learning":
+    supervised_learning_page()
+
+elif page == "🤖 Model Building":
+    model_page()
+
+elif page == "📈 Prediction & Insights":
+    prediction_page()
+
+
+# ================= FOOTER =================
+st.markdown(
+    """
+    <div class="app-footer">
+        DMUSL End-Term Hackathon
+    </div>
+    """,
+    unsafe_allow_html=True
+)
