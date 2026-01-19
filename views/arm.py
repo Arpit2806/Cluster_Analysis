@@ -130,19 +130,23 @@ def arm_page():
         )
 
         # --------------------------------------------------
-        # VISUALIZATION 1: HEATMAP (LIKE NOTEBOOK)
+        # VISUALIZATION 1: HEATMAP
         # --------------------------------------------------
         st.subheader("🔥 Heatmap: Support vs Confidence vs Lift")
 
         pivot = rules.pivot_table(
             values="lift",
-            index=pd.cut(rules["support"], bins=5),
-            columns=pd.cut(rules["confidence"], bins=5)
+            index=pd.cut(rules["support"], bins=5, duplicates="drop"),
+            columns=pd.cut(rules["confidence"], bins=5, duplicates="drop")
         )
 
-        fig, ax = plt.subplots(figsize=(6, 4))
-        sns.heatmap(pivot, cmap="YlOrRd", ax=ax)
-        st.pyplot(fig)
+        if pivot.isna().all().all():
+            st.warning("Heatmap not generated due to insufficient rule density.")
+        else:
+            fig, ax = plt.subplots(figsize=(6, 4))
+            sns.heatmap(pivot, cmap="YlOrRd", ax=ax)
+            st.pyplot(fig)
+            plt.close(fig)
 
         # --------------------------------------------------
         # VISUALIZATION 2: SCATTER PLOT
@@ -150,16 +154,19 @@ def arm_page():
         st.subheader("📈 Support vs Confidence (Lift Highlighted)")
 
         fig, ax = plt.subplots(figsize=(7, 5))
-        sns.scatterplot(
-            data=rules,
-            x="support",
-            y="confidence",
-            size="lift",
-            hue="lift",
-            palette="viridis",
-            ax=ax
+        sc = ax.scatter(
+            rules["support"],
+            rules["confidence"],
+            c=rules["lift"],
+            s=rules["lift"] * 40,
+            cmap="viridis",
+            alpha=0.7
         )
+        ax.set_xlabel("Support")
+        ax.set_ylabel("Confidence")
+        plt.colorbar(sc, ax=ax, label="Lift")
         st.pyplot(fig)
+        plt.close(fig)
 
         # --------------------------------------------------
         # VISUALIZATION 3: CONFIDENCE DISTRIBUTION
@@ -167,8 +174,11 @@ def arm_page():
         st.subheader("📊 Confidence Distribution")
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        sns.histplot(rules["confidence"], bins=10, kde=True, ax=ax)
+        ax.hist(rules["confidence"], bins=10)
+        ax.set_xlabel("Confidence")
+        ax.set_ylabel("Frequency")
         st.pyplot(fig)
+        plt.close(fig)
 
         # --------------------------------------------------
         # VISUALIZATION 4: ANTECEDENT LENGTH ANALYSIS
@@ -176,12 +186,13 @@ def arm_page():
         st.subheader("📏 Antecedent Length Analysis")
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        sns.countplot(
-            x="antecedent_len",
-            data=rules,
-            ax=ax
+        rules["antecedent_len"].value_counts().sort_index().plot(
+            kind="bar", ax=ax
         )
+        ax.set_xlabel("Antecedent Length")
+        ax.set_ylabel("Count")
         st.pyplot(fig)
+        plt.close(fig)
 
         # --------------------------------------------------
         # DOWNLOAD RULES
@@ -209,7 +220,7 @@ def arm_page():
     # IF NO
     # ==================================================
     else:
-        st.info("Upload another dataset suitable for Association Rule Mining.")
+        st.info("Upload another clean dataset suitable for Association Rule Mining.")
 
         uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
