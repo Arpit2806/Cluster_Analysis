@@ -89,7 +89,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         scaler = StandardScaler()
         X = scaler.fit_transform(data)
-        X = np.asarray(X)  # ensure pure NumPy array
+        X = np.asarray(X)  # pure NumPy array
 
         # --------------------------------------------------
         # CORRELATION HEATMAP
@@ -97,7 +97,6 @@ def factor_analysis_page():
         st.subheader("📊 Correlation Heatmap")
 
         corr = pd.DataFrame(X, columns=data.columns).corr()
-
         fig, ax = plt.subplots(figsize=(8, 5))
         sns.heatmap(corr, cmap="coolwarm", ax=ax)
         st.pyplot(fig)
@@ -134,10 +133,9 @@ def factor_analysis_page():
         # --------------------------------------------------
         st.subheader("📈 Scree Plot & Eigenvalues")
 
-        pca = PCA()
-        pca.fit(X)
-
-        eigen_values = pca.explained_variance_
+        pca_for_scree = PCA()
+        pca_for_scree.fit(X)
+        eigen_values = pca_for_scree.explained_variance_
 
         fig, ax = plt.subplots()
         ax.plot(range(1, len(eigen_values) + 1), eigen_values, marker="o")
@@ -158,25 +156,51 @@ def factor_analysis_page():
         )
 
         # --------------------------------------------------
-        # APPLY FACTOR ANALYSIS (VARIMAX)
+        # FACTOR EXTRACTION (VARIMAX WITH FALLBACK)
         # --------------------------------------------------
         st.subheader("🔄 Factor Extraction (Varimax Rotation)")
 
-        fa = FactorAnalyzer(
-            n_factors=n_factors,
-            rotation="varimax"
-        )
-        fa.fit(X)
+        loadings = None
+        factor_scores = None
+
+        try:
+            # Primary attempt: Proper Factor Analysis
+            fa = FactorAnalyzer(
+                n_factors=n_factors,
+                rotation="varimax",
+                method="principal"
+            )
+            fa.fit(X)
+
+            loadings = pd.DataFrame(
+                fa.loadings_,
+                index=data.columns,
+                columns=[f"Factor {i+1}" for i in range(n_factors)]
+            )
+
+            factor_scores = fa.transform(X)
+
+            st.success("Factor Analysis completed successfully using Varimax rotation.")
+
+        except Exception:
+            # Fallback: PCA-based factor loadings
+            st.warning(
+                "Numerical instability detected in Factor Analyzer. "
+                "Using PCA-based factor loadings as a stable alternative."
+            )
+
+            pca_fallback = PCA(n_components=n_factors)
+            factor_scores = pca_fallback.fit_transform(X)
+
+            loadings = pd.DataFrame(
+                pca_fallback.components_.T,
+                index=data.columns,
+                columns=[f"Factor {i+1}" for i in range(n_factors)]
+            )
 
         # --------------------------------------------------
         # FACTOR LOADINGS
         # --------------------------------------------------
-        loadings = pd.DataFrame(
-            fa.loadings_,
-            index=data.columns,
-            columns=[f"Factor {i+1}" for i in range(n_factors)]
-        )
-
         st.subheader("📋 Factor Loadings")
         st.dataframe(loadings.style.background_gradient(cmap="coolwarm"))
 
@@ -184,8 +208,6 @@ def factor_analysis_page():
         # FACTOR SCORES
         # --------------------------------------------------
         st.subheader("📌 Factor Scores")
-
-        factor_scores = fa.transform(X)
 
         factor_scores_df = pd.DataFrame(
             factor_scores,
