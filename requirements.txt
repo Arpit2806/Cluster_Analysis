@@ -6,4 +6,5 @@ scikit-learn
 seaborn
 shap
 statsmodels
+factor-analyzer
 
