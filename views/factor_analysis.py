@@ -1,16 +1,18 @@
-def factor_analysis_page():
-    import streamlit as st
-    import pandas as pd
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import seaborn as sns
+import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-    from sklearn.preprocessing import StandardScaler
-    from factor_analyzer import FactorAnalyzer
-    from factor_analyzer.factor_analyzer import (
-        calculate_kmo,
-        calculate_bartlett_sphericity
-    )
+from sklearn.preprocessing import StandardScaler
+from factor_analyzer import FactorAnalyzer
+from factor_analyzer.factor_analyzer import (
+    calculate_kmo,
+    calculate_bartlett_sphericity
+)
+
+
+def factor_analysis_page():
 
     # --------------------------------------------------
     # HEADER & CONTEXT
@@ -19,13 +21,13 @@ def factor_analysis_page():
 
     st.markdown("""
     **Why Factor Analysis?**  
-    Factor Analysis helps reduce a large number of correlated variables into a smaller
-    set of meaningful latent factors. It is commonly used for survey and Likert-scale data
+    Factor Analysis reduces a large number of correlated variables into a smaller
+    set of meaningful latent factors. It is widely used for survey and Likert-scale data
     to uncover hidden behavioral dimensions.
     """)
 
     # --------------------------------------------------
-    # CHECK DATA
+    # CHECK DATA AVAILABILITY
     # --------------------------------------------------
     if "data" not in st.session_state:
         st.warning("No dataset found. Please upload a dataset first.")
@@ -49,12 +51,12 @@ def factor_analysis_page():
         # --------------------------------------------------
         # FEATURE SELECTION
         # --------------------------------------------------
-        st.subheader("🔧 Select Variables (Likert / Numeric)")
+        st.subheader("🔧 Select Variables (Numeric / Likert Scale)")
 
         numeric_cols = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
 
         if len(numeric_cols) < 3:
-            st.error("Factor Analysis requires at least 3 numeric / Likert-scale variables.")
+            st.error("Factor Analysis requires at least 3 numeric or Likert-scale variables.")
             return
 
         features = st.multiselect(
@@ -96,7 +98,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         # BARTLETT TEST
         # --------------------------------------------------
-        st.subheader("📐 Bartlett’s Test of Sphericity")
+        st.subheader("📐 Bartlett's Test of Sphericity")
 
         chi_square_value, p_value = calculate_bartlett_sphericity(data_scaled)
 
@@ -166,7 +168,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         # FACTOR SCORES
         # --------------------------------------------------
-        st.subheader("📌 Factor Scores (Optional Output)")
+        st.subheader("📌 Factor Scores")
 
         factor_scores = fa.transform(data_scaled)
         factor_scores_df = pd.DataFrame(
@@ -194,6 +196,5 @@ def factor_analysis_page():
         if uploaded_file is not None:
             new_df = pd.read_csv(uploaded_file)
             st.session_state["data"] = new_df
-            st.success("New dataset uploaded successfully!")
+            st.success("New dataset uploaded successfully.")
             st.dataframe(new_df.head())
-
