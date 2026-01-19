@@ -2,11 +2,13 @@ import streamlit as st
 import os
 from PIL import Image, ImageDraw
 
+# ================= IMPORT VIEWS =================
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
 from views.eda import eda_page
 from views.supervised import supervised_learning_page
 from views.unsupervised import unsupervised_learning_page
+from views.kmeans_clustering import kmeans_clustering_page
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -63,7 +65,7 @@ else:
     st.sidebar.warning("Logo not found")
 
 
-# ---- TITLE ----
+# ---- SIDEBAR TITLE ----
 st.sidebar.title("Customer Profiling Dashboard")
 
 
@@ -84,6 +86,10 @@ if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
 if st.sidebar.button("🧩 Unsupervised Learning", use_container_width=True):
     st.session_state.active_page = "Unsupervised"
 
+# 🔥 NEW VIEW ADDED HERE
+if st.sidebar.button("📊 K-Means Clustering", use_container_width=True):
+    st.session_state.active_page = "KMeans"
+
 if st.sidebar.button("🤖 Model Building", use_container_width=True):
     st.session_state.active_page = "Model"
 
@@ -92,6 +98,7 @@ if st.sidebar.button("📈 Prediction & Insights", use_container_width=True):
 
 
 # ================= MAIN ROUTING =================
+
 if st.session_state.active_page == "Upload":
     upload_page()
 
@@ -106,6 +113,9 @@ elif st.session_state.active_page == "Supervised":
 
 elif st.session_state.active_page == "Unsupervised":
     unsupervised_learning_page()
+
+elif st.session_state.active_page == "KMeans":
+    kmeans_clustering_page()
 
 elif st.session_state.active_page == "Model":
     model_page()
