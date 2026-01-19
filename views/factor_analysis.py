@@ -1,18 +1,16 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-from sklearn.preprocessing import StandardScaler
-from factor_analyzer import FactorAnalyzer
-from factor_analyzer.factor_analyzer import (
-    calculate_kmo,
-    calculate_bartlett_sphericity
-)
-
-
 def factor_analysis_page():
+    import streamlit as st
+    import pandas as pd
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    from sklearn.preprocessing import StandardScaler
+    from factor_analyzer import FactorAnalyzer
+    from factor_analyzer.factor_analyzer import (
+        calculate_kmo,
+        calculate_bartlett_sphericity
+    )
 
     # --------------------------------------------------
     # HEADER & CONTEXT
@@ -21,13 +19,13 @@ def factor_analysis_page():
 
     st.markdown("""
     **Why Factor Analysis?**  
-    Factor Analysis reduces a large number of correlated variables into a smaller
-    set of meaningful latent factors. It is widely used for survey and Likert-scale data
+    Factor Analysis helps reduce a large number of correlated variables into a smaller
+    set of meaningful latent factors. It is commonly used for survey and Likert-scale data
     to uncover hidden behavioral dimensions.
     """)
 
     # --------------------------------------------------
-    # CHECK DATA AVAILABILITY
+    # CHECK DATA
     # --------------------------------------------------
     if "data" not in st.session_state:
         st.warning("No dataset found. Please upload a dataset first.")
@@ -51,12 +49,12 @@ def factor_analysis_page():
         # --------------------------------------------------
         # FEATURE SELECTION
         # --------------------------------------------------
-        st.subheader("🔧 Select Variables (Numeric / Likert Scale)")
+        st.subheader("🔧 Select Variables (Likert / Numeric)")
 
         numeric_cols = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
 
         if len(numeric_cols) < 3:
-            st.error("Factor Analysis requires at least 3 numeric or Likert-scale variables.")
+            st.error("Factor Analysis requires at least 3 numeric / Likert-scale variables.")
             return
 
         features = st.multiselect(
@@ -69,14 +67,32 @@ def factor_analysis_page():
             st.warning("Please select at least 3 variables.")
             return
 
-        data = df[features].dropna()
+        # --------------------------------------------------
+        # DATA CLEANING (CRITICAL FIX)
+        # --------------------------------------------------
+        data = df[features].copy()
+
+        # Force numeric & remove invalid values
+        data = data.apply(pd.to_numeric, errors="coerce")
+        data = data.dropna()
+
+        # Remove constant (zero-variance) columns
+        data = data.loc[:, data.nunique() > 1]
+
+        if data.shape[1] < 3:
+            st.error("After cleaning, fewer than 3 valid variables remain for Factor Analysis.")
+            return
+
+        if data.shape[0] < 10:
+            st.error("Not enough observations to perform Factor Analysis.")
+            return
 
         # --------------------------------------------------
         # STANDARDIZATION
         # --------------------------------------------------
         scaler = StandardScaler()
         data_scaled = scaler.fit_transform(data)
-        data_scaled = pd.DataFrame(data_scaled, columns=features)
+        data_scaled = pd.DataFrame(data_scaled, columns=data.columns)
 
         # --------------------------------------------------
         # CORRELATION HEATMAP
@@ -98,12 +114,12 @@ def factor_analysis_page():
         # --------------------------------------------------
         # BARTLETT TEST
         # --------------------------------------------------
-        st.subheader("📐 Bartlett's Test of Sphericity")
+        st.subheader("📐 Bartlett’s Test of Sphericity")
 
         chi_square_value, p_value = calculate_bartlett_sphericity(data_scaled)
 
         st.write(f"Chi-Square Value: **{round(chi_square_value, 2)}**")
-        st.write(f"P-Value: **{round(p_value, 5)}**")
+        st.write(f"P-Value: **{round(p_value, 6)}**")
 
         if kmo_model < 0.6 or p_value >= 0.05:
             st.error(
@@ -138,8 +154,8 @@ def factor_analysis_page():
         n_factors = st.slider(
             "Select number of factors",
             min_value=1,
-            max_value=min(10, len(features)),
-            value=3
+            max_value=min(10, data.shape[1]),
+            value=min(3, data.shape[1])
         )
 
         # --------------------------------------------------
@@ -158,7 +174,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         loadings = pd.DataFrame(
             fa.loadings_,
-            index=features,
+            index=data.columns,
             columns=[f"Factor {i+1}" for i in range(n_factors)]
         )
 
@@ -168,7 +184,7 @@ def factor_analysis_page():
         # --------------------------------------------------
         # FACTOR SCORES
         # --------------------------------------------------
-        st.subheader("📌 Factor Scores")
+        st.subheader("📌 Factor Scores (Optional Output)")
 
         factor_scores = fa.transform(data_scaled)
         factor_scores_df = pd.DataFrame(
@@ -196,5 +212,5 @@ def factor_analysis_page():
         if uploaded_file is not None:
             new_df = pd.read_csv(uploaded_file)
             st.session_state["data"] = new_df
-            st.success("New dataset uploaded successfully.")
+            st.success("New dataset uploaded successfully!")
             st.dataframe(new_df.head())
