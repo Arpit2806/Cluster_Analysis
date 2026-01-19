@@ -6,6 +6,7 @@ def factor_analysis_page():
     import seaborn as sns
 
     from sklearn.preprocessing import StandardScaler
+    from sklearn.decomposition import PCA
     from factor_analyzer import FactorAnalyzer
     from factor_analyzer.factor_analyzer import (
         calculate_kmo,
@@ -20,7 +21,7 @@ def factor_analysis_page():
     st.markdown("""
     **Why Factor Analysis?**  
     Factor Analysis reduces a large set of correlated variables into fewer meaningful
-    latent factors. It is widely used for survey and Likert-scale data to uncover
+    latent factors. It is commonly used for survey and Likert-scale data to uncover
     hidden behavioral dimensions.
     """)
 
@@ -68,17 +69,11 @@ def factor_analysis_page():
             return
 
         # --------------------------------------------------
-        # DATA CLEANING (MOST IMPORTANT)
+        # DATA CLEANING (CRITICAL)
         # --------------------------------------------------
         data = df[features].copy()
-
-        # Ensure numeric
         data = data.apply(pd.to_numeric, errors="coerce")
-
-        # Drop missing values
         data = data.dropna()
-
-        # Remove constant columns (zero variance)
         data = data.loc[:, data.nunique() > 1]
 
         if data.shape[1] < 3:
@@ -93,10 +88,8 @@ def factor_analysis_page():
         # STANDARDIZATION
         # --------------------------------------------------
         scaler = StandardScaler()
-        data_scaled = scaler.fit_transform(data)
-
-        # IMPORTANT: convert to NumPy array only
-        X = np.asarray(data_scaled)
+        X = scaler.fit_transform(data)
+        X = np.asarray(X)  # ensure pure NumPy array
 
         # --------------------------------------------------
         # CORRELATION HEATMAP
@@ -137,21 +130,21 @@ def factor_analysis_page():
         st.success("Data is suitable for Factor Analysis.")
 
         # --------------------------------------------------
-        # SCREE PLOT & EIGENVALUES (FIXED)
+        # SCREE PLOT & EIGENVALUES (PCA-BASED, STABLE)
         # --------------------------------------------------
         st.subheader("📈 Scree Plot & Eigenvalues")
 
-        fa = FactorAnalyzer(rotation=None)
-        fa.fit(X)
+        pca = PCA()
+        pca.fit(X)
 
-        eigen_values, _ = fa.get_eigenvalues()
+        eigen_values = pca.explained_variance_
 
         fig, ax = plt.subplots()
         ax.plot(range(1, len(eigen_values) + 1), eigen_values, marker="o")
         ax.axhline(y=1, color="red", linestyle="--")
         ax.set_xlabel("Factor Number")
         ax.set_ylabel("Eigenvalue")
-        ax.set_title("Scree Plot")
+        ax.set_title("Scree Plot (PCA-based)")
         st.pyplot(fig)
 
         # --------------------------------------------------
