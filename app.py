@@ -2,12 +2,14 @@ import streamlit as st
 import os
 from PIL import Image, ImageDraw
 
+# ================= IMPORT VIEWS =================
 from views.upload import upload_page
 from views.preprocessing import preprocessing_page
 from views.eda import eda_page
 from views.supervised import supervised_learning_page
 from views.kmeans_clustering import kmeans_clustering_page
 from views.factor_analysis import factor_analysis_page
+from views.arm import arm_page
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -61,72 +63,4 @@ if os.path.exists(logo_path):
     with col2:
         st.image(img)
 else:
-    st.sidebar.warning("Logo not found")
-
-
-# ---- TITLE ----
-st.sidebar.title("Customer Profiling Dashboard")
-
-
-# ================= SIDEBAR NAVIGATION =================
-
-if st.sidebar.button("📂 Upload Dataset", use_container_width=True):
-    st.session_state.active_page = "Upload"
-
-if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
-    st.session_state.active_page = "Preprocessing"
-
-if st.sidebar.button("📊 EDA", use_container_width=True):
-    st.session_state.active_page = "EDA"
-
-if st.sidebar.button("📉 Factor Analysis", use_container_width=True):
-    st.session_state.active_page = "FactorAnalysis"
-
-if st.sidebar.button("📊 K-Means Clustering", use_container_width=True):
-    st.session_state.active_page = "KMeans"
-
-if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
-    st.session_state.active_page = "Supervised"
-
-if st.sidebar.button("🤖 Model Building", use_container_width=True):
-    st.session_state.active_page = "Model"
-
-if st.sidebar.button("📈 Prediction & Insights", use_container_width=True):
-    st.session_state.active_page = "Prediction"
-
-
-# ================= MAIN ROUTING =================
-if st.session_state.active_page == "Upload":
-    upload_page()
-
-elif st.session_state.active_page == "Preprocessing":
-    preprocessing_page()
-
-elif st.session_state.active_page == "EDA":
-    eda_page()
-
-elif st.session_state.active_page == "FactorAnalysis":
-    factor_analysis_page()
-
-elif st.session_state.active_page == "KMeans":
-    kmeans_clustering_page()
-
-elif st.session_state.active_page == "Supervised":
-    supervised_learning_page()
-
-elif st.session_state.active_page == "Model":
-    model_page()
-
-elif st.session_state.active_page == "Prediction":
-    prediction_page()
-
-
-# ================= FOOTER =================
-st.markdown(
-    """
-    <div class="app-footer">
-        DMUSL End-Term Hackathon
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+    st.sidebar.war
