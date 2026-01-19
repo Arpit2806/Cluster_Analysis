@@ -15,8 +15,8 @@ def arm_page():
 
     st.markdown("""
     **Why Association Rule Mining?**  
-    ARM is used to discover hidden relationships between variables using
-    *If–Then* rules based on support, confidence, and lift.
+    Association Rule Mining identifies hidden co-occurrence patterns between variables
+    using *If–Then* rules based on **support, confidence, and lift**.
     """)
 
     # --------------------------------------------------
@@ -58,7 +58,7 @@ def arm_page():
         arm_df = df[cols].astype(str)
 
         # --------------------------------------------------
-        # TRANSACTIONS
+        # TRANSACTIONS & ENCODING
         # --------------------------------------------------
         transactions = arm_df.values.tolist()
 
@@ -117,80 +117,77 @@ def arm_page():
         # --------------------------------------------------
         # RULES TABLE
         # --------------------------------------------------
-        st.subheader("📜 Association Rules")
-
+        st.subheader("📜 All Association Rules")
         st.dataframe(
-            rules[[
-                "antecedents_str",
-                "consequents_str",
-                "support",
-                "confidence",
-                "lift"
-            ]].sort_values("lift", ascending=False)
+            rules[
+                ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
+            ].sort_values("lift", ascending=False)
         )
 
-        # --------------------------------------------------
-        # VISUALIZATION 1: HEATMAP
-        # --------------------------------------------------
-        st.subheader("🔥 Heatmap: Support vs Confidence vs Lift")
+        # ==================================================
+        # 🔥 VISUAL 1: TOP-10 RULES (STRICT TOP-10)
+        # ==================================================
+        st.subheader("🏆 Top 10 Association Rules (by Lift)")
 
-        pivot = rules.pivot_table(
-            values="lift",
-            index=pd.cut(rules["support"], bins=5, duplicates="drop"),
-            columns=pd.cut(rules["confidence"], bins=5, duplicates="drop")
+        top_10 = rules.sort_values("lift", ascending=False).head(10)
+
+        fig, ax = plt.subplots(figsize=(9, 4))
+        ax.barh(
+            top_10["antecedents_str"] + " → " + top_10["consequents_str"],
+            top_10["lift"],
+            color=sns.color_palette("viridis", 10)
         )
+        ax.set_xlabel("Lift")
+        ax.set_title("Top 10 Rules by Lift")
+        ax.invert_yaxis()
+        st.pyplot(fig)
+        plt.close(fig)
 
-        if pivot.isna().all().all():
-            st.warning("Heatmap not generated due to insufficient rule density.")
-        else:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.heatmap(pivot, cmap="YlOrRd", ax=ax)
-            st.pyplot(fig)
-            plt.close(fig)
-
-        # --------------------------------------------------
-        # VISUALIZATION 2: SCATTER PLOT
-        # --------------------------------------------------
+        # ==================================================
+        # 🔥 VISUAL 2: SUPPORT vs CONFIDENCE (LIFT COLORFUL)
+        # ==================================================
         st.subheader("📈 Support vs Confidence (Lift Highlighted)")
 
         fig, ax = plt.subplots(figsize=(7, 5))
-        sc = ax.scatter(
+        scatter = ax.scatter(
             rules["support"],
             rules["confidence"],
             c=rules["lift"],
             s=rules["lift"] * 40,
-            cmap="viridis",
+            cmap="plasma",
             alpha=0.7
         )
         ax.set_xlabel("Support")
         ax.set_ylabel("Confidence")
-        plt.colorbar(sc, ax=ax, label="Lift")
+        plt.colorbar(scatter, ax=ax, label="Lift")
         st.pyplot(fig)
         plt.close(fig)
 
-        # --------------------------------------------------
-        # VISUALIZATION 3: CONFIDENCE DISTRIBUTION
-        # --------------------------------------------------
+        # ==================================================
+        # 🔥 VISUAL 3: CONFIDENCE DISTRIBUTION
+        # ==================================================
         st.subheader("📊 Confidence Distribution")
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.hist(rules["confidence"], bins=10)
+        ax.hist(rules["confidence"], bins=10, color="#4CAF50", edgecolor="black")
         ax.set_xlabel("Confidence")
         ax.set_ylabel("Frequency")
         st.pyplot(fig)
         plt.close(fig)
 
-        # --------------------------------------------------
-        # VISUALIZATION 4: ANTECEDENT LENGTH ANALYSIS
-        # --------------------------------------------------
-        st.subheader("📏 Antecedent Length Analysis")
+        # ==================================================
+        # 🔥 VISUAL 4: RULE COMPLEXITY (ANTECEDENT LENGTH)
+        # ==================================================
+        st.subheader("📏 Rule Complexity (Antecedent Length)")
 
         fig, ax = plt.subplots(figsize=(6, 4))
         rules["antecedent_len"].value_counts().sort_index().plot(
-            kind="bar", ax=ax
+            kind="bar",
+            ax=ax,
+            color=sns.color_palette("Set2")
         )
-        ax.set_xlabel("Antecedent Length")
-        ax.set_ylabel("Count")
+        ax.set_xlabel("Number of Items in Antecedent")
+        ax.set_ylabel("Number of Rules")
         st.pyplot(fig)
         plt.close(fig)
 
@@ -205,15 +202,15 @@ def arm_page():
         )
 
         # --------------------------------------------------
-        # SUMMARY INSIGHTS
+        # SUMMARY INSIGHTS (NOTEBOOK-STYLE)
         # --------------------------------------------------
         st.subheader("🧠 Summary Insights")
 
         st.markdown(f"""
-        - Total rules generated: **{rules.shape[0]}**
-        - Average confidence: **{rules['confidence'].mean():.2f}**
-        - Maximum lift observed: **{rules['lift'].max():.2f}**
-        - Most rules have antecedent length of **{rules['antecedent_len'].mode()[0]}**
+        - **Total rules generated:** {rules.shape[0]}
+        - **Average confidence:** {rules['confidence'].mean():.2f}
+        - **Maximum lift observed:** {rules['lift'].max():.2f}
+        - **Most common antecedent size:** {rules['antecedent_len'].mode()[0]}
         """)
 
     # ==================================================
