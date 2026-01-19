@@ -7,6 +7,7 @@ from views.preprocessing import preprocessing_page
 from views.eda import eda_page
 from views.supervised import supervised_learning_page
 from views.kmeans_clustering import kmeans_clustering_page
+from views.factor_analysis import factor_analysis_page
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -78,11 +79,14 @@ if st.sidebar.button("🛠️ Preprocessing Stage", use_container_width=True):
 if st.sidebar.button("📊 EDA", use_container_width=True):
     st.session_state.active_page = "EDA"
 
-if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
-    st.session_state.active_page = "Supervised"
+if st.sidebar.button("📉 Factor Analysis", use_container_width=True):
+    st.session_state.active_page = "FactorAnalysis"
 
 if st.sidebar.button("📊 K-Means Clustering", use_container_width=True):
     st.session_state.active_page = "KMeans"
+
+if st.sidebar.button("⚙️ Supervised Learning", use_container_width=True):
+    st.session_state.active_page = "Supervised"
 
 if st.sidebar.button("🤖 Model Building", use_container_width=True):
     st.session_state.active_page = "Model"
@@ -101,11 +105,14 @@ elif st.session_state.active_page == "Preprocessing":
 elif st.session_state.active_page == "EDA":
     eda_page()
 
-elif st.session_state.active_page == "Supervised":
-    supervised_learning_page()
+elif st.session_state.active_page == "FactorAnalysis":
+    factor_analysis_page()
 
 elif st.session_state.active_page == "KMeans":
     kmeans_clustering_page()
+
+elif st.session_state.active_page == "Supervised":
+    supervised_learning_page()
 
 elif st.session_state.active_page == "Model":
     model_page()
