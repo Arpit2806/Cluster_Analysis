@@ -1,4 +1,4 @@
-    def arm_page():
+def arm_page():
     import streamlit as st
     import pandas as pd
     import numpy as np
@@ -115,9 +115,10 @@
         rules["antecedent_len"] = rules["antecedents"].apply(len)
 
         # --------------------------------------------------
-        # RULES TABLE
+        # ALL RULES TABLE
         # --------------------------------------------------
         st.subheader("📜 All Association Rules")
+
         st.dataframe(
             rules[
                 ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
@@ -125,16 +126,16 @@
         )
 
         # ==================================================
-        # 🔥 VISUAL 1: TOP-10 RULES (STRICT TOP-10)
+        # 🔥 TOP-10 RULES BY LIFT
         # ==================================================
         st.subheader("🏆 Top 10 Association Rules (by Lift)")
 
-        top_10 = rules.sort_values("lift", ascending=False).head(10)
+        top_10_lift = rules.sort_values("lift", ascending=False).head(10)
 
         fig, ax = plt.subplots(figsize=(9, 4))
         ax.barh(
-            top_10["antecedents_str"] + " → " + top_10["consequents_str"],
-            top_10["lift"],
+            top_10_lift["antecedents_str"] + " → " + top_10_lift["consequents_str"],
+            top_10_lift["lift"],
             color=sns.color_palette("viridis", 10)
         )
         ax.set_xlabel("Lift")
@@ -144,20 +145,18 @@
         plt.close(fig)
 
         # ==================================================
-        # 🔥 VISUAL: TOP-10 RULES BY CONFIDENCE
+        # 🔥 TOP-10 RULES BY CONFIDENCE
         # ==================================================
         st.subheader("🏆 Top 10 Association Rules (by Confidence)")
 
         top_10_conf = rules.sort_values("confidence", ascending=False).head(10)
 
-        # Table
         st.dataframe(
             top_10_conf[
                 ["antecedents_str", "consequents_str", "support", "confidence", "lift"]
             ]
         )
 
-        # Bar chart
         fig, ax = plt.subplots(figsize=(9, 4))
         ax.barh(
             top_10_conf["antecedents_str"] + " → " + top_10_conf["consequents_str"],
@@ -170,14 +169,13 @@
         st.pyplot(fig)
         plt.close(fig)
 
-
         # ==================================================
-        # 🔥 VISUAL 2: SUPPORT vs CONFIDENCE (LIFT COLORFUL)
+        # 🔥 SUPPORT vs CONFIDENCE (LIFT COLOR)
         # ==================================================
         st.subheader("📈 Support vs Confidence (Lift Highlighted)")
 
         fig, ax = plt.subplots(figsize=(7, 5))
-        scatter = ax.scatter(
+        sc = ax.scatter(
             rules["support"],
             rules["confidence"],
             c=rules["lift"],
@@ -187,12 +185,12 @@
         )
         ax.set_xlabel("Support")
         ax.set_ylabel("Confidence")
-        plt.colorbar(scatter, ax=ax, label="Lift")
+        plt.colorbar(sc, ax=ax, label="Lift")
         st.pyplot(fig)
         plt.close(fig)
 
         # ==================================================
-        # 🔥 VISUAL 3: CONFIDENCE DISTRIBUTION
+        # 🔥 CONFIDENCE DISTRIBUTION
         # ==================================================
         st.subheader("📊 Confidence Distribution")
 
@@ -204,7 +202,7 @@
         plt.close(fig)
 
         # ==================================================
-        # 🔥 VISUAL 4: RULE COMPLEXITY (ANTECEDENT LENGTH)
+        # 🔥 RULE COMPLEXITY
         # ==================================================
         st.subheader("📏 Rule Complexity (Antecedent Length)")
 
@@ -220,7 +218,7 @@
         plt.close(fig)
 
         # --------------------------------------------------
-        # DOWNLOAD RULES
+        # DOWNLOAD
         # --------------------------------------------------
         st.download_button(
             "⬇️ Download Association Rules",
@@ -230,7 +228,7 @@
         )
 
         # --------------------------------------------------
-        # SUMMARY INSIGHTS (NOTEBOOK-STYLE)
+        # SUMMARY INSIGHTS
         # --------------------------------------------------
         st.subheader("🧠 Summary Insights")
 
