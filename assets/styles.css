@@ -68,17 +68,29 @@ html body * {
     color: white;
 }
 
-/* ===== LOGO IMAGE ===== */
+/* ===== LOGO CONTAINER CENTER FIX ===== */
+[data-testid="stSidebar"] .stImage {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* ===== LOGO IMAGE (CENTERED) ===== */
 [data-testid="stSidebar"] img {
-    content: url("assets/log.png.png");   /* ✅ New logo path */
-    display: block;
-    margin: 1rem auto 0.8rem auto;
-    width: 80px;
-    height: 80px;
+    content: url("assets/log.png.png");
+    
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 1rem !important;
+    margin-bottom: 0.8rem !important;
+
+    width: 90px;
+    height: 90px;
     object-fit: contain;
+
     border-radius: 18px;
     background: rgba(255,255,255,0.2);
-    padding: 8px;
+    padding: 10px;
 }
 
 /* ===== SIDEBAR TITLE TEXT ===== */
@@ -88,12 +100,12 @@ html body * {
     margin-bottom: 0.6rem !important;
     text-align: center;
 
-    visibility: hidden;     /* hide original text */
+    visibility: hidden;
     position: relative;
 }
 
 [data-testid="stSidebar"] h1::after {
-    content: "DatathonX Dashboard";   /* ✅ New title */
+    content: "DatathonX Dashboard";
     visibility: visible;
     position: absolute;
     left: 0;
@@ -134,4 +146,83 @@ h1 {
 h2 {
     font-size: 1.3rem;
     font-weight: 600;
-    co
+    color: var(--text-dark);
+}
+
+p, label {
+    color: var(--text-muted);
+}
+
+/* ================= FOOTER ================= */
+.app-footer {
+    position: fixed;
+    bottom: 6px;
+    left: 280px;
+    right: 0;
+
+    background: #ffffff;
+    border-top: 1px solid var(--border-soft);
+
+    color: #6b7280;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    text-align: center;
+    padding: 0.9rem;
+
+    z-index: 1001;
+}
+
+/* ================= FOOTER RIBBON ================= */
+.footer-ribbon {
+    position: fixed;
+    bottom: 0;
+    left: 280px;
+    right: 0;
+
+    height: 6px;
+    background: var(--purple);
+
+    z-index: 1000;
+}
+
+/* ================= TABLE STRUCTURE ================= */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.data-table thead {
+    background: var(--purple);
+    color: white;
+}
+
+.data-table th {
+    padding: 12px 14px;
+    font-weight: 700;
+    text-align: left;
+}
+
+.data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(91,95,232,0.08);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
