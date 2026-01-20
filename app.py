@@ -17,7 +17,7 @@ from views.prediction import prediction_page
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
-    page_title="Customer Profiling Dashboard",
+    page_title="DatathonX Dashboard",
     layout="wide"
 )
 
