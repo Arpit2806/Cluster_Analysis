@@ -58,7 +58,7 @@ if os.path.exists(logo_path):
 else:
     st.sidebar.warning("Logo not found")
 
-st.sidebar.title("Customer Profiling Dashboard")
+st.sidebar.title("DataThon_X")
 
 
 # ================= SIDEBAR NAVIGATION =================
