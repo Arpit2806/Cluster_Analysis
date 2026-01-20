@@ -74,18 +74,13 @@ html body * {
     justify-content: center !important;
 }
 
-/* ===== LOGO IMAGE (CENTERED) ===== */
+/* ===== LOGO IMAGE ===== */
 [data-testid="stSidebar"] img {
-    content: url("assets/log.png.png");
-    
     display: block !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: 1rem !important;
-    margin-bottom: 0.8rem !important;
+    margin: 1rem auto 0.8rem auto !important;
 
-    width: 90px;
-    height: 90px;
+    width: 90px !important;
+    height: 90px !important;
     object-fit: contain;
 
     border-radius: 18px;
@@ -93,28 +88,15 @@ html body * {
     padding: 10px;
 }
 
-/* ===== SIDEBAR TITLE TEXT ===== */
+/* ===== SIDEBAR TITLE ===== */
 [data-testid="stSidebar"] h1 {
     font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 0.6rem !important;
     text-align: center;
-
-    visibility: hidden;
-    position: relative;
 }
 
-[data-testid="stSidebar"] h1::after {
-    content: "DatathonX Dashboard";
-    visibility: visible;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    text-align: center;
-}
-
-/* Hide default Streamlit subtitle */
+/* Hide default subtitle */
 [data-testid="stSidebar"] h3 {
     display: none !important;
 }
