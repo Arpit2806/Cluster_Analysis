@@ -10,6 +10,7 @@ from views.supervised import supervised_learning_page
 from views.kmeans_clustering import kmeans_clustering_page
 from views.factor_analysis import factor_analysis_page
 from views.arm import arm_page
+from views.pca import pca_page          # ✅ PCA ADDED
 from views.model import model_page
 from views.prediction import prediction_page
 
@@ -60,7 +61,7 @@ else:
 st.sidebar.title("Customer Profiling Dashboard")
 
 
-# ================= SIDEBAR NAVIGATION (CORRECT WAY) =================
+# ================= SIDEBAR NAVIGATION =================
 
 page = st.sidebar.radio(
     "Navigation",
@@ -69,6 +70,7 @@ page = st.sidebar.radio(
         "🛠️ Preprocessing Stage",
         "📊 EDA",
         "📉 Factor Analysis",
+        "📉 PCA",                        # ✅ PCA OPTION
         "📊 K-Means Clustering",
         "🧺 Association Rule Mining",
         "⚙️ Supervised Learning",
@@ -92,6 +94,9 @@ elif page == "📊 EDA":
 
 elif page == "📉 Factor Analysis":
     factor_analysis_page()
+
+elif page == "📉 PCA":                 # ✅ PCA ROUTE
+    pca_page()
 
 elif page == "📊 K-Means Clustering":
     kmeans_clustering_page()
@@ -118,7 +123,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
 
 st.markdown(
     '<div class="footer-ribbon"></div>',
