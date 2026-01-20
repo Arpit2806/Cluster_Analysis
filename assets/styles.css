@@ -72,27 +72,28 @@ html body * {
 [data-testid="stSidebar"] .stImage {
     display: flex !important;
     justify-content: center !important;
+    margin-top: 1.2rem !important;
 }
 
-/* ===== LOGO IMAGE ===== */
+/* ===== LOGO IMAGE (BIG + FIT) ===== */
 [data-testid="stSidebar"] img {
     display: block !important;
-    margin: 1rem auto 0.8rem auto !important;
+    margin: auto !important;
 
-    width: 90px !important;
-    height: 90px !important;
+    width: 130px !important;
+    height: 130px !important;
     object-fit: contain;
 
-    border-radius: 18px;
-    background: rgba(255,255,255,0.2);
-    padding: 10px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.18);
+    padding: 12px;
 }
 
 /* ===== SIDEBAR TITLE ===== */
 [data-testid="stSidebar"] h1 {
     font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 0.6rem !important;
+    margin: 0.6rem 0 1.2rem 0 !important;
     text-align: center;
 }
 
